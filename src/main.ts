@@ -4,7 +4,7 @@ import * as basicAuth from 'express-basic-auth';
 
 import { AppModule } from './app.module';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   // Create the Nest application
   const app = await NestFactory.create(AppModule);
 
