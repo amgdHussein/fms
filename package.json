@@ -1,7 +1,7 @@
 {
   "name": "fms-backend",
   "version": "0.0.1",
-  "description": "Financial Management System is an E-Finance startup company.",
+  "description": "Financial Management System Backend.",
   "author": "Amgad Hussein",
   "private": true,
   "license": "UNLICENSED",
