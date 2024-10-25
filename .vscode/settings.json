@@ -1,31 +1,37 @@
 {
   // Auto Save
   // "files.autoSaveDelay": 10,
-  "files.autoSave": "onFocusChange",
-
+  "files.autoSave": "onWindowChange",
   // Formatter
   "editor.formatOnPaste": false,
   "editor.formatOnType": false,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-
   "typescript.inlayHints.parameterNames.enabled": "all", // Development
   "typescript.inlayHints.parameterTypes.enabled": true,
   "typescript.preferences.importModuleSpecifier": "relative", // Deployment
-
   "editor.codeActionsOnSave": {
-    "source.fixAll": "never"
+    "source.fixAll": "never",
+    "source.organizeImports": "explicit"
   },
-
   "eslint.codeAction.showDocumentation": {
     "enable": true
   },
-
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-
   // To better view
   "typelens.unusedcolor": "None",
-
   // Unknown words
-  "cSpell.words": ["datasource", "datasources", "dtos", "nestjs", "usecase", "usecases"]
+  "cSpell.words": ["nestjs", "redisport", "redishost"],
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
