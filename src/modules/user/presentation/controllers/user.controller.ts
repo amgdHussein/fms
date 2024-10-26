@@ -4,9 +4,10 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/s
 import { QueryDto, QueryResultDto } from '../../../../core/dtos';
 import { AuthenticationGuard } from '../../../../core/guards';
 
-import { AddUser, DeleteUser, GetUser, QueryUsers, RegisterUser, UpdateUser } from '../../application';
+import { AddUser, DeleteUser, GetUser, GetUserAccounts, QueryUsers, RegisterUser, UpdateUser } from '../../application';
 import { USER_USECASE_PROVIDERS } from '../../domain';
 
+import { AccountDto } from '../../../account/presentation';
 import { AddUserDto, RegisterUserDto, UpdateUserDto, UserDto } from '../dtos';
 
 @ApiTags('Users')
@@ -31,6 +32,9 @@ export class UserController {
 
     @Inject(USER_USECASE_PROVIDERS.DELETE_USER)
     private readonly deleteUserUsecase: DeleteUser,
+
+    @Inject(USER_USECASE_PROVIDERS.GET_USER_ACCOUNTS)
+    private readonly getUserAccountsUsecase: GetUserAccounts,
   ) {}
 
   @Get()
@@ -126,5 +130,22 @@ export class UserController {
   })
   async deleteUser(@Param('id') id: string): Promise<UserDto> {
     return this.deleteUserUsecase.execute(id);
+  }
+
+  @Get(':id/accounts')
+  @ApiOperation({ summary: 'Get all accounts for specified user.' })
+  @ApiParam({
+    name: 'id',
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    type: String,
+    description: 'User id that required to get accounts.',
+  })
+  @ApiResponse({
+    type: Array<AccountDto>,
+    description: 'List of user accounts.',
+  })
+  async getUserAccounts(@Param('id') id: string): Promise<AccountDto[]> {
+    return this.getUserAccountsUsecase.execute(id);
   }
 }

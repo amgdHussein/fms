@@ -19,7 +19,7 @@ export class OrganizationPreferencesFirestoreRepository implements IOrganization
     return this.db.getDoc(id);
   }
 
-  async add(preferences: Partial<OrganizationPreferences>): Promise<OrganizationPreferences> {
+  async add(preferences: Partial<OrganizationPreferences> & { systemId: string }): Promise<OrganizationPreferences> {
     // Initiate some fields
     preferences.createdBy = this.locker.user.uid;
     preferences.createdAt = Date.now();

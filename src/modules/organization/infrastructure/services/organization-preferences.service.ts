@@ -18,7 +18,7 @@ export class OrganizationPreferencesService implements IOrganizationPreferencesS
     return this.repo.get(id);
   }
 
-  async addPreferences(preferences: Partial<OrganizationPreferences>): Promise<OrganizationPreferences> {
+  async addPreferences(preferences: Partial<OrganizationPreferences> & { systemId: string }): Promise<OrganizationPreferences> {
     return this.repo.add(preferences);
   }
 

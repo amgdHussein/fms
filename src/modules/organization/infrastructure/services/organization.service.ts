@@ -32,7 +32,7 @@ export class OrganizationService implements IOrganizationService {
     return this.repo.query(page, limit, filters, order);
   }
 
-  async addOrganization(organization: Partial<Organization>): Promise<Organization> {
+  async addOrganization(organization: Partial<Organization> & { userId: string }): Promise<Organization> {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     organization.systemId = Utils.Encrypt.generateId(characters, 16);
 

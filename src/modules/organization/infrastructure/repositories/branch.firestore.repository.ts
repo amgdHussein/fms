@@ -24,7 +24,7 @@ export class OrganizationBranchFirestoreRepository implements IOrganizationBranc
     return this.db.getDocs(filters);
   }
 
-  async add(branch: Partial<OrganizationBranch>): Promise<OrganizationBranch> {
+  async add(branch: Partial<OrganizationBranch> & { systemId: string }): Promise<OrganizationBranch> {
     // Initiate some fields
     branch.createdBy = this.locker.user.uid;
     branch.createdAt = Date.now();

@@ -15,7 +15,7 @@ export class AddUser implements Usecase<User> {
     private readonly preferencesService: IUserPreferencesService,
   ) {}
 
-  async execute(user: Partial<User>): Promise<User> {
+  async execute(user: Partial<User> & { id: string }): Promise<User> {
     return this.userService.addUser(user).then(async user => {
       // Add user related data
       await this.preferencesService.addPreferences({

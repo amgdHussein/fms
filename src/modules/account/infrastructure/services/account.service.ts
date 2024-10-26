@@ -1,0 +1,35 @@
+import { Inject, Injectable } from '@nestjs/common';
+
+import { Account, ACCOUNT_REPOSITORY_PROVIDER, IAccountRepository, IAccountService } from '../../domain';
+
+@Injectable()
+export class AccountService implements IAccountService {
+  constructor(
+    @Inject(ACCOUNT_REPOSITORY_PROVIDER)
+    private readonly repo: IAccountRepository,
+  ) {}
+
+  async getAccount(id: string): Promise<Account> {
+    return this.repo.get(id);
+  }
+
+  async addAccount(account: Partial<Account> & { userId: string }): Promise<Account> {
+    return this.repo.add(account);
+  }
+
+  async updateAccount(account: Partial<Account> & { id: string }): Promise<Account> {
+    return this.repo.update(account);
+  }
+
+  async deleteAccount(id: string): Promise<Account> {
+    return this.repo.delete(id);
+  }
+
+  async getUserAccounts(userId: string): Promise<Account[]> {
+    return this.repo.getAll([{ key: 'userId', op: 'eq', value: userId }]);
+  }
+
+  async getOrganizationAccounts(systemId: string): Promise<Account[]> {
+    return this.repo.getAll([{ key: 'systemId', op: 'eq', value: systemId }]);
+  }
+}

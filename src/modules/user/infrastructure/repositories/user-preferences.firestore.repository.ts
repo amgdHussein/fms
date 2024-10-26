@@ -19,7 +19,7 @@ export class UserPreferencesFirestoreRepository implements IUserPreferencesRepos
     return this.db.getDoc(id);
   }
 
-  async add(preferences: Partial<UserPreferences>): Promise<UserPreferences> {
+  async add(preferences: Partial<UserPreferences> & { userId: string }): Promise<UserPreferences> {
     // Initiate some fields
     preferences.createdBy = this.locker.user.uid;
     preferences.createdAt = Date.now();

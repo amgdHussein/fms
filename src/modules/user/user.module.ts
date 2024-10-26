@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
 
+import { AccountModule } from '../account/account.module';
+
 import {
   AddUser,
   DeleteUser,
   GetUser,
+  GetUserAccounts,
   GetUserPreferences,
   IsUserExistConstraint,
   QueryUsers,
@@ -48,6 +51,10 @@ const userUsecases = [
     provide: USER_USECASE_PROVIDERS.DELETE_USER,
     useClass: DeleteUser,
   },
+  {
+    provide: USER_USECASE_PROVIDERS.GET_USER_ACCOUNTS,
+    useClass: GetUserAccounts,
+  },
 ];
 const userPreferencesUsecases = [
   {
@@ -61,7 +68,7 @@ const userPreferencesUsecases = [
 ];
 
 @Module({
-  imports: [],
+  imports: [AccountModule],
   controllers: [UserController, UserPreferencesController],
   providers: [
     ...validators,
