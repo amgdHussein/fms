@@ -4,6 +4,11 @@ export enum FIRESTORE_COLLECTION_PROVIDERS {
   // ? User Related
   USERS = 'users',
   USERS_PREFERENCES = 'users-preferences',
+
+  // ? Organization Related
+  ORGANIZATIONS = 'organizations',
+  BRANCHES = 'branches',
+  ORGANIZATIONS_PREFERENCES = 'organizations-preferences',
 }
 
 export const FIRESTORE_QUERY_MAX_LIMIT = 1e2;

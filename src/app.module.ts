@@ -8,9 +8,9 @@ import * as Joi from 'joi';
 import { AuthModule } from './core/auth';
 import { ExceptionFilter } from './core/filters';
 import { LoggingInterceptor } from './core/interceptors';
-import { EventEmitterModule, FirestoreModule, HttpModule, LockerModule, RedisModule } from './core/providers';
+import { CloudTasksModule, EventEmitterModule, FirestoreModule, HttpModule, LockerModule, RedisModule } from './core/providers';
 
-import { UserModule } from './modules';
+import { OrganizationModule, UserModule } from './modules';
 
 @Module({
   imports: [
@@ -86,9 +86,19 @@ import { UserModule } from './modules';
       }),
     }),
 
+    CloudTasksModule.forRoot({
+      projectId: process.env.GCLOUD_PROJECT_ID,
+      projectRegion: process.env.GCLOUD_PROJECT_REGION,
+      credentials: {
+        client_email: process.env.GCLOUD_CLIENT_EMAIL,
+        private_key: process.env.GCLOUD_PRIVATE_KEY,
+      },
+    }),
+
     // ? App Modules
 
     UserModule,
+    OrganizationModule,
   ],
 
   providers: [

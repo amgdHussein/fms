@@ -881,6 +881,13 @@
     teeny-request "^9.0.0"
     uuid "^8.0.0"
 
+"@google-cloud/tasks@^5.5.1":
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/tasks/-/tasks-5.5.1.tgz#934d5848e5a1038b66d04256864e53d63e46ddd5"
+  integrity sha512-kl6o5x9txw9hjiG0UqfWjusAw423s/JqBYgUGVhtb0Cv3KfVWub5yxHh2jkb15e6vnkKkYeoG67SsWu8dhs/nw==
+  dependencies:
+    google-gax "^4.0.4"
+
 "@grpc/grpc-js@^1.10.9":
   version "1.12.2"
   resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.12.2.tgz#97eda82dd49bb9c24eaf6434ea8d7de446e95aac"
@@ -3775,7 +3782,7 @@ google-auth-library@^9.3.0, google-auth-library@^9.6.3:
     gtoken "^7.0.0"
     jws "^4.0.0"
 
-google-gax@^4.3.3:
+google-gax@^4.0.4, google-gax@^4.3.3:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-4.4.1.tgz#95a9cf7ee7777ac22d1926a45b5f886dd8beecae"
   integrity sha512-Phyp9fMfA00J3sZbJxbbB4jC55b7DBjE3F6poyL3wKMEBVKA79q6BGuHcTiM28yOzVql0NDbRL8MLLh8Iwk9Dg==
@@ -5083,6 +5090,11 @@ mute-stream@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-1.0.0.tgz#e31bd9fe62f0aed23520aa4324ea6671531e013e"
   integrity sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==
+
+nanoid@^5.0.7:
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-5.0.7.tgz#6452e8c5a816861fd9d2b898399f7e5fd6944cc6"
+  integrity sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==
 
 natural-compare@^1.4.0:
   version "1.4.0"
