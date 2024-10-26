@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import * as Joi from 'joi';
 
+import { AuthModule } from './core/auth';
 import { EventEmitterModule, HttpModule, RedisModule } from './core/providers';
 
 @Module({
@@ -16,6 +17,10 @@ import { EventEmitterModule, HttpModule, RedisModule } from './core/providers';
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
         PORT: Joi.number().default(3000),
+        REDISHOST: Joi.string().required(),
+        REDISPORT: Joi.number().required(),
+        HTTP_TIMEOUT: Joi.number().default(5000),
+        HTTP_MAX_REDIRECTS: Joi.number().default(5),
       }),
     }),
 
@@ -43,6 +48,12 @@ import { EventEmitterModule, HttpModule, RedisModule } from './core/providers';
     RedisModule.forRoot({
       host: process.env.REDISHOST,
       port: +process.env.REDISPORT,
+    }),
+
+    AuthModule.forRoot({
+      projectId: process.env.GCLOUD_PROJECT_ID,
+      clientEmail: process.env.GCLOUD_CLIENT_EMAIL,
+      privateKey: process.env.GCLOUD_PRIVATE_KEY,
     }),
   ],
   controllers: [],
