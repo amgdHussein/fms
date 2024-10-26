@@ -37,3 +37,4 @@ lerna-debug.log*
 # Project
 env/*
 token-generator.html
+dump.rdb

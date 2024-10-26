@@ -13,6 +13,9 @@ export enum FIRESTORE_COLLECTION_PROVIDERS {
   // ? Organization Account Related
   ACCOUNTS = 'accounts',
   ACCOUNTS_PREFERENCES = 'accounts-preferences',
+
+  // ? Client Related
+  CLIENTS = 'clients',
 }
 
 export const FIRESTORE_QUERY_MAX_LIMIT = 1e2;
