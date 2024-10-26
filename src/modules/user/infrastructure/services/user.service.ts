@@ -1,17 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { LOCKER_PROVIDER } from '../../../../core/constants';
 import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
-import { LockerService } from '../../../../core/providers';
 
 import { IUserRepository, IUserService, User, USER_REPOSITORY_PROVIDER, UserRole, UserStatus } from '../../domain';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
-    @Inject(LOCKER_PROVIDER)
-    private readonly locker: LockerService,
-
     @Inject(USER_REPOSITORY_PROVIDER)
     private readonly repo: IUserRepository,
   ) {}
@@ -29,25 +24,22 @@ export class UserService implements IUserService {
   }
 
   async registerUser(id: string, email: string, role: UserRole = UserRole.USER): Promise<User> {
-    return this.repo.set({ id, email, status: UserStatus.REGISTERED, role });
+    return this.repo.set({
+      id,
+      email,
+      status: UserStatus.REGISTERED,
+      role,
+      createdBy: id,
+      createdAt: Date.now(),
+    });
   }
 
   async addUser(user: Partial<User> & { id: string }): Promise<User> {
-    // Initiate some fields
     user.status = UserStatus.ACTIVE;
-    user.createdBy = this.locker.user.uid;
-    user.createdAt = Date.now();
-    user.updatedBy = this.locker.user.uid;
-    user.updatedAt = Date.now();
-
     return this.repo.update(user);
   }
 
   async updateUser(user: Partial<User> & { id: string }): Promise<User> {
-    // Update some fields
-    user.updatedBy = this.locker.user.uid;
-    user.updatedAt = Date.now();
-
     return this.repo.update(user);
   }
 
