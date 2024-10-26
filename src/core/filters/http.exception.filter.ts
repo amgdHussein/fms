@@ -22,9 +22,9 @@ export class ExceptionFilter implements NestExceptionFilter<HttpException> {
       const status: number = exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR;
       const message: string = exception.message;
       const httpResponse: any = exception.getResponse();
-      const cause: unknown = exception.cause || httpResponse?.message;
+      const cause: string = exception.cause || httpResponse?.message;
 
-      const body: any = {
+      const body: Record<string, string | number> = {
         statusCode: status,
         message: message,
         method: request.method,

@@ -35,5 +35,5 @@
   "typelens.unusedcolor": "None",
 
   // Unknown words
-  "cSpell.words": ["amgad", "appspot", "firebaseapp", "firestore", "gcloud", "nestjs", "redishost", "redisport"]
+  "cSpell.words": ["amgad", "appspot", "firebaseapp", "firestore", "gcloud", "nestjs", "redishost", "redisport", "usecase", "usecases", "dto", "dtos"]
 }

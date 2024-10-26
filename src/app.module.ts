@@ -8,7 +8,9 @@ import * as Joi from 'joi';
 import { AuthModule } from './core/auth';
 import { ExceptionFilter } from './core/filters';
 import { LoggingInterceptor } from './core/interceptors';
-import { EventEmitterModule, FirestoreModule, HttpModule, RedisModule } from './core/providers';
+import { EventEmitterModule, FirestoreModule, HttpModule, LockerModule, RedisModule } from './core/providers';
+
+import { UserModule } from './modules';
 
 @Module({
   imports: [
@@ -59,6 +61,21 @@ import { EventEmitterModule, FirestoreModule, HttpModule, RedisModule } from './
       privateKey: process.env.GCLOUD_PRIVATE_KEY,
     }),
 
+    LockerModule.forRoot({
+      global: true,
+      interceptor: {
+        mount: true, // Automatically mount the ClsMiddleware for all routes
+        // Use the setup method to provide default store values
+        setup: (cls, req) => {
+          const ctx = req.switchToHttp().getRequest();
+          const systemId = req.switchToHttp().getRequest().headers['x-system-id'];
+          cls.set('systemId', systemId);
+          cls.set('user', ctx.user);
+          cls.set('environment', process.env.APP_ENV);
+        },
+      },
+    }),
+
     FirestoreModule.forRoot({
       useFactory: () => ({
         projectId: process.env.GCLOUD_PROJECT_ID,
@@ -68,6 +85,10 @@ import { EventEmitterModule, FirestoreModule, HttpModule, RedisModule } from './
         },
       }),
     }),
+
+    // ? App Modules
+
+    UserModule,
   ],
 
   providers: [

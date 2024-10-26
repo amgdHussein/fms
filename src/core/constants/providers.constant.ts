@@ -1,6 +1,7 @@
 export const HTTP_PROVIDER = 'HTTP_PROVIDER';
 export const REDIS_PROVIDER = 'REDIS';
 export const EVENT_EMITTER_PROVIDER = 'EVENT_EMITTER';
+export const LOCKER_PROVIDER = 'LOCKER';
 
 export const AUTH_CONFIGS_PROVIDER = 'AUTH_CONFIGS';
 export const AUTH_APP_PROVIDER = 'AUTH_APP';

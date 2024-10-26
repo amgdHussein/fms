@@ -116,7 +116,7 @@ module.exports = {
           accessors: 'explicit',
           constructors: 'no-public',
           methods: 'no-public',
-          properties: 'explicit',
+          properties: 'no-public',
           parameterProperties: 'explicit',
         },
       },
