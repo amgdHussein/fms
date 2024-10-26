@@ -1,10 +1,13 @@
 import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import * as Joi from 'joi';
 
 import { AuthModule } from './core/auth';
+import { ExceptionFilter } from './core/filters';
+import { LoggingInterceptor } from './core/interceptors';
 import { EventEmitterModule, HttpModule, RedisModule } from './core/providers';
 
 @Module({
@@ -57,6 +60,23 @@ import { EventEmitterModule, HttpModule, RedisModule } from './core/providers';
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        disableErrorMessages: false,
+        whitelist: false, // TODO: TURN IT ON AFTER SETTING UP ENTITIES DTO
+        transform: true,
+      }),
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}
