@@ -8,7 +8,7 @@ import * as Joi from 'joi';
 import { AuthModule } from './core/auth';
 import { ExceptionFilter } from './core/filters';
 import { LoggingInterceptor } from './core/interceptors';
-import { EventEmitterModule, HttpModule, RedisModule } from './core/providers';
+import { EventEmitterModule, FirestoreModule, HttpModule, RedisModule } from './core/providers';
 
 @Module({
   imports: [
@@ -58,8 +58,18 @@ import { EventEmitterModule, HttpModule, RedisModule } from './core/providers';
       clientEmail: process.env.GCLOUD_CLIENT_EMAIL,
       privateKey: process.env.GCLOUD_PRIVATE_KEY,
     }),
+
+    FirestoreModule.forRoot({
+      useFactory: () => ({
+        projectId: process.env.GCLOUD_PROJECT_ID,
+        credentials: {
+          client_email: process.env.GCLOUD_CLIENT_EMAIL,
+          private_key: process.env.GCLOUD_PRIVATE_KEY,
+        },
+      }),
+    }),
   ],
-  controllers: [],
+
   providers: [
     {
       provide: APP_PIPE,
