@@ -316,21 +316,17 @@ export class FirestoreService<T extends { id: string }> {
   }
 
   /**
-   * A function that creates a nested Firestore collection service based on the given path.
-   * @param {string} path - the path of the nested collection
+   * A function that creates a nested Firestore collection service based on the document and nested collection names.
+   * @param {string} documentPath - the name of the document
+   * @param {string} collectionPath - the name of the nested collection inside the document
    * @return {FirestoreService<T & { id: string }>} a Firestore collection service for the nested collection
    */
-  nestedCollection<T>(path: string): FirestoreService<T & { id: string }> {
-    const parts = path.split('/');
-
-    if (parts.length === 0 || parts.length % 2 !== 0) {
-      throw new BadRequestException('Invalid path!');
+  nestedCollection<T>(documentPath: string, collectionPath: string): FirestoreService<T & { id: string }> {
+    if (!documentPath || !collectionPath) {
+      throw new BadRequestException('Document name and nested collection name must be provided!');
     }
 
-    const docPath: string = parts.shift() as string;
-    const collectionPath: string = parts.join('/');
-
-    const docRef = this.collection.doc(docPath);
+    const docRef = this.collection.doc(documentPath);
     const collection = docRef.collection(collectionPath) as CollectionReference<T & { id: string }>;
 
     return new FirestoreService<T & { id: string }>(collection);
