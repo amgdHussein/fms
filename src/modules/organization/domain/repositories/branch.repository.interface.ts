@@ -4,5 +4,5 @@ import { QueryFilter } from '../../../../core/models';
 import { OrganizationBranch } from '../entities';
 
 export interface IOrganizationBranchRepository extends Repository<OrganizationBranch> {
-  getAll(filters?: QueryFilter[]): Promise<OrganizationBranch[]>;
+  getMany(filters?: QueryFilter[]): Promise<OrganizationBranch[]>;
 }

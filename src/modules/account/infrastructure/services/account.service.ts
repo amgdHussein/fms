@@ -26,10 +26,10 @@ export class AccountService implements IAccountService {
   }
 
   async getUserAccounts(userId: string): Promise<Account[]> {
-    return this.repo.getAll([{ key: 'userId', op: 'eq', value: userId }]);
+    return this.repo.getMany([{ key: 'userId', op: 'eq', value: userId }]);
   }
 
   async getOrganizationAccounts(systemId: string): Promise<Account[]> {
-    return this.repo.getAll([{ key: 'systemId', op: 'eq', value: systemId }]);
+    return this.repo.getMany([{ key: 'systemId', op: 'eq', value: systemId }]);
   }
 }

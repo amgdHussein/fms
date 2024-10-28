@@ -20,7 +20,7 @@ export class UserFirestoreRepository implements IUserRepository {
     return this.db.getDoc(id);
   }
 
-  async getAll(filters?: QueryFilter[]): Promise<User[]> {
+  async getMany(filters?: QueryFilter[]): Promise<User[]> {
     return this.db.getDocs(filters);
   }
 

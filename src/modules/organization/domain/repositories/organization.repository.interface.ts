@@ -4,6 +4,6 @@ import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
 import { Organization } from '../entities';
 
 export interface IOrganizationRepository extends Repository<Organization> {
-  getAll(filters?: QueryFilter[]): Promise<Organization[]>;
+  getMany(filters?: QueryFilter[]): Promise<Organization[]>;
   query(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Organization>>;
 }

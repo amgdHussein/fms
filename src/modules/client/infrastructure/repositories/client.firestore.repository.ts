@@ -20,7 +20,7 @@ export class ClientFirestoreRepository implements IClientRepository {
     return this.db.getDoc(id);
   }
 
-  async getAll(filters?: QueryFilter[]): Promise<Client[]> {
+  async getMany(filters?: QueryFilter[]): Promise<Client[]> {
     return this.db.getDocs(filters);
   }
 
@@ -38,7 +38,7 @@ export class ClientFirestoreRepository implements IClientRepository {
     return this.db.addDoc(client);
   }
 
-  async addBatch(clients: Partial<Client>[]): Promise<Client[]> {
+  async addMany(clients: Partial<Client>[]): Promise<Client[]> {
     // Update some fields
     const userId = this.locker.user.uid;
     const now = Date.now();

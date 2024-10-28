@@ -25,7 +25,7 @@ export class OrganizationService implements IOrganizationService {
   }
 
   async getOrganizations(filters?: QueryFilter[]): Promise<Organization[]> {
-    return this.repo.getAll(filters);
+    return this.repo.getMany(filters);
   }
 
   async queryOrganizations(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Organization>> {
@@ -54,7 +54,7 @@ export class OrganizationService implements IOrganizationService {
   // ? Custom methods
 
   async getOrganizationBySystemId(sysId: string): Promise<Organization> {
-    return this.repo.getAll([{ key: 'systemId', op: 'eq', value: sysId }]).then(res => {
+    return this.repo.getMany([{ key: 'systemId', op: 'eq', value: sysId }]).then(res => {
       const org = res[0];
 
       if (org) return org;

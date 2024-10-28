@@ -20,7 +20,7 @@ export class OrganizationFirestoreRepository implements IOrganizationRepository 
     return this.db.getDoc(id);
   }
 
-  async getAll(filters?: QueryFilter[]): Promise<Organization[]> {
+  async getMany(filters?: QueryFilter[]): Promise<Organization[]> {
     return this.db.getDocs(filters);
   }
 

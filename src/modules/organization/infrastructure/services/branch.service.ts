@@ -20,7 +20,7 @@ export class OrganizationBranchService implements IOrganizationBranchService {
   }
 
   async getBranches(systemId: string): Promise<OrganizationBranch[]> {
-    return this.repo.getAll([{ key: 'systemId', op: 'eq', value: systemId }]);
+    return this.repo.getMany([{ key: 'systemId', op: 'eq', value: systemId }]);
   }
 
   async addBranch(branch: Partial<OrganizationBranch> & { systemId: string }): Promise<OrganizationBranch> {

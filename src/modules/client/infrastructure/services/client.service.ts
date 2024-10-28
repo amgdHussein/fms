@@ -16,7 +16,7 @@ export class ClientService implements IClientService {
   }
 
   async getClients(): Promise<Client[]> {
-    return this.repo.getAll([{ key: 'status', op: 'eq', value: 0 }]);
+    return this.repo.getMany([{ key: 'status', op: 'eq', value: 0 }]);
   }
 
   async queryClients(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Client>> {
@@ -28,7 +28,7 @@ export class ClientService implements IClientService {
   }
 
   async addClients(clients: Partial<Client>[]): Promise<Client[]> {
-    return this.repo.addBatch(clients);
+    return this.repo.addMany(clients);
   }
 
   async updateClient(clients: Partial<Client> & { id: string }): Promise<Client> {

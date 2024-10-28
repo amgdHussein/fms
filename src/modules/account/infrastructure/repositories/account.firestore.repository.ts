@@ -20,7 +20,7 @@ export class AccountFirestoreRepository implements IAccountRepository {
     return this.db.getDoc(id);
   }
 
-  async getAll(filters?: QueryFilter[]): Promise<Account[]> {
+  async getMany(filters?: QueryFilter[]): Promise<Account[]> {
     return this.db.getDocs(filters);
   }
 

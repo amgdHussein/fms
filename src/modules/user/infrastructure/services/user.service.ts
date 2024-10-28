@@ -16,7 +16,7 @@ export class UserService implements IUserService {
   }
 
   async getUsers(filters?: QueryFilter[]): Promise<User[]> {
-    return this.repo.getAll(filters);
+    return this.repo.getMany(filters);
   }
 
   async queryUsers(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<User>> {
