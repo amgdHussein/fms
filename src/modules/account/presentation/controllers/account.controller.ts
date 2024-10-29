@@ -3,13 +3,13 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/s
 
 import { AuthenticationGuard } from '../../../../core/guards';
 
-import { AddAccount, DeleteAccount, GetAccount, UpdateAccount } from '../../application';
+import { AddAccount, DeleteAccount, GetAccount, GetOrganizationAccounts, GetUserAccounts, UpdateAccount } from '../../application';
 import { ACCOUNT_USECASE_PROVIDERS } from '../../domain';
 
 import { AccountDto, AddAccountDto, UpdateAccountDto } from '../dtos';
 
 @ApiTags('Accounts')
-@Controller('accounts')
+@Controller()
 @UseGuards(AuthenticationGuard)
 export class AccountController {
   constructor(
@@ -24,9 +24,15 @@ export class AccountController {
 
     @Inject(ACCOUNT_USECASE_PROVIDERS.DELETE_ACCOUNT)
     private readonly deleteAccountUsecase: DeleteAccount,
+
+    @Inject(ACCOUNT_USECASE_PROVIDERS.GET_ORGANIZATION_ACCOUNTS)
+    private readonly getOrganizationAccountsUsecase: GetOrganizationAccounts,
+
+    @Inject(ACCOUNT_USECASE_PROVIDERS.GET_USER_ACCOUNTS)
+    private readonly getUserAccountsUsecase: GetUserAccounts,
   ) {}
 
-  @Get(':id')
+  @Get('accounts/:id')
   @ApiOperation({ summary: 'Get Account by id.' })
   @ApiParam({
     name: 'id',
@@ -43,7 +49,41 @@ export class AccountController {
     return this.getAccountUsecase.execute(id);
   }
 
-  @Post()
+  @Get('organizations/:id/accounts')
+  @ApiOperation({ summary: 'Get all accounts for specified organization system id.' })
+  @ApiParam({
+    name: 'id',
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    type: String,
+    description: 'System id that required to get accounts.',
+  })
+  @ApiResponse({
+    type: Array<AccountDto>,
+    description: 'List of organization accounts.',
+  })
+  async getOrganizationAccounts(@Param('id') id: string): Promise<AccountDto[]> {
+    return this.getOrganizationAccountsUsecase.execute(id);
+  }
+
+  @Get('users:id/accounts')
+  @ApiOperation({ summary: 'Get all accounts for specified user.' })
+  @ApiParam({
+    name: 'id',
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    type: String,
+    description: 'User id that required to get accounts.',
+  })
+  @ApiResponse({
+    type: Array<AccountDto>,
+    description: 'List of user accounts.',
+  })
+  async getUserAccounts(@Param('id') id: string): Promise<AccountDto[]> {
+    return this.getUserAccountsUsecase.execute(id);
+  }
+
+  @Post('accounts')
   @ApiOperation({ summary: 'Add new Account.' })
   @ApiBody({
     type: AddAccountDto,
@@ -58,7 +98,7 @@ export class AccountController {
     return this.addAccountUsecase.execute(entity);
   }
 
-  @Put()
+  @Put('accounts')
   @ApiOperation({ summary: 'Update account info.' })
   @ApiBody({
     type: UpdateAccountDto,
@@ -73,7 +113,7 @@ export class AccountController {
     return this.updateAccountUsecase.execute(entity);
   }
 
-  @Delete(':id')
+  @Delete('accounts/:id')
   @ApiOperation({ summary: 'Delete account by id.' })
   @ApiParam({
     name: 'id',

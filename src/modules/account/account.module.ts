@@ -1,6 +1,15 @@
 import { Module } from '@nestjs/common';
 
-import { AddAccount, DeleteAccount, GetAccount, GetAccountPreferences, UpdateAccount, UpdateAccountPreferences } from './application';
+import {
+  AddAccount,
+  DeleteAccount,
+  GetAccount,
+  GetAccountPreferences,
+  GetOrganizationAccounts,
+  GetUserAccounts,
+  UpdateAccount,
+  UpdateAccountPreferences,
+} from './application';
 import {
   ACCOUNT_PREFERENCES_REPOSITORY_PROVIDER,
   ACCOUNT_PREFERENCES_SERVICE_PROVIDER,
@@ -30,6 +39,14 @@ const accountUsecases = [
   {
     provide: ACCOUNT_USECASE_PROVIDERS.DELETE_ACCOUNT,
     useClass: DeleteAccount,
+  },
+  {
+    provide: ACCOUNT_USECASE_PROVIDERS.GET_ORGANIZATION_ACCOUNTS,
+    useClass: GetOrganizationAccounts,
+  },
+  {
+    provide: ACCOUNT_USECASE_PROVIDERS.GET_USER_ACCOUNTS,
+    useClass: GetUserAccounts,
   },
 ];
 const accountPreferencesUsecases = [

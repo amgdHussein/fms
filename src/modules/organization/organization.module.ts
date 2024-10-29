@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 
-import { AccountModule } from '../account/account.module';
-
 import {
   AddBranch,
   AddOrganization,
@@ -10,7 +8,6 @@ import {
   GetBranch,
   GetBranches,
   GetOrganization,
-  GetOrganizationAccounts,
   GetOrganizationPreferences,
   IsOrganizationExistConstraint,
   QueryOrganizations,
@@ -59,10 +56,6 @@ const organizationUsecases = [
     provide: ORGANIZATION_USECASE_PROVIDERS.DELETE_ORGANIZATION,
     useClass: DeleteOrganization,
   },
-  {
-    provide: ORGANIZATION_USECASE_PROVIDERS.GET_ORGANIZATION_ACCOUNTS,
-    useClass: GetOrganizationAccounts,
-  },
 ];
 const preferencesUsecases = [
   {
@@ -97,7 +90,7 @@ const branchesUsecases = [
   },
 ];
 @Module({
-  imports: [AccountModule],
+  imports: [],
   controllers: [OrganizationController, OrganizationPreferencesController, OrganizationBranchController],
   providers: [
     ...validators,

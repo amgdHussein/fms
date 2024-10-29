@@ -4,19 +4,10 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/s
 import { QueryDto, QueryResultDto } from '../../../../core/dtos';
 import { AuthenticationGuard } from '../../../../core/guards';
 
-import {
-  AddOrganization,
-  DeleteOrganization,
-  GetBranches,
-  GetOrganization,
-  GetOrganizationAccounts,
-  QueryOrganizations,
-  UpdateOrganization,
-} from '../../application';
-import { BRANCH_USECASE_PROVIDERS, ORGANIZATION_USECASE_PROVIDERS } from '../../domain';
+import { AddOrganization, DeleteOrganization, GetOrganization, QueryOrganizations, UpdateOrganization } from '../../application';
+import { ORGANIZATION_USECASE_PROVIDERS } from '../../domain';
 
-import { AccountDto } from '../../../account/presentation';
-import { AddOrganizationDto, OrganizationBranchDto, OrganizationDto, UpdateOrganizationDto } from '../dtos';
+import { AddOrganizationDto, OrganizationDto, UpdateOrganizationDto } from '../dtos';
 
 @ApiTags('Organizations')
 @Controller('organizations')
@@ -37,12 +28,6 @@ export class OrganizationController {
 
     @Inject(ORGANIZATION_USECASE_PROVIDERS.DELETE_ORGANIZATION)
     private readonly deleteOrganizationUsecase: DeleteOrganization,
-
-    @Inject(BRANCH_USECASE_PROVIDERS.GET_BRANCHES)
-    private readonly getOrganizationBranchesUsecase: GetBranches,
-
-    @Inject(ORGANIZATION_USECASE_PROVIDERS.GET_ORGANIZATION_ACCOUNTS)
-    private readonly getOrganizationAccountsUsecase: GetOrganizationAccounts,
   ) {}
 
   @Get()
@@ -123,39 +108,5 @@ export class OrganizationController {
   })
   async deleteOrganization(@Param('id') id: string): Promise<OrganizationDto> {
     return this.deleteOrganizationUsecase.execute(id);
-  }
-
-  @Get(':id/branches')
-  @ApiOperation({ summary: 'Get all branches for an organization.' })
-  @ApiParam({
-    name: 'id',
-    example: 'K05ThPKxfugr9yYhA82Z',
-    required: true,
-    type: String,
-    description: 'Organization system id that required to delete the organization data from database.',
-  })
-  @ApiResponse({
-    type: Array<OrganizationBranchDto>,
-    description: 'List of branches.',
-  })
-  async getOrganizationBranches(@Param('id') id: string): Promise<OrganizationBranchDto[]> {
-    return this.getOrganizationBranchesUsecase.execute(id);
-  }
-
-  @Get(':id/accounts')
-  @ApiOperation({ summary: 'Get all accounts for specified organization system id.' })
-  @ApiParam({
-    name: 'id',
-    example: 'K05ThPKxfugr9yYhA82Z',
-    required: true,
-    type: String,
-    description: 'System id that required to get accounts.',
-  })
-  @ApiResponse({
-    type: Array<AccountDto>,
-    description: 'List of organization accounts.',
-  })
-  async getUserAccounts(@Param('id') id: string): Promise<AccountDto[]> {
-    return this.getOrganizationAccountsUsecase.execute(id);
   }
 }
