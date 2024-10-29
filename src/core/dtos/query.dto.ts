@@ -4,7 +4,7 @@ export class QueryOrderDto extends QueryOrder {}
 
 export class QueryFilterDto extends QueryFilter {}
 
-// TODO: Fill the DTOs
+// TODO: FILL THE DTOs
 export class QueryDto {
   readonly page: number;
   readonly limit: number;

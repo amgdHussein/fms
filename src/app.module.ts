@@ -10,7 +10,7 @@ import { ExceptionFilter } from './core/filters';
 import { LoggingInterceptor } from './core/interceptors';
 import { CloudTasksModule, EventEmitterModule, FirestoreModule, HttpModule, LockerModule, RedisModule } from './core/providers';
 
-import { AccountModule, ClientModule, OrganizationModule, UserModule } from './modules';
+import { AccountModule, ClientModule, CodeModule, OrganizationModule, UserModule } from './modules';
 
 @Module({
   imports: [
@@ -101,6 +101,7 @@ import { AccountModule, ClientModule, OrganizationModule, UserModule } from './m
     OrganizationModule,
     AccountModule,
     ClientModule,
+    CodeModule,
   ],
 
   providers: [
