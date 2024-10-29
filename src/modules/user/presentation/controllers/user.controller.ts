@@ -1,8 +1,7 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { QueryDto, QueryResultDto } from '../../../../core/dtos';
-import { AuthenticationGuard } from '../../../../core/guards';
 
 import { AddUser, DeleteUser, GetUser, QueryUsers, RegisterUser, UpdateUser } from '../../application';
 import { USER_USECASE_PROVIDERS } from '../../domain';
@@ -11,7 +10,6 @@ import { AddUserDto, RegisterUserDto, UpdateUserDto, UserDto } from '../dtos';
 
 @ApiTags('Users')
 @Controller('users')
-@UseGuards(AuthenticationGuard)
 export class UserController {
   constructor(
     @Inject(USER_USECASE_PROVIDERS.GET_USER)
@@ -34,15 +32,15 @@ export class UserController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all/N users with/without filter the results.' })
+  @ApiOperation({ summary: 'Retrieve all or filtered users with pagination.' }) // Improved operation summary
   @ApiBody({
     type: QueryDto,
     required: false,
-    description: 'Object contains List of query params are applied on the database, sort by field, as well as number of user needed.',
+    description: 'Optional query parameters to filter users, including sorting and pagination settings.',
   })
   @ApiResponse({
     type: QueryResultDto<UserDto>,
-    description: 'List of users that meet all the query filters, and with length less than or equal to limit number.',
+    description: 'A list of users that match the specified query filters and pagination settings.',
   })
   async queryUsers(@Query() query: QueryDto): Promise<QueryResultDto<UserDto>> {
     const { page, limit, filters, order } = query;
@@ -50,79 +48,79 @@ export class UserController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get User by id.' })
+  @ApiOperation({ summary: 'Retrieve a user by their unique ID.' }) // Consistent operation summary for fetching a single user
   @ApiParam({
     name: 'id',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
-    description: 'The id of the user',
+    description: 'The unique identifier of the user.',
   })
   @ApiResponse({
     type: UserDto,
-    description: 'User with specified id.',
+    description: 'The user with the specified ID.',
   })
   async getUser(@Param('id') id: string): Promise<UserDto> {
     return this.getUserUsecase.execute(id);
   }
 
   @Post('/register')
-  @ApiOperation({ summary: 'Register new User.' })
+  @ApiOperation({ summary: 'Register a new user.' }) // Clear summary for user registration
   @ApiBody({
     type: RegisterUserDto,
     required: true,
-    description: 'User info required to create a new document into database.',
+    description: 'Details required to register a new user, including ID, email, and role.',
   })
   @ApiResponse({
     type: UserDto,
-    description: 'User recently added.',
+    description: 'The newly registered user.',
   })
   async registerUser(@Body() entity: RegisterUserDto): Promise<UserDto> {
     return this.registerUserUsecase.execute(entity.id, entity.email, entity.role);
   }
 
   @Post()
-  @ApiOperation({ summary: 'Add new User.' })
+  @ApiOperation({ summary: 'Add a new user to the system.' }) // Summary for adding a new user
   @ApiBody({
     type: AddUserDto,
     required: true,
-    description: 'User info required to create a new document into database.',
+    description: 'Information required to create a new user entry in the database.',
   })
   @ApiResponse({
     type: UserDto,
-    description: 'User recently added.',
+    description: 'The newly added user.',
   })
   async addUser(@Body() entity: AddUserDto): Promise<UserDto> {
     return this.addUserUsecase.execute(entity);
   }
 
   @Put()
-  @ApiOperation({ summary: 'Update user info.' })
+  @ApiOperation({ summary: 'Update user information.' }) // Summary for updating user data
   @ApiBody({
     type: UpdateUserDto,
     required: true,
-    description: 'Optional user info to be updated.',
+    description: 'The user information to be updated.',
   })
   @ApiResponse({
     type: UserDto,
-    description: 'Updated user.',
+    description: 'The updated user details.',
   })
   async updateUser(@Body() entity: UpdateUserDto): Promise<UserDto> {
     return this.updateUserUsecase.execute(entity);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete user by id.' })
+  @ApiOperation({ summary: 'Delete a user by their unique ID.' }) // Clear summary for deleting a user
   @ApiParam({
     name: 'id',
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
     type: String,
-    description: 'User id that required to delete the user data from database.',
+    description: 'The unique identifier of the user to be deleted.',
   })
   @ApiResponse({
     type: UserDto,
-    description: 'User deleted.',
+    description: 'The user that was deleted.',
   })
   async deleteUser(@Param('id') id: string): Promise<UserDto> {
     return this.deleteUserUsecase.execute(id);

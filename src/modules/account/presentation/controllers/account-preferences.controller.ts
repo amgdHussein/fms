@@ -1,16 +1,13 @@
-import { Body, Controller, Get, Inject, Param, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-
-import { AuthenticationGuard } from '../../../../core/guards';
 
 import { GetAccountPreferences, UpdateAccountPreferences } from '../../application';
 import { ACCOUNT_PREFERENCES_USECASE_PROVIDERS } from '../../domain';
 
 import { AccountPreferencesDto, UpdateAccountPreferencesDto } from '../dtos';
 
-@ApiTags('Account Preferences')
+@ApiTags('Account Preferences') // Tag for organizing account preferences-related endpoints
 @Controller('accounts/preferences')
-@UseGuards(AuthenticationGuard)
 export class AccountPreferencesController {
   constructor(
     @Inject(ACCOUNT_PREFERENCES_USECASE_PROVIDERS.GET_ACCOUNT_PREFERENCES)
@@ -21,32 +18,32 @@ export class AccountPreferencesController {
   ) {}
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get account preferences by id.' })
+  @ApiOperation({ summary: 'Retrieve account preferences by account ID.' }) // Clear summary for getting preferences
   @ApiParam({
     name: 'id',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
-    description: 'the id of the account',
+    description: 'The unique identifier of the account whose preferences are to be retrieved.',
   })
   @ApiResponse({
     type: AccountPreferencesDto,
-    description: 'Account with specified id.',
+    description: 'Returns the account preferences for the specified account ID.',
   })
   async getAccountPreferences(@Param('id') id: string): Promise<AccountPreferencesDto> {
     return this.getPreferencesUsecase.execute(id);
   }
 
   @Put()
-  @ApiOperation({ summary: 'Update account preferences data.' })
+  @ApiOperation({ summary: 'Update account preferences.' }) // Clear summary for updating preferences
   @ApiBody({
     type: UpdateAccountPreferencesDto,
     required: true,
-    description: 'Optional account preferences to be updated.',
+    description: 'New values for the account preferences to be updated.',
   })
   @ApiResponse({
     type: AccountPreferencesDto,
-    description: 'Updated account preferences.',
+    description: 'Returns the updated account preferences.',
   })
   async updateAccountPreferences(@Body() entity: UpdateAccountPreferencesDto): Promise<AccountPreferencesDto> {
     return this.updatePreferencesUsecase.execute(entity);

@@ -25,14 +25,21 @@ import {
   ORGANIZATION_REPOSITORY_PROVIDER,
   ORGANIZATION_SERVICE_PROVIDER,
   ORGANIZATION_USECASE_PROVIDERS,
+  PRODUCT_REPOSITORY_PROVIDER,
+  PRODUCT_SERVICE_PROVIDER,
+  PRODUCT_USECASE_PROVIDERS,
 } from './domain';
 import {
+  OrganizationBranchFirestoreRepository,
+  OrganizationBranchService,
   OrganizationFirestoreRepository,
   OrganizationPreferencesFirestoreRepository,
   OrganizationPreferencesService,
+  OrganizationProductFirestoreRepository,
+  OrganizationProductService,
   OrganizationService,
 } from './infrastructure';
-import { OrganizationBranchController, OrganizationController, OrganizationPreferencesController } from './presentation';
+import { OrganizationBranchController, OrganizationController, OrganizationPreferencesController, OrganizationProductController } from './presentation';
 
 const validators = [IsOrganizationExistConstraint];
 const organizationUsecases = [
@@ -89,9 +96,32 @@ const branchesUsecases = [
     useClass: DeleteBranch,
   },
 ];
+const productsUsecases = [
+  {
+    provide: PRODUCT_USECASE_PROVIDERS.GET_PRODUCT,
+    useClass: GetBranch,
+  },
+  {
+    provide: PRODUCT_USECASE_PROVIDERS.ADD_PRODUCT,
+    useClass: AddBranch,
+  },
+  {
+    provide: PRODUCT_USECASE_PROVIDERS.UPDATE_PRODUCT,
+    useClass: UpdateBranch,
+  },
+  {
+    provide: PRODUCT_USECASE_PROVIDERS.GET_PRODUCTS,
+    useClass: GetBranches,
+  },
+  {
+    provide: PRODUCT_USECASE_PROVIDERS.DELETE_PRODUCT,
+    useClass: DeleteBranch,
+  },
+];
+
 @Module({
   imports: [],
-  controllers: [OrganizationController, OrganizationPreferencesController, OrganizationBranchController],
+  controllers: [OrganizationController, OrganizationPreferencesController, OrganizationBranchController, OrganizationProductController],
   providers: [
     ...validators,
 
@@ -113,21 +143,34 @@ const branchesUsecases = [
     },
     {
       provide: BRANCH_REPOSITORY_PROVIDER,
-      useClass: OrganizationFirestoreRepository,
+      useClass: OrganizationBranchFirestoreRepository,
     },
     {
       provide: BRANCH_SERVICE_PROVIDER,
-      useClass: OrganizationService,
+      useClass: OrganizationBranchService,
+    },
+    {
+      provide: PRODUCT_REPOSITORY_PROVIDER,
+      useClass: OrganizationProductFirestoreRepository,
+    },
+    {
+      provide: PRODUCT_SERVICE_PROVIDER,
+      useClass: OrganizationProductService,
     },
 
     ...organizationUsecases,
     ...preferencesUsecases,
     ...branchesUsecases,
+    ...productsUsecases,
   ],
   exports: [
     {
       provide: ORGANIZATION_SERVICE_PROVIDER,
       useClass: OrganizationService,
+    },
+    {
+      provide: PRODUCT_SERVICE_PROVIDER,
+      useClass: OrganizationProductService,
     },
   ],
 })

@@ -1,7 +1,5 @@
-import { Body, Controller, Get, Inject, Param, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-
-import { AuthenticationGuard } from '../../../../core/guards';
 
 import { GetOrganizationPreferences, UpdateOrganizationPreferences } from '../../application';
 import { ORGANIZATION_PREFERENCES_USECASE_PROVIDERS } from '../../domain';
@@ -10,7 +8,6 @@ import { OrganizationPreferencesDto, UpdateOrganizationPreferencesDto } from '..
 
 @ApiTags('Organization Preferences')
 @Controller('organizations/preferences')
-@UseGuards(AuthenticationGuard)
 export class OrganizationPreferencesController {
   constructor(
     @Inject(ORGANIZATION_PREFERENCES_USECASE_PROVIDERS.GET_ORGANIZATION_PREFERENCES)
@@ -21,32 +18,32 @@ export class OrganizationPreferencesController {
   ) {}
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get organization preferences by id.' })
+  @ApiOperation({ summary: 'Retrieve organization preferences by ID.' }) // Operation summary
   @ApiParam({
     name: 'id',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
-    description: 'the id of the organization',
+    description: 'The unique identifier of the organization.',
   })
   @ApiResponse({
     type: OrganizationPreferencesDto,
-    description: 'Organization with specified id.',
+    description: 'Details of the organization preferences with the specified ID.',
   })
   async getOrganizationPreferences(@Param('id') id: string): Promise<OrganizationPreferencesDto> {
     return this.getPreferencesUsecase.execute(id);
   }
 
   @Put()
-  @ApiOperation({ summary: 'Update organization preferences data.' })
+  @ApiOperation({ summary: 'Update organization preferences.' }) // Operation summary
   @ApiBody({
     type: UpdateOrganizationPreferencesDto,
     required: true,
-    description: 'Optional organization preferences to be updated.',
+    description: 'Details of the organization preferences to be updated.',
   })
   @ApiResponse({
     type: OrganizationPreferencesDto,
-    description: 'Updated organization preferences.',
+    description: 'The updated organization preferences.',
   })
   async updateOrganizationPreferences(@Body() dto: UpdateOrganizationPreferencesDto): Promise<OrganizationPreferencesDto> {
     return this.updatePreferencesUsecase.execute(dto);

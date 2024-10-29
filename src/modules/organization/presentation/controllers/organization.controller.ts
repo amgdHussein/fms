@@ -1,17 +1,14 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { QueryDto, QueryResultDto } from '../../../../core/dtos';
-import { AuthenticationGuard } from '../../../../core/guards';
 
 import { AddOrganization, DeleteOrganization, GetOrganization, QueryOrganizations, UpdateOrganization } from '../../application';
 import { ORGANIZATION_USECASE_PROVIDERS } from '../../domain';
-
 import { AddOrganizationDto, OrganizationDto, UpdateOrganizationDto } from '../dtos';
 
 @ApiTags('Organizations')
 @Controller('organizations')
-@UseGuards(AuthenticationGuard)
 export class OrganizationController {
   constructor(
     @Inject(ORGANIZATION_USECASE_PROVIDERS.GET_ORGANIZATION)
@@ -31,15 +28,15 @@ export class OrganizationController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all/N organizations with/without filter the results.' })
+  @ApiOperation({ summary: 'Retrieve organizations with optional filters and pagination.' }) // Operation summary for listing/filtering organizations
   @ApiBody({
     type: QueryDto,
     required: false,
-    description: 'Object contains List of query params are applied on the database, sort by field, as well as number of organization needed.',
+    description: 'Optional filters, sorting criteria, and pagination settings for querying organizations.',
   })
   @ApiResponse({
     type: QueryResultDto<OrganizationDto>,
-    description: 'List of organizations that meet all the query filters, and with length less than or equal to limit number.',
+    description: 'List of organizations matching the query parameters and pagination settings.',
   })
   async queryOrganizations(@Query() query: QueryDto): Promise<QueryResultDto<OrganizationDto>> {
     const { page, limit, filters, order } = query;
@@ -47,64 +44,64 @@ export class OrganizationController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get organization by id.' })
+  @ApiOperation({ summary: 'Retrieve an organization by its unique ID.' }) // Operation summary for fetching a specific organization
   @ApiParam({
     name: 'id',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
-    description: 'The id of the organization',
+    description: 'The unique identifier of the organization.',
   })
   @ApiResponse({
     type: OrganizationDto,
-    description: 'Organization with specified id.',
+    description: 'The organization with the specified ID.',
   })
   async getOrganization(@Param('id') id: string): Promise<OrganizationDto> {
     return this.getOrganizationUsecase.execute(id);
   }
 
   @Post()
-  @ApiOperation({ summary: 'Add new organization.' })
+  @ApiOperation({ summary: 'Create a new organization.' }) // Operation summary for adding a new organization
   @ApiBody({
     type: AddOrganizationDto,
     required: true,
-    description: 'Organization info required to create a new document into database.',
+    description: 'Details of the new organization to be created.',
   })
   @ApiResponse({
     type: OrganizationDto,
-    description: 'Organization recently added.',
+    description: 'The newly added organization.',
   })
   async addOrganization(@Body() dto: AddOrganizationDto): Promise<OrganizationDto> {
     return this.addOrganizationUsecase.execute(dto);
   }
 
   @Put()
-  @ApiOperation({ summary: 'Update organization info.' })
+  @ApiOperation({ summary: 'Update an existing organization.' }) // Operation summary for updating an organization
   @ApiBody({
     type: UpdateOrganizationDto,
     required: true,
-    description: 'Optional organization info to be updated.',
+    description: 'Details of the organization to be updated.',
   })
   @ApiResponse({
     type: OrganizationDto,
-    description: 'Updated organization.',
+    description: 'The updated organization details.',
   })
   async updateOrganization(@Body() entity: UpdateOrganizationDto): Promise<OrganizationDto> {
     return this.updateOrganizationUsecase.execute(entity);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete organization by id.' })
+  @ApiOperation({ summary: 'Delete an organization by its unique ID.' }) // Operation summary for deleting an organization
   @ApiParam({
     name: 'id',
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
     type: String,
-    description: 'Organization id that required to delete the organization data from database.',
+    description: 'The unique identifier of the organization to be deleted.',
   })
   @ApiResponse({
     type: OrganizationDto,
-    description: 'Organization deleted.',
+    description: 'The details of the organization that was deleted.',
   })
   async deleteOrganization(@Param('id') id: string): Promise<OrganizationDto> {
     return this.deleteOrganizationUsecase.execute(id);

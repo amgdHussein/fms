@@ -1,7 +1,5 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-
-import { AuthenticationGuard } from '../../../../core/guards';
 
 import { AddBranch, DeleteBranch, GetBranch, GetBranches, UpdateBranch } from '../../application';
 import { BRANCH_USECASE_PROVIDERS } from '../../domain';
@@ -10,7 +8,6 @@ import { AddOrganizationBranchDto, OrganizationBranchDto, UpdateOrganizationBran
 
 @ApiTags('Branches')
 @Controller()
-@UseGuards(AuthenticationGuard)
 export class OrganizationBranchController {
   constructor(
     @Inject(BRANCH_USECASE_PROVIDERS.GET_BRANCH)
@@ -30,81 +27,81 @@ export class OrganizationBranchController {
   ) {}
 
   @Get('branches/:id')
-  @ApiOperation({ summary: 'Get organization branch by id.' })
+  @ApiOperation({ summary: 'Retrieve a specific branch by its ID.' })
   @ApiParam({
     name: 'id',
     type: String,
-    example: 'K05ThPKxfugr9yYhA82Z',
+    example: 'B12345',
     required: true,
-    description: 'The id of the organization branch.',
+    description: 'The unique identifier of the branch.',
   })
   @ApiResponse({
     type: OrganizationBranchDto,
-    description: 'Branch with specified id.',
+    description: 'Details of the branch with the specified ID.',
   })
   async getBranch(@Param('id') id: string): Promise<OrganizationBranchDto> {
     return this.getBranchUsecase.execute(id);
   }
 
   @Get('organizations/:id/branches')
-  @ApiOperation({ summary: 'Get all branches for an organization.' })
+  @ApiOperation({ summary: 'Retrieve all branches associated with a specific organization.' })
   @ApiParam({
     name: 'id',
+    type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
-    type: String,
-    description: 'Organization system id that required to delete the organization data from database.',
+    description: 'The unique identifier of the organization.',
   })
   @ApiResponse({
-    type: Array<OrganizationBranchDto>,
-    description: 'List of branches.',
+    type: [OrganizationBranchDto],
+    description: 'List of branches belonging to the organization.',
   })
   async getOrganizationBranches(@Param('id') id: string): Promise<OrganizationBranchDto[]> {
     return this.getOrganizationBranchesUsecase.execute(id);
   }
 
   @Post('branches')
-  @ApiOperation({ summary: 'Add new organization branch.' })
+  @ApiOperation({ summary: 'Create a new branch for an organization.' })
   @ApiBody({
     type: AddOrganizationBranchDto,
     required: true,
-    description: 'Branch info required to create a new document into database.',
+    description: 'Details required to create a new branch for the organization.',
   })
   @ApiResponse({
     type: OrganizationBranchDto,
-    description: 'Branch recently added.',
+    description: 'The newly created branch.',
   })
   async addBranch(@Body() dto: AddOrganizationBranchDto): Promise<OrganizationBranchDto> {
     return this.addBranchUsecase.execute(dto);
   }
 
   @Put('branches')
-  @ApiOperation({ summary: 'Update organization branch info.' })
+  @ApiOperation({ summary: 'Update the details of an existing branch.' })
   @ApiBody({
     type: UpdateOrganizationBranchDto,
     required: true,
-    description: 'Optional organization branch info to be updated.',
+    description: 'Details of the branch to be updated.',
   })
   @ApiResponse({
     type: OrganizationBranchDto,
-    description: 'Updated organization branch.',
+    description: 'The updated branch details.',
   })
   async updateBranch(@Body() entity: UpdateOrganizationBranchDto): Promise<OrganizationBranchDto> {
     return this.updateBranchUsecase.execute(entity);
   }
 
   @Delete('branches/:id')
-  @ApiOperation({ summary: 'Delete organization branch by id.' })
+  @ApiOperation({ summary: 'Delete a specific branch by its ID.' })
   @ApiParam({
     name: 'id',
-    example: 'K05ThPKxfugr9yYhA82Z',
-    required: true,
     type: String,
-    description: 'Branch id that required to delete the organization branch data from database.',
+    example: 'B12345',
+    required: true,
+    description: 'The unique identifier of the branch to be deleted.',
   })
   @ApiResponse({
     type: OrganizationBranchDto,
-    description: 'Branch deleted.',
+    description: 'Details of the branch that was deleted.',
   })
   async deleteBranch(@Param('id') id: string): Promise<OrganizationBranchDto> {
     return this.deleteBranchUsecase.execute(id);

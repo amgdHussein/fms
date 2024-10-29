@@ -32,32 +32,32 @@ export class ClientController {
   ) {}
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get Client by id.' })
+  @ApiOperation({ summary: 'Retrieve a Client by ID.' })
   @ApiParam({
     name: 'id',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
-    description: 'the id of the client',
+    description: 'The unique identifier of the client.',
   })
   @ApiResponse({
     type: ClientDto,
-    description: 'Client with specified id.',
+    description: 'Returns the Client with the specified ID.',
   })
   async getClient(@Param('id') id: string): Promise<ClientDto> {
     return this.getClientUsecase.execute(id);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all/N clients with/without filter the results.' })
+  @ApiOperation({ summary: 'Retrieve all Clients or filter Clients based on criteria.' })
   @ApiBody({
     type: QueryDto,
     required: false,
-    description: 'Object contains List of query params are applied on the database, sort by field, as well as number of client needed.',
+    description: 'Query parameters to filter and paginate the results.',
   })
   @ApiResponse({
     type: QueryResultDto<ClientDto>,
-    description: 'List of clients that meet all the query filters, and with length less than or equal to limit number.',
+    description: 'Returns a list of Clients that match the query filters.',
   })
   async queryClients(@Query() query: QueryDto): Promise<QueryResultDto<ClientDto>> {
     const { page, limit, filters, order } = query;
@@ -65,61 +65,62 @@ export class ClientController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Add new Client.' })
+  @ApiOperation({ summary: 'Add a new Client.' })
   @ApiBody({
     type: AddClientDto,
     required: true,
-    description: 'Client info required to create a new document into database.',
+    description: 'Information required to create a new Client.',
   })
   @ApiResponse({
     type: ClientDto,
-    description: 'Client recently added.',
+    description: 'Returns the Client that was recently added.',
   })
   async addClient(@Body() entity: AddClientDto): Promise<ClientDto> {
     return this.addClientUsecase.execute(entity);
   }
 
   @Post('/batch')
+  @ApiOperation({ summary: 'Add multiple Clients in a batch.' })
   @ApiBody({
     type: AddClientsDto,
     required: true,
-    description: 'Clients info to be added.',
+    description: 'Array of Clients to be added to the database.',
   })
   @ApiResponse({
-    type: Array<ClientDto>,
-    description: 'clients recently added.',
+    type: [ClientDto],
+    description: 'Returns a list of Clients that were recently added.',
   })
   async addClients(@Body() dto: AddClientsDto): Promise<ClientDto[]> {
     return this.addClientsUsecase.execute(dto.clients);
   }
 
   @Put()
-  @ApiOperation({ summary: 'Update client info.' })
+  @ApiOperation({ summary: 'Update existing Client information.' })
   @ApiBody({
     type: UpdateClientDto,
     required: true,
-    description: 'Optional client info to be updated.',
+    description: 'Information required to update an existing Client.',
   })
   @ApiResponse({
     type: ClientDto,
-    description: 'Updated client.',
+    description: 'Returns the updated Client.',
   })
   async updateClient(@Body() entity: UpdateClientDto & { id: string }): Promise<ClientDto> {
     return this.updateClientUsecase.execute(entity);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete client by id.' })
+  @ApiOperation({ summary: 'Delete a Client by ID.' })
   @ApiParam({
     name: 'id',
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
     type: String,
-    description: 'Client id that required to delete the client data from database.',
+    description: 'The unique identifier of the Client to delete.',
   })
   @ApiResponse({
     type: ClientDto,
-    description: 'Client deleted.',
+    description: 'Returns the deleted Client.',
   })
   async deleteClient(@Param('id') id: string): Promise<ClientDto> {
     return this.deleteClientUsecase.execute(id);
