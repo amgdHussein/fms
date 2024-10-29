@@ -2,7 +2,7 @@ import { Language, Phone } from '../../../../../core/common';
 
 import { UserPreferences } from '../../../domain';
 
-// TODO: Fill the DTO
+// TODO: FILL THE DTO
 export class UserPreferencesDto implements UserPreferences {
   id: string;
   userId: string;

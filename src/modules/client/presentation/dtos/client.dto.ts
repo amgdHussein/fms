@@ -2,7 +2,7 @@ import { Client, ClientStatus } from '../../domain';
 
 import { Address, Identification, Phone } from '../../../../core/common';
 
-// TODO: Fill the DTO
+// TODO: FILL THE DTO
 export class ClientDto implements Client {
   id: string;
   systemId: string;

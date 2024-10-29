@@ -1,7 +1,7 @@
 import { Address, Phone, Photo } from '../../../../../core/common';
 import { User, UserRole, UserStatus } from '../../../domain/entities';
 
-// TODO: Fill the DTO
+// TODO: FILL THE DTO
 export class UserDto implements User {
   id: string;
   preferencesId: string;

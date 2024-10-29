@@ -1,7 +1,7 @@
 import { Phone } from '../../../../../core/common';
 import { AccountPreferences } from '../../../domain';
 
-// TODO: Fill the DTO
+// TODO: FILL THE DTO
 export class AccountPreferencesDto implements AccountPreferences {
   id: string;
   accountId: string;

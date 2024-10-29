@@ -1,6 +1,6 @@
 import { OrganizationBranch } from '../../../domain';
 
-// TODO: Fill the DTO
+// TODO: FILL THE DTO
 export class OrganizationBranchDto implements OrganizationBranch {
   id: string;
   systemId: string;

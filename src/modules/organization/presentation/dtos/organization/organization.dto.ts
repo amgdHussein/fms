@@ -2,7 +2,7 @@ import { CurrencyCode, Phone, Photo } from '../../../../../core/common';
 
 import { LegalStructure, Organization, OrganizationIndustry, OrganizationStatus } from '../../../domain';
 
-// TODO: Fill the DTO
+// TODO: FILL THE DTO
 export class OrganizationDto implements Organization {
   id: string;
   preferencesId: string;

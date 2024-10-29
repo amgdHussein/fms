@@ -1,7 +1,7 @@
 import { CurrencyCode } from '../../../../../core/common';
 import { FinancialDate, OrganizationPreferences } from '../../../domain/entities';
 
-// TODO: Fill the DTO
+// TODO: FILL THE DTO
 export class OrganizationPreferencesDto implements OrganizationPreferences {
   id: string;
   systemId: string;

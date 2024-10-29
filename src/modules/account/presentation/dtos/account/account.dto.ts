@@ -1,6 +1,6 @@
 import { Account, AccountRole, AccountStatus, AccountType } from '../../../domain/entities';
 
-// TODO: Fill the DTO
+// TODO: FILL THE DTO
 export class AccountDto implements Account {
   id: string;
   userId: string;
