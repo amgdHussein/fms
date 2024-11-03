@@ -12,7 +12,6 @@ import {
 } from '@google-cloud/firestore';
 
 import { BadRequestException, InternalServerErrorException, NotFoundException } from '../../../exceptions';
-
 import { QueryFilter, QueryOp, QueryOrder, QueryResult } from '../../../models';
 import { Utils } from '../../../utils';
 
@@ -20,6 +19,7 @@ import { Utils } from '../../../utils';
 export class FirestoreService<T extends { id: string }> {
   // Convert collection name into capitalized singular name (ex. users => user)
   private readonly collectionName: string = this.collection.id.slice(0, -1);
+  private readonly logger: Logger = new Logger(`${FirestoreService.name}.${this.collectionName}`);
 
   private readonly firestoreConverter: FirestoreDataConverter<T> = {
     /**
@@ -87,7 +87,7 @@ export class FirestoreService<T extends { id: string }> {
       .get()
       .then(snapshot => snapshot.docs.map(doc => doc.data()))
       .catch(error => {
-        Logger.error(error);
+        this.logger.error(error);
         throw new InternalServerErrorException('Something went wrong while fetching the documents!');
       });
   }
@@ -104,30 +104,33 @@ export class FirestoreService<T extends { id: string }> {
       .set(entity)
       .then(() => ({ ...entity, id: docRef.id }) as T)
       .catch(error => {
-        Logger.error(error);
+        this.logger.error(error);
         throw new InternalServerErrorException(`An error occurred while adding new ${this.collectionName} document!`);
       });
   }
 
-  async addDocs(entities: Partial<T>[]): Promise<Array<T>> {
+  async addDocs(entities: Partial<T>[]): Promise<T[]> {
     const batch = this.collection.firestore.batch();
-
-    const output = [];
+    const addedDocs: T[] = [];
 
     entities.forEach(entity => {
       const docRef = this.collection.doc().withConverter<T>(this.firestoreConverter);
-      const input = { ...entity, id: docRef.id } as T;
+      const entityWithId = { ...entity, id: docRef.id } as T;
 
-      output.push(input);
-      batch.set(docRef, input);
+      // Queue the set operation in the batch
+      batch.set(docRef, entityWithId);
+      addedDocs.push(entityWithId);
     });
 
     return batch
       .commit()
-      .then(() => output)
+      .then(() => {
+        this.logger.log(`Successfully added ${entities.length} documents to ${this.collectionName}.`);
+        return addedDocs;
+      })
       .catch(error => {
-        Logger.error(error);
-        throw new InternalServerErrorException(`An error occurred while adding multiple ${this.collectionName}.`);
+        this.logger.error(`An error occurred while adding multiple documents to ${this.collectionName}: ${error.message}`, error);
+        throw new InternalServerErrorException(`An error occurred while adding multiple documents to ${this.collectionName}.`);
       });
   }
 
@@ -143,7 +146,7 @@ export class FirestoreService<T extends { id: string }> {
       .set(entity)
       .then(() => entity)
       .catch(error => {
-        Logger.error(error);
+        this.logger.error(error);
         throw new InternalServerErrorException(`An error occurred while replacing ${this.collectionName} document!`);
       });
   }
@@ -158,39 +161,25 @@ export class FirestoreService<T extends { id: string }> {
    * ])
    */
   async setDocs(entities: Array<T>): Promise<Array<T>> {
-    // const docRef = this.collection.doc();
-    const docRef = this.collection.doc().withConverter<T>(this.firestoreConverter);
-    const batch = docRef.firestore.batch();
-
-    const addedDocs = entities.map(entity => {
-      batch.set(docRef, entity);
-      return { id: docRef.id, ...entity };
-    });
-
-    return batch
-      .commit()
-      .then(() => addedDocs)
-      .catch(error => {
-        Logger.error(error);
-        throw new InternalServerErrorException(`An error occurred while adding multiple ${this.collectionName}.`);
-      });
-  }
-
-  async updateDocs(entities: Array<T>): Promise<boolean> {
     const batch = this.collection.firestore.batch();
+    const addedDocs: T[] = [];
 
-    entities.map(entity => {
-      const docRef = this.collection.doc(entity.id).withConverter<T>(this.firestoreConverter);
-      const flatEntity = Utils.Object.flatten(entity);
-      batch.update(docRef, flatEntity);
+    entities.forEach(entity => {
+      const docRef = this.collection.doc().withConverter<T>(this.firestoreConverter);
+      const entityWithId = { ...entity, id: docRef.id } as T;
+      batch.set(docRef, entity);
+      addedDocs.push(entityWithId);
     });
 
     return batch
       .commit()
-      .then(() => true)
+      .then(() => {
+        this.logger.log(`Successfully added ${entities.length} documents to ${this.collectionName}.`);
+        return addedDocs;
+      })
       .catch(error => {
-        Logger.error(error);
-        throw new InternalServerErrorException(`An error occurred while adding multiple ${this.collectionName}.`);
+        this.logger.error(`An error occurred while adding multiple documents to ${this.collectionName}: ${error.message}`, error);
+        throw new InternalServerErrorException(`An error occurred while adding multiple documents to ${this.collectionName}.`);
       });
   }
 
@@ -211,8 +200,40 @@ export class FirestoreService<T extends { id: string }> {
       .set(updatedDoc)
       .then(() => updatedDoc)
       .catch(error => {
-        Logger.error(error);
+        this.logger.error(error);
         throw new InternalServerErrorException(`An error occurred while updating ${this.collectionName} document!`);
+      });
+  }
+
+  /**
+   * Updates multiple documents in the collection.
+   * @param {Array<T>} entities - An array of document data to be updated (Id must be specified in each document)
+   * @return {Promise<boolean>} A promise that resolves to true if the update is successful
+   */
+  async updateDocs(entities: Array<Partial<T> & { id: string }>): Promise<T[]> {
+    const batch = this.collection.firestore.batch();
+
+    // Iterate over each entity and prepare the batch update
+    entities.forEach(entity => {
+      if (!entity.id) {
+        this.logger.error(`Document id is missing for one of the entities in the update request: ${JSON.stringify(entity)}`);
+        throw new BadRequestException('Document id is required for updating.');
+      }
+
+      const docRef = this.collection.doc(entity.id).withConverter<T>(this.firestoreConverter);
+      const flattenedEntity = Utils.Object.flatten(entity);
+
+      // Add update operation to the batch
+      batch.update(docRef, flattenedEntity);
+    });
+
+    // Commit the batch and handle potential errors
+    return batch
+      .commit()
+      .then(() => entities as T[])
+      .catch(error => {
+        this.logger.error(`Error occurred while updating documents in ${this.collectionName}: ${error.message}`, error);
+        throw new InternalServerErrorException(`An error occurred while updating multiple ${this.collectionName} documents.`);
       });
   }
 
@@ -229,8 +250,46 @@ export class FirestoreService<T extends { id: string }> {
       .delete()
       .then(() => entity)
       .catch(error => {
-        Logger.error(error);
+        this.logger.error(error);
         throw new InternalServerErrorException(`An error occurred while deleting ${this.collectionName} document!`);
+      });
+  }
+
+  /**
+   * Deletes all documents in the collection.
+   * @return {Promise<boolean>} A promise that resolves to true if all documents are successfully deleted.
+   */
+  /**
+   * Deletes all documents in the collection and returns the deleted documents.
+   * @return {Promise<T[]>} A promise that resolves to an array of the deleted documents.
+   */
+  async deleteDocs(): Promise<T[]> {
+    const querySnapshot = await this.collection.get();
+
+    if (querySnapshot.empty) {
+      this.logger.warn(`No documents found in the ${this.collectionName} to delete.`);
+      return []; // No documents to delete, return an empty array.
+    }
+
+    const batch = this.collection.firestore.batch();
+    const deletedDocs: T[] = [];
+
+    querySnapshot.docs.forEach(doc => {
+      const docRef = this.collection.doc(doc.id);
+      batch.delete(docRef);
+      const docData = this.firestoreConverter.fromFirestore(doc);
+      deletedDocs.push(docData);
+    });
+
+    return batch
+      .commit()
+      .then(() => {
+        this.logger.log(`All documents in the ${this.collectionName} have been successfully deleted.`);
+        return deletedDocs;
+      })
+      .catch(error => {
+        this.logger.error(`An error occurred while deleting all documents in ${this.collectionName}: ${error.message}`, error);
+        throw new InternalServerErrorException(`An error occurred while deleting all documents in ${this.collectionName}.`);
       });
   }
 
@@ -254,7 +313,7 @@ export class FirestoreService<T extends { id: string }> {
       .get()
       .then(snapshot => snapshot.docs.map(doc => doc.data()))
       .catch(error => {
-        Logger.error(error);
+        this.logger.error(error);
         throw new InternalServerErrorException('An error occurred while querying data!');
       });
 
@@ -310,7 +369,7 @@ export class FirestoreService<T extends { id: string }> {
         return { ...entity, [field]: entity[field] + incrementValue };
       })
       .catch(error => {
-        Logger.error(error);
+        this.logger.error(error);
         throw new InternalServerErrorException(`An error occurred while incrementing ${field}!`);
       });
   }
