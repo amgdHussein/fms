@@ -16,6 +16,11 @@ export enum FIRESTORE_COLLECTION_PROVIDERS {
 
   // ? Client Related
   CLIENTS = 'clients',
+
+  // ? Invoice Related
+  INVOICES = 'invoices',
+  SIGNATURES = 'signatures',
+  SUBMISSIONS = 'submissions',
 }
 
 export const FIRESTORE_QUERY_MAX_LIMIT = 1e2;

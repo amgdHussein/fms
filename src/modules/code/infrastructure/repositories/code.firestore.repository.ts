@@ -31,6 +31,7 @@ export class CodeFirestoreRepository implements ICodeRepository {
     code.createdAt = Date.now();
     code.updatedBy = this.locker.user.uid;
     code.updatedAt = Date.now();
+    code.organizationId = organizationId;
 
     return this.db.nestedCollection<Code>(organizationId, 'codes').addDoc(code);
   }
