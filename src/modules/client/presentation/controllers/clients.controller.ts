@@ -1,15 +1,15 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { QueryDto, QueryResultDto } from '../../../../core/dtos';
 
-import { AddClient, AddClients, DeleteClient, GetClient, QueryClients, UpdateClient } from '../../application';
+import { AddClient, AddClients, DeleteClient, GetClient, GetOrganizationClients, QueryClients, UpdateClient } from '../../application';
 import { CLIENT_USECASE_PROVIDERS } from '../../domain';
 
 import { AddClientDto, AddClientsDto, ClientDto, UpdateClientDto } from '../dtos';
 
 @ApiTags('Clients')
-@Controller('clients')
+@Controller()
 export class ClientController {
   constructor(
     @Inject(CLIENT_USECASE_PROVIDERS.GET_CLIENT)
@@ -27,11 +27,14 @@ export class ClientController {
     @Inject(CLIENT_USECASE_PROVIDERS.QUERY_CLIENTS)
     private readonly queryClientsUsecase: QueryClients,
 
+    @Inject(CLIENT_USECASE_PROVIDERS.QUERY_CLIENTS)
+    private readonly getOrganizationClientsUsecase: GetOrganizationClients,
+
     @Inject(CLIENT_USECASE_PROVIDERS.DELETE_CLIENT)
     private readonly deleteClientUsecase: DeleteClient,
   ) {}
 
-  @Get(':id')
+  @Get('clients/:id')
   @ApiOperation({ summary: 'Retrieve a Client by ID.' })
   @ApiParam({
     name: 'id',
@@ -48,7 +51,7 @@ export class ClientController {
     return this.getClientUsecase.execute(id);
   }
 
-  @Get()
+  @Post('clients/query')
   @ApiOperation({ summary: 'Retrieve all Clients or filter Clients based on criteria.' })
   @ApiBody({
     type: QueryDto,
@@ -59,12 +62,29 @@ export class ClientController {
     type: QueryResultDto<ClientDto>,
     description: 'Returns a list of Clients that match the query filters.',
   })
-  async queryClients(@Query() query: QueryDto): Promise<QueryResultDto<ClientDto>> {
+  async queryClients(@Body() query: QueryDto): Promise<QueryResultDto<ClientDto>> {
     const { page, limit, filters, order } = query;
     return this.queryClientsUsecase.execute(page, limit, filters, order);
   }
 
-  @Post()
+  @Get('organizations/:systemId/clients')
+  @ApiOperation({ summary: 'Retrieve all Clients for an organization.' })
+  @ApiParam({
+    name: 'systemId',
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    type: String,
+    description: 'The unique identifier of the organization system.',
+  })
+  @ApiResponse({
+    type: [ClientDto],
+    description: 'Returns a list of Clients',
+  })
+  async getOrganizationClients(@Param('systemId') systemId: string): Promise<ClientDto[]> {
+    return this.getOrganizationClientsUsecase.execute(systemId);
+  }
+
+  @Post('clients')
   @ApiOperation({ summary: 'Add a new Client.' })
   @ApiBody({
     type: AddClientDto,
@@ -79,7 +99,7 @@ export class ClientController {
     return this.addClientUsecase.execute(entity);
   }
 
-  @Post('/batch')
+  @Post('clients/batch')
   @ApiOperation({ summary: 'Add multiple Clients in a batch.' })
   @ApiBody({
     type: AddClientsDto,
@@ -94,7 +114,7 @@ export class ClientController {
     return this.addClientsUsecase.execute(dto.clients);
   }
 
-  @Put()
+  @Put('clients')
   @ApiOperation({ summary: 'Update existing Client information.' })
   @ApiBody({
     type: UpdateClientDto,
@@ -109,7 +129,7 @@ export class ClientController {
     return this.updateClientUsecase.execute(entity);
   }
 
-  @Delete(':id')
+  @Delete('clients/:id')
   @ApiOperation({ summary: 'Delete a Client by ID.' })
   @ApiParam({
     name: 'id',
