@@ -115,9 +115,9 @@ export function mergeObjects(obj1: any, obj2: any): any {
  * Replaces undefined values with null recursively in the given object.
  *
  * @param {object} obj - The object in which to replace undefined values with null.
- * @return {any} The modified object with undefined values replaced by null.
+ * @return {object} The modified object with undefined values replaced by null.
  */
-export function replaceUndefinedWithNull(obj: object): any {
+export function replaceUndefinedWithNull(obj: object): object {
   Object.keys(obj).forEach(key => {
     if (obj[key] === undefined) {
       obj[key] = null;
@@ -125,4 +125,6 @@ export function replaceUndefinedWithNull(obj: object): any {
       replaceUndefinedWithNull(obj[key]);
     }
   });
+
+  return obj;
 }
