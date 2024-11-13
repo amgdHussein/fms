@@ -7,7 +7,6 @@ import { OrganizationStatus } from './status.enum';
 export interface Organization {
   id: string;
   preferencesId: string; // Unique ID for the preferences
-  systemId: string; // Unique ID for the system (organization)
   userId: string; // Organization owner
 
   status: OrganizationStatus;

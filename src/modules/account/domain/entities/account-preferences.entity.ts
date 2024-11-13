@@ -4,7 +4,7 @@ export interface AccountPreferences {
   id: string;
   accountId: string;
 
-  activeSystemId: string; // System that the account is currently active in
+  activeOrganizationId: string; // Organization that the account is currently active in
   email?: string; // Account preferred email to receive notifications
   phone?: Phone; // Account preferred phone to receive notifications
 

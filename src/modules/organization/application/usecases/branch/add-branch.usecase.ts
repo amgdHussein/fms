@@ -11,7 +11,7 @@ export class AddBranch implements Usecase<OrganizationBranch> {
     private readonly branchService: IOrganizationBranchService,
   ) {}
 
-  async execute(branch: Partial<OrganizationBranch> & { systemId: string }): Promise<OrganizationBranch> {
+  async execute(branch: Partial<OrganizationBranch> & { organizationId: string }): Promise<OrganizationBranch> {
     return this.branchService.addBranch(branch);
   }
 }

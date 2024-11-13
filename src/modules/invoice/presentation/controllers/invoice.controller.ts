@@ -94,14 +94,14 @@ export class InvoiceController {
     return this.getInvoiceItemsUsecase.execute(id);
   }
 
-  @Post('organizations/:systemId/invoices')
+  @Post('organizations/:organizationId/invoices')
   @ApiOperation({ summary: 'Add new invoice.' })
   @ApiParam({
-    name: 'systemId',
+    name: 'organizationId',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
-    description: 'The id of the organization system',
+    description: 'The id of the organization',
   })
   @ApiBody({
     type: AddInvoiceDto,
@@ -112,8 +112,8 @@ export class InvoiceController {
     type: InvoiceDto,
     description: 'Invoice recently added.',
   })
-  async addInvoice(@Param('systemId') id: string, @Body() dto: AddInvoiceDto): Promise<InvoiceDto> {
-    return this.addInvoiceUsecase.execute({ ...dto, systemId: id, issue: dto.issue || false });
+  async addInvoice(@Param('organizationId') id: string, @Body() dto: AddInvoiceDto): Promise<InvoiceDto> {
+    return this.addInvoiceUsecase.execute({ ...dto, organizationId: id, issue: dto.issue || false });
   }
 
   @Put('invoices')
@@ -165,20 +165,20 @@ export class InvoiceController {
     return this.getClientInvoicesUsecase.execute(clientId);
   }
 
-  @Get('organizations/:systemId/invoices')
+  @Get('organizations/:organizationId/invoices')
   @ApiOperation({ summary: 'Get all active invoices for a organization.' })
   @ApiParam({
-    name: 'systemId',
+    name: 'organizationId',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
-    description: 'The id of the organization system',
+    description: 'The id of the organization.',
   })
   @ApiResponse({
     type: Array<InvoiceDto>,
     description: 'List of invoices for the organization.',
   })
-  async getOrganizationInvoices(@Param('systemId') systemId: string): Promise<InvoiceDto[]> {
-    return this.getOrganizationInvoicesUsecase.execute(systemId);
+  async getOrganizationInvoices(@Param('organizationId') organizationId: string): Promise<InvoiceDto[]> {
+    return this.getOrganizationInvoicesUsecase.execute(organizationId);
   }
 }

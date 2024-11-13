@@ -20,10 +20,10 @@ export const INVOICE_USECASE_PROVIDERS = {
   SUBMIT_ETA_INVOICE: 'SUBMIT_ETA_INVOICE',
 };
 
-// /x/organizations/systemId/eta/invoices/sync (get) => received invoice
-// /x/organizations/systemId/eta/invoices/id/reject (delete)
-// /x/organizations/systemId/eta/invoices/id/accept (get)
+// /x/organizations/organizationId/eta/invoices/sync (get) => received invoice
+// /x/organizations/organizationId/eta/invoices/id/reject (delete)
+// /x/organizations/organizationId/eta/invoices/id/accept (get)
 
 //? submit
-// /x/organizations/systemId/eta/invoices/id/process (post) (c#) [auth]
-// /x/organizations/systemId/eta/invoices/id (post) [token]
+// /x/organizations/organizationId/eta/invoices/id/process (post) (c#) [auth]
+// /x/organizations/organizationId/eta/invoices/id (post) [token]

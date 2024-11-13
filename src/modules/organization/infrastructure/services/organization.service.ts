@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { CLOUD_TASKS_PROVIDER } from '../../../../core/constants';
-import { NotFoundException } from '../../../../core/exceptions';
 import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
 import { CloudTasksService } from '../../../../core/providers';
-import { Utils } from '../../../../core/utils';
 
 import { IOrganizationRepository, IOrganizationService, Organization, ORGANIZATION_REPOSITORY_PROVIDER } from '../../domain';
 
@@ -33,9 +31,6 @@ export class OrganizationService implements IOrganizationService {
   }
 
   async addOrganization(organization: Partial<Organization> & { userId: string }): Promise<Organization> {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    organization.systemId = Utils.Encrypt.generateId(characters, 16);
-
     return this.repo.add(organization).then(async newOrganization => {
       await this.cloudTasksService.createQueue(newOrganization.id);
       return newOrganization;
@@ -49,16 +44,5 @@ export class OrganizationService implements IOrganizationService {
   async deleteOrganization(id: string): Promise<Organization> {
     // TODO: DELETE ORGANIZATION QUEUE FROM CLOUD TASKS
     return this.repo.delete(id);
-  }
-
-  // ? Custom methods
-
-  async getOrganizationBySystemId(sysId: string): Promise<Organization> {
-    return this.repo.getMany([{ key: 'systemId', op: 'eq', value: sysId }]).then(res => {
-      const org = res[0];
-
-      if (org) return org;
-      throw new NotFoundException(`No organization with systemId (${sysId})!`);
-    });
   }
 }

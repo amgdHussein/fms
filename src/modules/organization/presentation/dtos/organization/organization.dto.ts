@@ -6,7 +6,6 @@ import { LegalStructure, Organization, OrganizationIndustry, OrganizationStatus 
 export class OrganizationDto implements Organization {
   id: string;
   preferencesId: string;
-  systemId: string;
   userId: string;
   status: OrganizationStatus;
   name: string;

@@ -3,7 +3,7 @@ import { ClientStatus } from './client-status.enum';
 
 export interface Client {
   id: string;
-  systemId: string;
+  organizationId: string;
 
   name: string;
   email: string;

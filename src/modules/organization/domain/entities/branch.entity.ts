@@ -2,7 +2,7 @@ import { Address } from '../../../../core/common';
 
 export interface OrganizationBranch extends Address {
   id: string;
-  systemId: string;
+  organizationId: string;
 
   branchId: string; // Generate by Tax authority
   name: string; // Name of the branch

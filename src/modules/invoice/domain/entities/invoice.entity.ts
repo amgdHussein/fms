@@ -10,7 +10,7 @@ import { Item } from './item.entity';
 
 export interface Invoice {
   id: string;
-  systemId: string; // Unique ID for the organization(system)
+  organizationId: string; // Unique ID for the organization
   profileId: string; // ID of the client profile
   clientId: string; // ID of the client
 

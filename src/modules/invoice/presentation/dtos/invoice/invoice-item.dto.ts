@@ -4,7 +4,7 @@ import { Item, ItemTax } from '../../../domain';
 // TODO: FILL THE DTO
 export class InvoiceItemDto implements Item {
   id: string;
-  systemId: string;
+  organizationId: string;
   profileId: string;
   clientId: string;
   invoiceId: string;

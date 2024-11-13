@@ -10,7 +10,7 @@ export class GetOrganizationAccounts implements Usecase<Account> {
     private readonly accountService: IAccountService,
   ) {}
 
-  async execute(systemId: string): Promise<Account[]> {
-    return this.accountService.getOrganizationAccounts(systemId);
+  async execute(organizationId: string): Promise<Account[]> {
+    return this.accountService.getOrganizationAccounts(organizationId);
   }
 }

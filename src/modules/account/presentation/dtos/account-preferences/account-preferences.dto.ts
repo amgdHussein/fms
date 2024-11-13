@@ -5,7 +5,7 @@ import { AccountPreferences } from '../../../domain';
 export class AccountPreferencesDto implements AccountPreferences {
   id: string;
   accountId: string;
-  activeSystemId: string;
+  activeOrganizationId: string;
   email?: string;
   phone?: Phone;
   createdBy: string;

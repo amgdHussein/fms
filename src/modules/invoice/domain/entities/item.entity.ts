@@ -3,7 +3,7 @@ import { ItemTax } from './item-tax.entity';
 
 export interface Item {
   id: string;
-  systemId: string; // Unique ID for the organization
+  organizationId: string; // Unique ID for the organization
   profileId: string; // Unique ID for the client profile
   clientId: string; // Unique ID for the client
   invoiceId: string; // Unique ID for the invoice

@@ -4,5 +4,5 @@ import { AccountPreferencesDto } from './account-preferences.dto';
 
 export class UpdateAccountPreferencesDto extends IntersectionType(
   PickType(AccountPreferencesDto, ['id']),
-  PartialType(PickType(AccountPreferencesDto, ['email', 'activeSystemId', 'phone'])),
+  PartialType(PickType(AccountPreferencesDto, ['email', 'activeOrganizationId', 'phone'])),
 ) {}

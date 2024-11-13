@@ -3,7 +3,7 @@ import { SubscriptionStatus } from './subscription-status.enum';
 export interface Subscription {
   id: string;
   planId: string; // ID of the plan associated with the subscription
-  systemId: string; // ID of the system associated with the subscription
+  organizationId: string; // ID of the organization associated with the subscription
 
   status: SubscriptionStatus; // Status of the subscription
   autoRenew: boolean; // Whether the subscription should be automatically renewed

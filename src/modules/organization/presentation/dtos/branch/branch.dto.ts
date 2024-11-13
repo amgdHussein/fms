@@ -3,7 +3,7 @@ import { OrganizationBranch } from '../../../domain';
 // TODO: FILL THE DTO
 export class OrganizationBranchDto implements OrganizationBranch {
   id: string;
-  systemId: string;
+  organizationId: string;
   branchId: string;
   name: string;
   street: string;

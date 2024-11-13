@@ -11,7 +11,7 @@ export class GetOrganizationInvoices implements Usecase<Invoice> {
     private readonly invoiceService: IInvoiceService,
   ) {}
 
-  async execute(systemId: string): Promise<Invoice[]> {
-    return this.invoiceService.getInvoices([{ key: 'systemId', op: 'eq', value: systemId }]);
+  async execute(organizationId: string): Promise<Invoice[]> {
+    return this.invoiceService.getInvoices([{ key: 'organizationId', op: 'eq', value: organizationId }]);
   }
 }

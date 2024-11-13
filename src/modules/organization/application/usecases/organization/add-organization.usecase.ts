@@ -24,8 +24,7 @@ export class AddOrganization implements Usecase<Organization> {
     return this.organizationService.addOrganization(organization).then(async org => {
       // Add organization related data
       await this.preferencesService.addPreferences({
-        id: org.id,
-        systemId: org.systemId,
+        organizationId: org.id,
         currencies: organization.currency ? [organization.currency] : [],
       });
 

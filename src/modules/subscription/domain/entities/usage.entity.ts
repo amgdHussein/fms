@@ -1,6 +1,6 @@
 export interface Usage {
   id: string;
-  systemId: string; // Unique ID for the organization(system)
+  organizationId: string; // Unique ID for the organization
   subscriptionId: string; // ID of the subscription associated with the usage
 
   type: UsageType; // Type of usage

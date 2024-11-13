@@ -2,7 +2,7 @@ import { CurrencyCode } from '../../../../core/common';
 
 export interface OrganizationPreferences {
   id: string;
-  systemId: string;
+  organizationId: string;
 
   currencies: CurrencyCode[]; // Currencies supported by the organization
   financialDate: FinancialDate; // Custom type for date without year

@@ -4,5 +4,5 @@ import { OrganizationBranchDto } from './branch.dto';
 
 export class UpdateOrganizationBranchDto extends IntersectionType(
   PickType(OrganizationBranchDto, ['id']),
-  PartialType(OmitType(OrganizationBranchDto, ['id', 'systemId', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'])),
+  PartialType(OmitType(OrganizationBranchDto, ['id', 'organizationId', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'])),
 ) {}

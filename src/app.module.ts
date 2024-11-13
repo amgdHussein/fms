@@ -68,8 +68,6 @@ import { AccountModule, ClientModule, CodeModule, OrganizationModule, UserModule
         // Use the setup method to provide default store values
         setup: (cls, req) => {
           const ctx = req.switchToHttp().getRequest();
-          const systemId = req.switchToHttp().getRequest().headers['x-system-id'];
-          cls.set('systemId', systemId);
           cls.set('user', ctx.user);
           cls.set('environment', process.env.APP_ENV);
         },

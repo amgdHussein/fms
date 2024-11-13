@@ -6,7 +6,7 @@ import { CodeType } from './code-type.enum';
 
 export interface Code {
   id: string;
-  organizationId: string; // Unique ID for the system (organization)
+  organizationId: string; // Unique ID for the organization
 
   status: CodeStatus; // Status of the code
   type: CodeType; // Type of the code

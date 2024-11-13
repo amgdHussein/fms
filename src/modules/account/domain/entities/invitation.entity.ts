@@ -4,7 +4,7 @@ export interface Invitation {
   id: string;
   userId: string;
   accountId: string;
-  systemId: string;
+  organizationId: string;
   name: string;
   email: string;
   status: InvitationStatus;

@@ -56,7 +56,7 @@ export class CodeController {
     return this.getCodeUsecase.execute(codeId, id);
   }
 
-  @Get('organizations/:id/codes/')
+  @Get('organizations/:id/codes')
   @ApiOperation({ summary: 'Retrieve all active Codes for a specific organization.' })
   @ApiParam({
     name: 'id',

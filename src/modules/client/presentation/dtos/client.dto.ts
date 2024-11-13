@@ -5,7 +5,7 @@ import { Address, Identification, Phone } from '../../../../core/common';
 // TODO: FILL THE DTO
 export class ClientDto implements Client {
   id: string;
-  systemId: string;
+  organizationId: string;
   name: string;
   email: string;
   status: ClientStatus;

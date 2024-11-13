@@ -5,7 +5,7 @@ import { PaymentStatus } from '../../../payment/domain';
 
 export interface SubscriptionInvoice {
   id: string;
-  systemId: string; // Unique ID for the organization(system)
+  organizationId: string; // Unique ID for the organization
   subscriptionId: string; // ID of the subscription associated with the invoice
 
   name: string; // Name of the invoice

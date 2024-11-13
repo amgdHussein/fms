@@ -7,10 +7,6 @@ import { Environment } from '../../constants';
 export class LockerService {
   constructor(private readonly clsService: ClsService) {}
 
-  public get systemId(): string {
-    return this.clsService.get('systemId');
-  }
-
   public get user(): FirebaseUser {
     return this.clsService.get('user');
   }

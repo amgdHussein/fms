@@ -6,5 +6,5 @@ export interface IAccountService {
   updateAccount(account: Partial<Account> & { id: string }): Promise<Account>;
   deleteAccount(id: string): Promise<Account>;
   getUserAccounts(accountId: string): Promise<Account[]>;
-  getOrganizationAccounts(systemId: string): Promise<Account[]>;
+  getOrganizationAccounts(organizationId: string): Promise<Account[]>;
 }

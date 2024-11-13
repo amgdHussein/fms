@@ -4,7 +4,7 @@ import { FinancialDate, OrganizationPreferences } from '../../../domain/entities
 // TODO: FILL THE DTO
 export class OrganizationPreferencesDto implements OrganizationPreferences {
   id: string;
-  systemId: string;
+  organizationId: string;
   currencies: CurrencyCode[];
   financialDate: FinancialDate;
   createdBy: string;

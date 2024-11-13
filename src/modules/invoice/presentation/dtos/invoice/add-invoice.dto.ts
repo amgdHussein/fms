@@ -4,7 +4,7 @@ import { InvoiceDto } from './invoice.dto';
 
 export class AddInvoiceDto extends OmitType(InvoiceDto, [
   'id',
-  'systemId',
+  'organizationId',
   'status',
   'paymentStatus',
   'type',

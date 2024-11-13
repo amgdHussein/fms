@@ -11,7 +11,7 @@ export class GetBranches implements Usecase<OrganizationBranch> {
     private readonly branchService: IOrganizationBranchService,
   ) {}
 
-  async execute(systemId: string): Promise<OrganizationBranch[]> {
-    return this.branchService.getBranches(systemId);
+  async execute(organizationId: string): Promise<OrganizationBranch[]> {
+    return this.branchService.getBranches(organizationId);
   }
 }

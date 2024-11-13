@@ -29,7 +29,7 @@ export class AccountService implements IAccountService {
     return this.repo.getMany([{ key: 'userId', op: 'eq', value: userId }]);
   }
 
-  async getOrganizationAccounts(systemId: string): Promise<Account[]> {
-    return this.repo.getMany([{ key: 'systemId', op: 'eq', value: systemId }]);
+  async getOrganizationAccounts(organizationId: string): Promise<Account[]> {
+    return this.repo.getMany([{ key: 'organizationId', op: 'eq', value: organizationId }]);
   }
 }

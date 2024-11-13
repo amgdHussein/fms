@@ -6,7 +6,7 @@ import { Invoice, InvoiceDirection, InvoiceForm, InvoiceStatus, InvoiceType, Ite
 // TODO: FILL THE DTO
 export class InvoiceDto implements Invoice {
   id: string;
-  systemId: string;
+  organizationId: string;
   profileId: string;
   clientId: string;
   invoiceNumber: string;

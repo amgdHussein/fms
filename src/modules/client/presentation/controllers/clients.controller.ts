@@ -67,21 +67,21 @@ export class ClientController {
     return this.queryClientsUsecase.execute(page, limit, filters, order);
   }
 
-  @Get('organizations/:systemId/clients')
+  @Get('organizations/:organizationId/clients')
   @ApiOperation({ summary: 'Retrieve all Clients for an organization.' })
   @ApiParam({
-    name: 'systemId',
+    name: 'organizationId',
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
     type: String,
-    description: 'The unique identifier of the organization system.',
+    description: 'The unique identifier of the organization.',
   })
   @ApiResponse({
     type: [ClientDto],
     description: 'Returns a list of Clients',
   })
-  async getOrganizationClients(@Param('systemId') systemId: string): Promise<ClientDto[]> {
-    return this.getOrganizationClientsUsecase.execute(systemId);
+  async getOrganizationClients(@Param('organizationId') organizationId: string): Promise<ClientDto[]> {
+    return this.getOrganizationClientsUsecase.execute(organizationId);
   }
 
   @Post('clients')

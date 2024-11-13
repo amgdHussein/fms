@@ -4,5 +4,5 @@ import { OrganizationPreferencesDto } from './organization-preferences.dto';
 
 export class UpdateOrganizationPreferencesDto extends IntersectionType(
   PickType(OrganizationPreferencesDto, ['id']),
-  PartialType(OmitType(OrganizationPreferencesDto, ['id', 'systemId', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'])),
+  PartialType(OmitType(OrganizationPreferencesDto, ['id', 'organizationId', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'])),
 ) {}
