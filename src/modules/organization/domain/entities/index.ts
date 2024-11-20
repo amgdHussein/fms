@@ -5,3 +5,4 @@ export { FinancialDate, OrganizationPreferences } from './organization-preferenc
 export { Organization } from './organization.entity';
 export { Product, ProductStatus } from './product.entity';
 export { OrganizationStatus } from './status.enum';
+export { OrganizationTax } from './tax.entity';
