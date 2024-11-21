@@ -8,7 +8,7 @@ import * as Joi from 'joi';
 import { AuthModule } from './core/auth';
 import { ExceptionFilter } from './core/filters';
 import { LoggingInterceptor } from './core/interceptors';
-import { CloudTasksModule, EventEmitterModule, FirestoreModule, HttpModule, LockerModule, RedisModule } from './core/providers';
+import { CloudTasksModule, EtaModule, EventEmitterModule, FirestoreModule, HttpModule, LockerModule, RedisModule } from './core/providers';
 
 import { AccountModule, ClientModule, CodeModule, OrganizationModule, UserModule } from './modules';
 
@@ -91,6 +91,12 @@ import { AccountModule, ClientModule, CodeModule, OrganizationModule, UserModule
         client_email: process.env.GCLOUD_CLIENT_EMAIL,
         private_key: process.env.GCLOUD_PRIVATE_KEY,
       },
+    }),
+
+    EtaModule.forRoot({
+      identityUrl: process.env.ETA_IDENTITY_URL,
+      apiVersionUrl: process.env.ETA_API_VERSION_URL,
+      apiTokenUrl: process.env.ETA_API_TOKEN_URL,
     }),
 
     // ? App Modules

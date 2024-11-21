@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { QueryDto, QueryResultDto } from '../../../../core/dtos';
+import { AuthenticationGuard } from '../../../../core/guards';
 
 import { AddUser, DeleteUser, GetUser, QueryUsers, RegisterUser, UpdateUser } from '../../application';
 import { USER_USECASE_PROVIDERS } from '../../domain';
@@ -47,7 +48,7 @@ export class UserController {
     return this.queryUsersUsecase.execute(page, limit, filters, order);
   }
 
-  @Get(':id')
+  @Get('/:id')
   @ApiOperation({ summary: 'Retrieve a user by their unique ID.' }) // Consistent operation summary for fetching a single user
   @ApiParam({
     name: 'id',
@@ -75,6 +76,7 @@ export class UserController {
     type: UserDto,
     description: 'The newly registered user.',
   })
+  @UseGuards(AuthenticationGuard)
   async registerUser(@Body() entity: RegisterUserDto): Promise<UserDto> {
     return this.registerUserUsecase.execute(entity.id, entity.email, entity.role);
   }
@@ -90,6 +92,7 @@ export class UserController {
     type: UserDto,
     description: 'The newly added user.',
   })
+  @UseGuards(AuthenticationGuard)
   async addUser(@Body() entity: AddUserDto): Promise<UserDto> {
     return this.addUserUsecase.execute(entity);
   }

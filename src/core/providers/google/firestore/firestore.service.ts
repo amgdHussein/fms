@@ -153,6 +153,7 @@ export class FirestoreService<T extends { id: string }> {
 
   /**
    * Add multiple documents to the specified CollectionReference with the given data array.
+   *
    * @param {Array<object>} entities Array of document data to be added (Ids not required)
    * @return {Promise<Array<object>>} Array of new document data
    * @example await setDocs([
