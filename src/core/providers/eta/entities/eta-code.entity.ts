@@ -77,3 +77,17 @@ export interface CodeCategorizationLevel {
   name: string; // Refer to code type level name in English
   nameAr: string; // Refer to code type level name in Arabic
 }
+
+export class EgsCodeUsage {
+  codeType: 'EGS' | 'GS1';
+  parentCode: string;
+  itemCode: string;
+  codeName: string;
+  codeNameAr: string;
+  activeFrom: string;
+  activeTo?: string;
+  description?: string;
+  descriptionAr?: string;
+  requestReason?: string;
+  linkedCode: string;
+}
