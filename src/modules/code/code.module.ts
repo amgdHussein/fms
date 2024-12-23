@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
-import { AddCodes, DraftCode, GetCode, GetCodes, ImportCodes, IsCodeExistConstraint, ReuseCode, UpdateCode } from './application';
+import { OrganizationModule } from '../organization/organization.module';
+import { AddCodes, DraftCode, GetCode, GetCodes, ImportCodes, IsCodeExistConstraint, ReuseCodes, UpdateCode } from './application';
 import { CODE_REPOSITORY_PROVIDER, CODE_SERVICE_PROVIDER, CODE_USECASE_PROVIDERS } from './domain';
 import { CodeFirestoreRepository, CodeService } from './infrastructure';
 import { CodeController } from './presentation';
@@ -33,13 +34,13 @@ const codeUsecases = [
     useClass: UpdateCode,
   },
   {
-    provide: CODE_USECASE_PROVIDERS.REUSE_CODE,
-    useClass: ReuseCode,
+    provide: CODE_USECASE_PROVIDERS.REUSE_CODES,
+    useClass: ReuseCodes,
   },
 ];
 
 @Module({
-  imports: [],
+  imports: [OrganizationModule],
   controllers: [CodeController],
   providers: [
     ...validators,

@@ -23,8 +23,8 @@ export interface CodeUsage {
   levelName: string; // Refer to the level name of the code
   requestCreationDateTimeUtc: number; // Refer to the request creation date on eInvoice system in UTC
   codeCreationDateTimeUtc: number; // Refer to the code creation date on eInvoice system in UTC
-  activeFrom: number; // Refer to the code start validity date in UTC
-  activeTo: number; // Refer to the code end of validity date in UTC
+  activeFrom: string; // Refer to the code start validity date in UTC
+  activeTo: string; // Refer to the code end of validity date in UTC
   active: boolean; // Refer to the code status in the system
   status: EtaCodeStatus; // Refer to the request status if approved or rejected
   ownerTaxpayer: Taxpayer; // Refer to the taxpayer who is the owner of the code
@@ -79,7 +79,7 @@ export interface CodeCategorizationLevel {
 }
 
 export class EgsCodeUsage {
-  codeType: 'EGS' | 'GS1';
+  codeType: EtaCodeType;
   parentCode: string;
   itemCode: string;
   codeName: string;

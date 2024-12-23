@@ -158,16 +158,17 @@ Schema for an online platform for managing invoices.
 
 ---
 
-1. exception handling (custom exceptions entity)
-<!-- 2. organization tax support -->
-2. tax invoice & eta integration
-3. code cron jobs
-4. invoice cron jobs
-5. payment module
-6. account switching and module security
-7. subscription plans and limitations
-8. account invitation
-9. notifications & logs
-10. payment gateway integration
-11. client dashboard (to view payments and invoices)
-12. reports
+- exception handling (custom exceptions entity)
+   <!-- - organization tax support -->
+   <!-- - tax code & eta integration -->
+- tax invoice & eta integration
+- code cron jobs
+- invoice cron jobs
+- payment module
+- account switching and module security
+- subscription plans and limitations
+- account invitation
+- notifications & logs
+- payment gateway integration
+- client dashboard (to view payments and invoices)
+- reports

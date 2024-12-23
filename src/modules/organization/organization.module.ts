@@ -24,6 +24,8 @@ import {
   ORGANIZATION_PREFERENCES_USECASE_PROVIDERS,
   ORGANIZATION_REPOSITORY_PROVIDER,
   ORGANIZATION_SERVICE_PROVIDER,
+  ORGANIZATION_TAX_REPOSITORY_PROVIDER,
+  ORGANIZATION_TAX_SERVICE_PROVIDER,
   ORGANIZATION_USECASE_PROVIDERS,
   PRODUCT_REPOSITORY_PROVIDER,
   PRODUCT_SERVICE_PROVIDER,
@@ -38,6 +40,8 @@ import {
   OrganizationProductFirestoreRepository,
   OrganizationProductService,
   OrganizationService,
+  OrganizationTaxFirestoreRepository,
+  OrganizationTaxService,
 } from './infrastructure';
 import { OrganizationBranchController, OrganizationController, OrganizationPreferencesController, OrganizationProductController } from './presentation';
 
@@ -134,6 +138,14 @@ const productsUsecases = [
       useClass: OrganizationService,
     },
     {
+      provide: ORGANIZATION_TAX_REPOSITORY_PROVIDER,
+      useClass: OrganizationTaxFirestoreRepository,
+    },
+    {
+      provide: ORGANIZATION_TAX_SERVICE_PROVIDER,
+      useClass: OrganizationTaxService,
+    },
+    {
       provide: ORGANIZATION_PREFERENCES_REPOSITORY_PROVIDER,
       useClass: OrganizationPreferencesFirestoreRepository,
     },
@@ -171,6 +183,10 @@ const productsUsecases = [
     {
       provide: PRODUCT_SERVICE_PROVIDER,
       useClass: OrganizationProductService,
+    },
+    {
+      provide: ORGANIZATION_TAX_SERVICE_PROVIDER,
+      useClass: OrganizationTaxService,
     },
   ],
 })

@@ -7,15 +7,31 @@ import * as crypto from 'crypto';
 import * as https from 'https';
 
 import { ETA_CONFIGS_PROVIDER, ETA_PROVIDER, HTTP_PROVIDER } from '../../constants';
-import { InternalServerErrorException } from '../../exceptions';
 import { Utils } from '../../utils';
 
 import { CodeUsage, EgsCodeUsage, EtaCodeType, EtaCredentials, QueryCodes } from './entities';
 import { EtaConfigs } from './eta.config';
 import { EtaService } from './eta.service';
 
-type PassedItem = { itemCode: string; codeUsageRequestId: number };
-type FailedItem = { itemCode: string; errors: string[] };
+interface PassedItem {
+  itemCode: string;
+  codeUsageRequestId: number;
+}
+interface FailedItem {
+  itemCode: string;
+  errors: string[];
+}
+
+interface CodeResponse {
+  failedItems: FailedItem[];
+  passedItems: PassedItem[];
+}
+
+interface ReusedCode {
+  comment: string;
+  itemCode: string;
+  codeType: EtaCodeType;
+}
 
 @Injectable()
 export class EtaCommonService {
@@ -32,8 +48,8 @@ export class EtaCommonService {
     private readonly http: HttpService,
   ) {}
 
-  async getCodes(credential: EtaCredentials, orgId: string, codeType: EtaCodeType, query: QueryCodes): Promise<CodeUsage> {
-    const header = await this.eta.login(credential, orgId);
+  async getCodes(credential: EtaCredentials, organizationId: string, codeType: EtaCodeType, query: QueryCodes): Promise<CodeUsage[]> {
+    const header = await this.eta.login(credential, organizationId);
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { PageNumber, PageSize, ...newObj } = query;
@@ -42,7 +58,7 @@ export class EtaCommonService {
     const url = `${this.configs.apiVersionUrl}/codetypes/${codeType}/codes?Ps=${PageSize}&Pn=${PageNumber}${queryProp ? `&${queryProp}` : ''}`;
 
     const response = this.http
-      .get<{ result: CodeUsage }>(url, {
+      .get<{ result: CodeUsage[] }>(url, {
         headers: header,
         httpsAgent: new https.Agent({
           secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
@@ -62,13 +78,13 @@ export class EtaCommonService {
   }
 
   // setEgsCodeUsage
-  async addCodes(codes: EgsCodeUsage[], credential: EtaCredentials, orgId: string): Promise<PassedItem[]> {
-    const header = await this.eta.login(credential, orgId);
+  async addCodes(codes: EgsCodeUsage[], credential: EtaCredentials, organizationId: string): Promise<CodeResponse> {
+    const header = await this.eta.login(credential, organizationId);
 
     const url = `${this.configs.apiVersionUrl}/codetypes/requests/codes`;
 
     const response = this.http
-      .post<{ failedItems: FailedItem[]; passedItems: PassedItem[] }>(
+      .post<CodeResponse>(
         url,
         { items: codes },
         {
@@ -87,26 +103,16 @@ export class EtaCommonService {
         }),
       );
 
-    return firstValueFrom(response).then(({ failedItems, passedItems }) => {
-      if (failedItems?.length > 0) {
-        const errorMessages = failedItems.flatMap(item => item.errors || []);
-
-        throw new HttpException(errorMessages, 500, {
-          cause: new Error(`Failed to use some codes: ${errorMessages}`),
-        });
-      }
-
-      return passedItems;
-    });
+    return firstValueFrom(response);
   }
 
   // requestCodeReuse
-  async reuseCodes(codes: { comment: string; itemCode: string; codeType: EtaCodeType }[], credential: EtaCredentials, orgId: string): Promise<PassedItem[]> {
-    const header = await this.eta.login(credential, orgId);
+  async reuseCodes(codes: ReusedCode[], credential: EtaCredentials, organizationId: string): Promise<CodeResponse> {
+    const header = await this.eta.login(credential, organizationId);
     const url = `${this.configs.apiVersionUrl}/codetypes/requests/codeusages`;
 
     const response = this.http
-      .put<{ failedItems: FailedItem[]; passedItems: PassedItem[] }>(
+      .put<CodeResponse>(
         url,
         { items: codes },
         {
@@ -126,19 +132,12 @@ export class EtaCommonService {
         }),
       );
 
-    return firstValueFrom(response).then(({ failedItems, passedItems }) => {
-      if (failedItems?.length > 0) {
-        const errorMessages = failedItems.flatMap(item => item.errors || []);
-        throw new InternalServerErrorException(`Failed to use some codes: ${errorMessages}`);
-      }
-
-      return passedItems;
-    });
+    return firstValueFrom(response);
   }
 
   // updatePublishedCodes
-  async updateCode(codeType: 'EGS' | 'GS1', itemCode: string, code: Partial<CodeUsage>, credential: EtaCredentials, orgId: string): Promise<number> {
-    const header = await this.eta.login(credential, orgId);
+  async updateCode(codeType: EtaCodeType, itemCode: string, code: Partial<CodeUsage>, credential: EtaCredentials, organizationId: string): Promise<number> {
+    const header = await this.eta.login(credential, organizationId);
     const url = `${this.configs.apiVersionUrl}/codetypes/${codeType}/codes/${itemCode}`;
 
     const publishedCode = {
@@ -168,14 +167,12 @@ export class EtaCommonService {
   }
 
   // getEgsCodeUsageRequests
-  async queryCodes(query: Partial<QueryCodes>, credential: EtaCredentials, orgId: string): Promise<CodeUsage[]> {
-    const header = await this.eta.login(credential, orgId);
+  async queryCodes(query: Partial<QueryCodes>, credential: EtaCredentials, organizationId: string): Promise<CodeUsage[]> {
+    const header = await this.eta.login(credential, organizationId);
 
-    const { PageNumber, PageSize, ...filters } = query;
+    const { PageNumber: page, PageSize: limit, ...filters } = query;
     const queryProp = Utils.Tax.buildEtaQuery(filters);
-    const url = `${this.configs.apiVersionUrl}/codetypes/requests/my?PageSize=${PageSize || 1}&PageNumber=${PageNumber || 1}${
-      queryProp ? `&${queryProp}` : ''
-    }`;
+    const url = `${this.configs.apiVersionUrl}/codetypes/requests/my?PageSize=${limit || 1}&PageNumber=${page || 1}${queryProp ? `&${queryProp}` : ''}`;
 
     const response = this.http
       .get<{ result: CodeUsage[] }>(url, {

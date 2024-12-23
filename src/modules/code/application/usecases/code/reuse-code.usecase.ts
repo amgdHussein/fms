@@ -6,13 +6,13 @@ import { Usecase } from '../../../../../core/interfaces';
 import { Code, CODE_SERVICE_PROVIDER, ICodeService } from '../../../domain';
 
 @Injectable()
-export class ReuseCode implements Usecase<Code> {
+export class ReuseCodes implements Usecase<Code> {
   constructor(
     @Inject(CODE_SERVICE_PROVIDER)
     private readonly codeService: ICodeService,
   ) {}
 
-  async execute(code: Partial<Code> & { authority: Authority; organizationId: string }): Promise<Code> {
-    return this.codeService.reuseCode(code);
+  async execute(codes: Partial<Code>[], authority: Authority, organizationId: string): Promise<Code[]> {
+    return this.codeService.reuseCodes(codes, authority, organizationId);
   }
 }

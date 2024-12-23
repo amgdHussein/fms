@@ -4,23 +4,23 @@ import { IssuerType } from './issuer.entity';
 export class QueryCodes {
   PageSize: number;
   PageNumber: number;
-  TaxpayerRIN: string;
-  CodeLookupValue: string;
-  ParentCodeLookupValue: string;
-  CodeID: number;
-  CodeName: string;
-  CodeDescription: string;
-  ParentCodeID: number;
-  ParentLevelName: string;
-  OnlyActive: boolean;
-  ActiveFrom: string;
-  ActiveTo: string;
-  CodeTypeLevelNumber: number;
-  ItemCode: string;
-  ParentItemCode: string;
-  Active: boolean;
-  Status: 'Submitted' | 'Approved' | 'Rejected';
-  RequestType: 'New' | 'Reusage';
+  TaxpayerRIN?: string;
+  CodeLookupValue?: string;
+  ParentCodeLookupValue?: string;
+  CodeID?: number;
+  CodeName?: string;
+  CodeDescription?: string;
+  ParentCodeID?: number;
+  ParentLevelName?: string;
+  OnlyActive?: boolean;
+  ActiveFrom?: string;
+  ActiveTo?: string;
+  CodeTypeLevelNumber?: number;
+  ItemCode?: string;
+  ParentItemCode?: string;
+  Active?: boolean;
+  Status?: 'Submitted' | 'Approved' | 'Rejected';
+  RequestType?: 'New' | 'Reusage';
 }
 
 export class QueryInvoices {

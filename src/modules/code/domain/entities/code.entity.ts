@@ -1,4 +1,5 @@
 import { Authority } from '../../../../core/common';
+import { EtaCodeType } from '../../../../core/providers';
 
 import { AuthorityCodeStatus } from './authority-code-status.enum';
 import { CodeStatus } from './code-status.enum';
@@ -25,6 +26,7 @@ export interface Code {
 
   category: string; // Category of Authority, default is "Other"
   comment?: string; // Comment for the code
+  cause?: string; // Cause of the submission failure
 
   createdBy: string; // User who created the tax-code
   createdAt: number; // Timestamp when the tax-code was created
@@ -36,5 +38,5 @@ export interface Code {
   // * ETA
   linkedCode?: string; // EGS Related Linked Code
   nationalCode?: string; // Global Product Classification (GPC) code
-  authorityCodeType?: string; // EGS, GS1
+  authorityCodeType?: EtaCodeType; // EGS, GS1
 }

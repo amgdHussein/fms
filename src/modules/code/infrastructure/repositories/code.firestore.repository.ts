@@ -17,12 +17,16 @@ export class CodeFirestoreRepository implements ICodeRepository {
     private readonly db: FirestoreService<Organization>,
   ) {}
 
+  private codeFirestore(organizationId: string): FirestoreService<Code> {
+    return this.db.nestedCollection<Code>(organizationId, 'codes');
+  }
+
   async get(id: string, organizationId: string): Promise<Code> {
-    return this.db.nestedCollection<Code>(organizationId, 'codes').getDoc(id);
+    return this.codeFirestore(organizationId).getDoc(id);
   }
 
   async getMany(organizationId: string, filters?: QueryFilter[]): Promise<Code[]> {
-    return this.db.nestedCollection<Code>(organizationId, 'codes').getDocs(filters);
+    return this.codeFirestore(organizationId).getDocs(filters);
   }
 
   async add(code: Partial<Code>, organizationId: string): Promise<Code> {
@@ -33,7 +37,7 @@ export class CodeFirestoreRepository implements ICodeRepository {
     code.updatedAt = Date.now();
     code.organizationId = organizationId;
 
-    return this.db.nestedCollection<Code>(organizationId, 'codes').addDoc(code);
+    return this.codeFirestore(organizationId).addDoc(code);
   }
 
   async addMany(codes: Partial<Code>[], organizationId: string): Promise<Code[]> {
@@ -45,7 +49,7 @@ export class CodeFirestoreRepository implements ICodeRepository {
       code.updatedAt = Date.now();
     });
 
-    return this.db.nestedCollection<Code>(organizationId, 'codes').addDocs(codes);
+    return this.codeFirestore(organizationId).addDocs(codes);
   }
 
   async update(code: Partial<Code> & { id: string }, organizationId: string): Promise<Code> {
@@ -53,10 +57,10 @@ export class CodeFirestoreRepository implements ICodeRepository {
     code.updatedBy = this.locker.user.uid;
     code.updatedAt = Date.now();
 
-    return this.db.nestedCollection<Code>(organizationId, 'codes').updateDoc(code);
+    return this.codeFirestore(organizationId).updateDoc(code);
   }
 
   async delete(id: string, organizationId: string): Promise<Code> {
-    return this.db.nestedCollection<Code>(organizationId, 'codes').deleteDoc(id);
+    return this.codeFirestore(organizationId).deleteDoc(id);
   }
 }

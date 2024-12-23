@@ -6,4 +6,4 @@ export { ImportCodes } from './import-codes.usecase';
 export { UpdateCode } from './update-code.usecase';
 
 // ? ETA use cases
-export { ReuseCode } from './reuse-code.usecase';
+export { ReuseCodes } from './reuse-code.usecase';

@@ -2,9 +2,9 @@ import { Body, Controller, Get, Inject, Param, Post, Put } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Authority } from '../../../../core/common';
 
-import { AddCodes, DraftCode, GetCode, GetCodes, ImportCodes, ReuseCode, UpdateCode } from '../../application';
+import { AddCodes, DraftCode, GetCode, GetCodes, ImportCodes, ReuseCodes, UpdateCode } from '../../application';
 import { CODE_USECASE_PROVIDERS } from '../../domain';
-import { AddETACodesDto, CodeDto, DraftCodeDto, ReuseETACodeDto, UpdateETACodeDto } from '../dtos';
+import { AddETACodesDto, CodeDto, DraftCodeDto, ReuseETACodesDto, UpdateETACodeDto } from '../dtos';
 
 @ApiTags('Codes') // Tag for grouping code-related endpoints
 @Controller()
@@ -28,8 +28,8 @@ export class CodeController {
     @Inject(CODE_USECASE_PROVIDERS.UPDATE_CODE)
     private readonly updateCodeUsecase: UpdateCode,
 
-    @Inject(CODE_USECASE_PROVIDERS.REUSE_CODE)
-    private readonly reuseCodeUsecase: ReuseCode,
+    @Inject(CODE_USECASE_PROVIDERS.REUSE_CODES)
+    private readonly reuseCodeUsecase: ReuseCodes,
   ) {}
 
   @Get('organizations/:id/codes/:codeId')
@@ -177,15 +177,15 @@ export class CodeController {
     description: 'ID of the organization.',
   })
   @ApiBody({
-    type: ReuseETACodeDto,
+    type: ReuseETACodesDto,
     required: true,
     description: 'Data of the ETA Code to be reused.',
   })
   @ApiResponse({
-    type: CodeDto,
-    description: 'Returns the reused ETA Code.',
+    type: [CodeDto],
+    description: 'Returns the reused ETA Codes.',
   })
-  async reuseEtaCode(@Param('id') id: string, @Body() dto: ReuseETACodeDto): Promise<CodeDto> {
-    return this.reuseCodeUsecase.execute({ ...dto, organizationId: id, authority: Authority.ETA });
+  async reuseEtaCode(@Param('id') id: string, @Body() dto: ReuseETACodesDto): Promise<CodeDto[]> {
+    return this.reuseCodeUsecase.execute(dto.codes, Authority.ETA, id);
   }
 }

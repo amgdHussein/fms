@@ -1,3 +1,4 @@
+import * as DatetimeUtils from './datetime.utils';
 import * as EncryptUtils from './encrypt.utils';
 import * as ObjectUtils from './object.utils';
 import * as TaxUtils from './tax.utils';
@@ -7,4 +8,5 @@ export const Utils = {
   Object: ObjectUtils,
   Encrypt: EncryptUtils,
   Tax: TaxUtils,
+  Datetime: DatetimeUtils,
 };
