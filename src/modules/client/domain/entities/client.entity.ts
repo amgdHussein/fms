@@ -1,4 +1,4 @@
-import { Address, Identification, Phone } from '../../../../core/common';
+import { Address, CurrencyCode, Identification, Phone } from '../../../../core/common';
 import { ClientStatus } from './client-status.enum';
 
 export interface Client {
@@ -11,6 +11,7 @@ export interface Client {
   phone?: Phone;
   address: Address;
   identification: Identification;
+  currency: CurrencyCode;
 
   createdBy: string; // User who created the client
   createdAt: number; // Timestamp when the client was created

@@ -1,6 +1,5 @@
-import { Client, ClientStatus } from '../../domain';
-
-import { Address, Identification, Phone } from '../../../../core/common';
+import { Address, CurrencyCode, Identification, Phone } from '../../../../../core/common';
+import { Client, ClientStatus } from '../../../domain';
 
 // TODO: FILL THE DTO
 export class ClientDto implements Client {
@@ -12,6 +11,7 @@ export class ClientDto implements Client {
   phone?: Phone;
   address: Address;
   identification: Identification;
+  currency: CurrencyCode;
   createdBy: string;
   createdAt: number;
   updatedBy: string;
