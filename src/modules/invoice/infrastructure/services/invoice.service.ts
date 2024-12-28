@@ -16,7 +16,7 @@ import {
 export class InvoiceService implements IInvoiceService {
   constructor(
     @Inject(INVOICE_REPOSITORY_PROVIDER)
-    private readonly invoiceRepo: IInvoiceRepository,
+    private readonly invoiceRepo: IInvoiceRepository<Invoice>,
 
     @Inject(INVOICE_ITEM_REPOSITORY_PROVIDER)
     private readonly itemRepo: IInvoiceItemRepository,
@@ -46,6 +46,11 @@ export class InvoiceService implements IInvoiceService {
 
   async deleteInvoice(id: string): Promise<Invoice> {
     return this.invoiceRepo.delete(id);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await, @typescript-eslint/no-unused-vars
+  async sendClientInvoice(id: string): Promise<boolean> {
+    return true;
   }
 
   // ? Invoice Item Related

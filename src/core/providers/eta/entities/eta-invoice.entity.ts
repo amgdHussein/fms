@@ -72,17 +72,7 @@ export interface EtaInvoice {
   currencySegments?: CurrencySegments[];
 }
 
-export enum EtaInvoiceType {
-  INVOICE = 'I',
-  // CREDIT = 'C',
-  // DEBIT = 'D',
-  CREDIT_NOTE = 'C',
-  DEBIT_NOTE = 'D',
-  // IMPORT_INVOICE = 'II',
-  EXPORT_INVOICE = 'EI',
-  EXPORT_CREDIT_NOTE = 'EC',
-  EXPORT_DEBIT_NOTE = 'ED',
-}
+export type EtaInvoiceType = 'I' | 'C' | 'D' | 'EC' | 'ED' | 'EI';
 
 export interface CurrencySegments {
   currency?: string;
@@ -152,7 +142,7 @@ export interface EtaInvoiceLine {
   totalTaxableFees?: number; // decimal
   netTotal?: number; // decimal
   itemsDiscount?: number; // decimal
-  discount?: Discount;
+  discount?: number | Discount;
   taxableItems?: TaxableItems[];
   internalCode?: string;
 }

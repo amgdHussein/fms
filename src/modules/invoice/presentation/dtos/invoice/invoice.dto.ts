@@ -7,6 +7,7 @@ import { Invoice, InvoiceDirection, InvoiceForm, InvoiceStatus, InvoiceType, Ite
 export class InvoiceDto implements Invoice {
   id: string;
   organizationId: string;
+  branchId: string;
   profileId: string;
   clientId: string;
   invoiceNumber: string;

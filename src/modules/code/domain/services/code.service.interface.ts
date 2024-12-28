@@ -1,10 +1,11 @@
 import { Authority } from '../../../../core/common';
+import { QueryFilter } from '../../../../core/models';
 
 import { Code } from '../entities';
 
 export interface ICodeService {
   getCode(id: string, organizationId: string): Promise<Code>;
-  getCodes(organizationId: string): Promise<Code[]>;
+  getCodes(organizationId: string, filters?: QueryFilter[]): Promise<Code[]>;
   draftCode(code: Partial<Code> & { organizationId: string }): Promise<Code>;
   importCodes(authority: Authority, organizationId: string): Promise<Code[]>;
   addCode(code: Partial<Code> & { authority: Authority; organizationId: string }): Promise<Code>;

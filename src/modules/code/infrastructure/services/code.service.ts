@@ -6,6 +6,7 @@ import { Authority } from '../../../../core/common';
 import { ETA_COMMON_PROVIDER } from '../../../../core/constants';
 import { EgsCodeUsage, EtaCodeType, EtaCommonService } from '../../../../core/providers/eta';
 
+import { QueryFilter } from '../../../../core/models';
 import { Utils } from '../../../../core/utils';
 import { IOrganizationTaxService, ORGANIZATION_TAX_SERVICE_PROVIDER, OrganizationTax } from '../../../organization/domain';
 import { AuthorityCodeStatus, Code, CODE_REPOSITORY_PROVIDER, CodeStatus, CodeType, ICodeRepository, ICodeService } from '../../domain';
@@ -25,8 +26,8 @@ export class CodeService implements ICodeService {
     private readonly orgTaxService: IOrganizationTaxService,
   ) {}
 
-  async getCodes(organizationId: string): Promise<Code[]> {
-    return this.codeRepo.getMany(organizationId, [{ key: 'status', op: 'neq', value: 2 }]);
+  async getCodes(organizationId: string, filters?: QueryFilter[]): Promise<Code[]> {
+    return this.codeRepo.getMany(organizationId, [...filters, { key: 'status', op: 'neq', value: 2 }]);
   }
 
   async getCode(id: string, organizationId: string): Promise<Code> {

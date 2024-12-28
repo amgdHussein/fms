@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 
 import {
   AddClient,
@@ -69,8 +69,8 @@ const preferencesUsecases = [
   },
 ];
 
+@Global()
 @Module({
-  imports: [],
   controllers: [ClientController, ClientPreferencesController],
   providers: [
     ...validators,

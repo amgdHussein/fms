@@ -16,8 +16,8 @@ export enum TaxInvoiceStatus {
   SIGNING = 2,
   SIGNED = 3,
   SUBMITTED = 4,
-  FAILED = 5,
-  REJECTED = 6,
+  FAILED = 5, // The invoice submission has failed.
+  REJECTED = 6, // The invoice has been rejected by the tax authority.
   ACCEPTED = 7,
   CANCELLED = 8,
 }

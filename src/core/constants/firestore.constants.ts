@@ -19,6 +19,10 @@ export enum FIRESTORE_COLLECTION_PROVIDERS {
 
   // ? Client Related
   CLIENTS = 'clients',
+  CLIENTS_PREFERENCES = 'clients-preferences',
+
+  // ? Client Account Related
+  CLIENTS_TAXES = 'clients-taxes',
 
   // ? Invoice Related
   INVOICES = 'invoices',

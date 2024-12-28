@@ -17,6 +17,6 @@ export interface IInvoiceService {
   updateItems(items: (Partial<Item> & { id: string })[], invoiceId: string): Promise<Item[]>;
   deleteItems(invoiceId: string): Promise<Item[]>;
 
-  //   sendInvoiceClient(id: string): Promise<Invoice>;
+  sendClientInvoice(id: string): Promise<boolean>;
   // getInvoiceByShareLink(invoiceId: string): Promise<EInvoice>;
 }

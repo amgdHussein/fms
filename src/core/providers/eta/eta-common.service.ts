@@ -53,7 +53,7 @@ export class EtaCommonService {
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { PageNumber, PageSize, ...newObj } = query;
-    const queryProp = Utils.Tax.buildEtaQuery(newObj);
+    const queryProp = Utils.Eta.buildEtaQuery(newObj);
 
     const url = `${this.configs.apiVersionUrl}/codetypes/${codeType}/codes?Ps=${PageSize}&Pn=${PageNumber}${queryProp ? `&${queryProp}` : ''}`;
 
@@ -171,7 +171,7 @@ export class EtaCommonService {
     const header = await this.eta.login(credential, organizationId);
 
     const { PageNumber: page, PageSize: limit, ...filters } = query;
-    const queryProp = Utils.Tax.buildEtaQuery(filters);
+    const queryProp = Utils.Eta.buildEtaQuery(filters);
     const url = `${this.configs.apiVersionUrl}/codetypes/requests/my?PageSize=${limit || 1}&PageNumber=${page || 1}${queryProp ? `&${queryProp}` : ''}`;
 
     const response = this.http

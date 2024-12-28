@@ -1,4 +1,4 @@
-import { Address, Authority, Currency } from '../../../../core/common';
+import { Authority, Currency } from '../../../../core/common';
 
 import { PaymentStatus } from '../../../payment/domain';
 
@@ -11,14 +11,14 @@ import { Item } from './item.entity';
 export interface Invoice {
   id: string;
   organizationId: string; // Unique ID for the organization
-  profileId: string; // ID of the client profile
+  branchId: string; // Organization branch ID
   clientId: string; // ID of the client
+  profileId: string; // ID of the client profile
 
   invoiceNumber: string; // Next incrementing number for the invoice (organization specific)
 
   name: string; // Name of the invoice
   description?: string; // Description of the invoice
-  address?: Address; // Billing address of the invoice
 
   type: InvoiceType; // Nature of the invoice (e.g., standard, tax)
   form: InvoiceForm; // Form/type of the invoice (e.g., credit, debit)
@@ -58,4 +58,5 @@ export interface TaxInvoice extends Invoice {
   activityCode: string; // Tax activity code
   deliveryAt?: number; // ? serviceDeliveryDate // Tax invoice delivery date with only export invoices
   uuidReferences: string[]; // List of uuid references for the invoice
+  reason?: string;
 }

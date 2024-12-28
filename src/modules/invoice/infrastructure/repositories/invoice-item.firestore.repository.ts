@@ -16,12 +16,16 @@ export class InvoiceItemFirestoreRepository implements IInvoiceItemRepository {
     private readonly db: FirestoreService<Invoice>,
   ) {}
 
+  private itemFirestore(invoiceId: string): FirestoreService<Item> {
+    return this.db.nestedCollection<Item>(invoiceId, 'items');
+  }
+
   async get(id: string, invoiceId: string): Promise<Item> {
-    return this.db.nestedCollection<Item>(invoiceId, 'items').getDoc(id);
+    return this.itemFirestore(invoiceId).getDoc(id);
   }
 
   async getMany(invoiceId: string, filters?: QueryFilter[]): Promise<Item[]> {
-    return this.db.nestedCollection<Item>(invoiceId, 'items').getDocs(filters);
+    return this.itemFirestore(invoiceId).getDocs(filters);
   }
 
   async add(item: Partial<Item>, invoiceId: string): Promise<Item> {
@@ -32,7 +36,7 @@ export class InvoiceItemFirestoreRepository implements IInvoiceItemRepository {
     item.updatedAt = Date.now();
     item.invoiceId = invoiceId;
 
-    return this.db.nestedCollection<Item>(invoiceId, 'items').addDoc(item);
+    return this.itemFirestore(invoiceId).addDoc(item);
   }
 
   async addMany(items: Partial<Item>[], invoiceId: string): Promise<Item[]> {
@@ -44,7 +48,7 @@ export class InvoiceItemFirestoreRepository implements IInvoiceItemRepository {
       item.updatedAt = Date.now();
     });
 
-    return this.db.nestedCollection<Item>(invoiceId, 'items').addDocs(items);
+    return this.itemFirestore(invoiceId).addDocs(items);
   }
 
   async update(item: Partial<Item> & { id: string }, invoiceId: string): Promise<Item> {
@@ -52,24 +56,24 @@ export class InvoiceItemFirestoreRepository implements IInvoiceItemRepository {
     item.updatedBy = this.locker.user.uid;
     item.updatedAt = Date.now();
 
-    return this.db.nestedCollection<Item>(invoiceId, 'items').updateDoc(item);
+    return this.itemFirestore(invoiceId).updateDoc(item);
   }
 
-  async updateMany(items: (Partial<Item> & { id: string })[], InvoiceId: string): Promise<Item[]> {
+  async updateMany(items: (Partial<Item> & { id: string })[], invoiceId: string): Promise<Item[]> {
     items.forEach(item => {
       // Update some fields
       item.updatedBy = this.locker.user.uid;
       item.updatedAt = Date.now();
     });
 
-    return this.db.nestedCollection<Item>(InvoiceId, 'items').updateDocs(items);
+    return this.itemFirestore(invoiceId).updateDocs(items);
   }
 
   async delete(id: string, invoiceId: string): Promise<Item> {
-    return this.db.nestedCollection<Item>(invoiceId, 'items').deleteDoc(id);
+    return this.itemFirestore(invoiceId).deleteDoc(id);
   }
 
-  async deleteMany(InvoiceId: string): Promise<Item[]> {
-    return this.db.nestedCollection<Item>(InvoiceId, 'items').deleteDocs();
+  async deleteMany(invoiceId: string): Promise<Item[]> {
+    return this.itemFirestore(invoiceId).deleteDocs();
   }
 }

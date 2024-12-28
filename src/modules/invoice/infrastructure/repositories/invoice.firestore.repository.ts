@@ -7,7 +7,7 @@ import { FirestoreService, LockerService } from '../../../../core/providers';
 import { IInvoiceRepository, Invoice } from '../../domain';
 
 @Injectable()
-export class InvoiceFirestoreRepository implements IInvoiceRepository {
+export class InvoiceFirestoreRepository implements IInvoiceRepository<Invoice> {
   constructor(
     @Inject(LOCKER_PROVIDER)
     private readonly locker: LockerService,
@@ -44,6 +44,16 @@ export class InvoiceFirestoreRepository implements IInvoiceRepository {
     invoice.updatedAt = Date.now();
 
     return this.db.updateDoc(invoice);
+  }
+
+  async updateMany(invoices: (Partial<Invoice> & { id: string })[]): Promise<Invoice[]> {
+    invoices.forEach(invoice => {
+      // Update some fields
+      invoice.updatedBy = this.locker.user.uid;
+      invoice.updatedAt = Date.now();
+    });
+
+    return this.db.updateDocs(invoices);
   }
 
   async delete(id: string): Promise<Invoice> {

@@ -1,6 +1,5 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 
-import { OrganizationModule } from '../organization/organization.module';
 import { AddCodes, DraftCode, GetCode, GetCodes, ImportCodes, IsCodeExistConstraint, ReuseCodes, UpdateCode } from './application';
 import { CODE_REPOSITORY_PROVIDER, CODE_SERVICE_PROVIDER, CODE_USECASE_PROVIDERS } from './domain';
 import { CodeFirestoreRepository, CodeService } from './infrastructure';
@@ -39,8 +38,8 @@ const codeUsecases = [
   },
 ];
 
+@Global()
 @Module({
-  imports: [OrganizationModule],
   controllers: [CodeController],
   providers: [
     ...validators,

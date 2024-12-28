@@ -9,16 +9,31 @@ import * as https from 'https';
 import { ETA_CONFIGS_PROVIDER, ETA_PROVIDER, HTTP_PROVIDER } from '../../constants';
 import { Utils } from '../../utils';
 
+import { BadRequestException } from '../../exceptions';
 import { AddEtaInvoice, EtaCredentials, EtaInvoice, InvoiceQueryResult, QueryInvoices } from './entities';
 import { EtaConfigs } from './eta.config';
 import { EtaService } from './eta.service';
 
-type DocumentAccepted = { uuid: string; longId: string; internalId: string; hashKey: string };
-type DocumentRejected = {
-  internalId?: string;
-  error?: { code?: string; message?: string; target?: string; propertyPath?: any; details?: any[] };
-  // TODO: check type in real test
-};
+interface DocumentAccepted {
+  uuid: string;
+  longId: string;
+  internalId: string;
+  hashKey: string;
+}
+
+// TODO: check type in real test
+interface DocumentRejected {
+  internalId: string;
+  error: { code?: string; message?: string; target?: string; propertyPath?: any; details?: any[] };
+}
+
+interface InvoiceResponse {
+  submissionId: string;
+  acceptedDocuments: DocumentAccepted[];
+  rejectedDocuments: DocumentRejected[];
+}
+
+export type DocumentStatus = 'cancelled' | 'rejected';
 
 @Injectable()
 export class EtaEInvoicingService {
@@ -59,12 +74,15 @@ export class EtaEInvoicingService {
     return firstValueFrom(response);
   }
 
-  async addInvoices(invoices: AddEtaInvoice[], credential: EtaCredentials, organizationId: string): Promise<DocumentAccepted[]> {
+  async addInvoices(invoices: AddEtaInvoice[], credential: EtaCredentials, organizationId: string): Promise<InvoiceResponse> {
+    // Before further processing, validate the invoice type
+    for (const invoice of invoices) await this.validateInvoiceType(invoice);
+
     const header = await this.eta.login(credential, organizationId);
     const url = `${this.configs.apiVersionUrl}/documentsubmissions`;
 
     const response = this.http
-      .post<{ submissionId: string; acceptedDocuments: DocumentAccepted[]; rejectedDocuments: DocumentRejected[] }>(
+      .post<InvoiceResponse>(
         url,
         { documents: invoices },
         {
@@ -75,7 +93,7 @@ export class EtaEInvoicingService {
         },
       )
       .pipe(
-        map(response => response.data.acceptedDocuments),
+        map(response => response.data),
         catchError(error => {
           //TODO: HANDLE ERROR OF SAME INVOICE
           throw new HttpException(error.response.data.error?.details?.map(err => err.message).join(',') ?? error.response.data.error, error.response.status, {
@@ -87,13 +105,7 @@ export class EtaEInvoicingService {
     return firstValueFrom(response);
   }
 
-  async rejectOrCancelInvoice(
-    uuid: string,
-    status: 'cancelled' | 'rejected',
-    reason: string,
-    credential: EtaCredentials,
-    organizationId: string,
-  ): Promise<boolean> {
+  async rejectOrCancelInvoice(uuid: string, status: DocumentStatus, reason: string, credential: EtaCredentials, organizationId: string): Promise<boolean> {
     const header = await this.eta.login(credential, organizationId);
     const url = `${this.configs.apiVersionUrl}/documents/state/${uuid}/state`;
 
@@ -126,7 +138,7 @@ export class EtaEInvoicingService {
   async queryDocuments(query: QueryInvoices, credential: EtaCredentials, organizationId: string): Promise<InvoiceQueryResult> {
     const header = await this.eta.login(credential, organizationId);
 
-    const remainingQuery = Utils.Tax.buildEtaQuery(query);
+    const remainingQuery = Utils.Eta.buildEtaQuery(query);
     const urlQuery = remainingQuery ? `${remainingQuery}` : '';
     const url = `${this.configs.apiVersionUrl}/documents/search?${urlQuery}`;
 
@@ -172,5 +184,55 @@ export class EtaEInvoicingService {
       );
 
     return firstValueFrom(response);
+  }
+
+  private async validateInvoiceType(invoice: AddEtaInvoice): Promise<boolean> {
+    // All lines must have weight quantity
+    const haveWeight = (): boolean => {
+      if (invoice.invoiceLines.every(line => !!line.weightQuantity)) return true;
+      throw new BadRequestException('All lines must have weight quantity!');
+    };
+
+    // At least one reference must be present
+    const hasReference = (): boolean => {
+      if (invoice.references.length > 0) return true;
+      throw new BadRequestException('At least one reference must be present!');
+    };
+
+    // Invoice must have a service delivery date
+    const hasServiceDeliveryDate = (): boolean => {
+      if (invoice.serviceDeliveryDate) return true;
+      throw new BadRequestException('Invoice must have a service delivery date!');
+    };
+
+    return new Promise<boolean>((resolve, reject) => {
+      try {
+        const validate = (): boolean => {
+          switch (invoice.documentType) {
+            case 'C':
+              return hasReference();
+
+            case 'D':
+              return hasReference();
+
+            case 'EC':
+              return haveWeight() && hasServiceDeliveryDate() && hasReference();
+
+            case 'ED':
+              return haveWeight() && hasServiceDeliveryDate() && hasReference();
+
+            case 'EI':
+              return haveWeight() && hasServiceDeliveryDate();
+
+            default:
+              return true;
+          }
+        };
+
+        resolve(validate());
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 }

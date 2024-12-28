@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 
 import {
   AddBranch,
@@ -123,6 +123,7 @@ const productsUsecases = [
   },
 ];
 
+@Global()
 @Module({
   imports: [],
   controllers: [OrganizationController, OrganizationPreferencesController, OrganizationBranchController, OrganizationProductController],
@@ -183,6 +184,10 @@ const productsUsecases = [
     {
       provide: PRODUCT_SERVICE_PROVIDER,
       useClass: OrganizationProductService,
+    },
+    {
+      provide: BRANCH_SERVICE_PROVIDER,
+      useClass: OrganizationBranchService,
     },
     {
       provide: ORGANIZATION_TAX_SERVICE_PROVIDER,
