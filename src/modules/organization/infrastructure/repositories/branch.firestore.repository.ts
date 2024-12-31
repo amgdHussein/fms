@@ -1,16 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FIRESTORE_COLLECTION_PROVIDERS, LOCKER_PROVIDER } from '../../../../core/constants';
+import { AuthService } from '../../../../core/auth';
+import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
 import { QueryFilter } from '../../../../core/models';
-import { FirestoreService, LockerService } from '../../../../core/providers';
+import { FirestoreService } from '../../../../core/providers';
 
 import { IOrganizationBranchRepository, OrganizationBranch } from '../../domain';
 
 @Injectable()
 export class OrganizationBranchFirestoreRepository implements IOrganizationBranchRepository {
   constructor(
-    @Inject(LOCKER_PROVIDER)
-    private readonly locker: LockerService,
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
 
     @Inject(FIRESTORE_COLLECTION_PROVIDERS.BRANCHES)
     private readonly db: FirestoreService<OrganizationBranch>,
@@ -26,9 +27,9 @@ export class OrganizationBranchFirestoreRepository implements IOrganizationBranc
 
   async add(branch: Partial<OrganizationBranch> & { organizationId: string }): Promise<OrganizationBranch> {
     // Initiate some fields
-    branch.createdBy = this.locker.user.uid;
+    branch.createdBy = this.authService.currentUser.uid;
     branch.createdAt = Date.now();
-    branch.updatedBy = this.locker.user.uid;
+    branch.updatedBy = this.authService.currentUser.uid;
     branch.updatedAt = Date.now();
 
     return this.db.addDoc(branch);
@@ -36,7 +37,7 @@ export class OrganizationBranchFirestoreRepository implements IOrganizationBranc
 
   async update(branch: Partial<OrganizationBranch> & { id: string }): Promise<OrganizationBranch> {
     // Update some fields
-    branch.updatedBy = this.locker.user.uid;
+    branch.updatedBy = this.authService.currentUser.uid;
     branch.updatedAt = Date.now();
 
     return this.db.updateDoc(branch);

@@ -1,16 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FIRESTORE_COLLECTION_PROVIDERS, LOCKER_PROVIDER } from '../../../../core/constants';
+import { AuthService } from '../../../../core/auth';
+import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
 import { QueryFilter } from '../../../../core/models';
-import { FirestoreService, LockerService } from '../../../../core/providers';
+import { FirestoreService } from '../../../../core/providers';
 
 import { Account, AccountStatus, IAccountRepository } from '../../domain';
 
 @Injectable()
 export class AccountFirestoreRepository implements IAccountRepository {
   constructor(
-    @Inject(LOCKER_PROVIDER)
-    private readonly locker: LockerService,
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
 
     @Inject(FIRESTORE_COLLECTION_PROVIDERS.ACCOUNTS)
     private readonly db: FirestoreService<Account>,
@@ -27,9 +28,9 @@ export class AccountFirestoreRepository implements IAccountRepository {
   async add(account: Partial<Account>): Promise<Account> {
     // Initiate some fields
     account.status = AccountStatus.ACTIVE;
-    account.createdBy = this.locker.user.uid;
+    account.createdBy = this.authService.currentUser.uid;
     account.createdAt = Date.now();
-    account.updatedBy = this.locker.user.uid;
+    account.updatedBy = this.authService.currentUser.uid;
     account.updatedAt = Date.now();
 
     return this.db.addDoc(account);
@@ -37,7 +38,7 @@ export class AccountFirestoreRepository implements IAccountRepository {
 
   async update(account: Partial<Account> & { id: string }): Promise<Account> {
     // Update some fields
-    account.updatedBy = this.locker.user.uid;
+    account.updatedBy = this.authService.currentUser.uid;
     account.updatedAt = Date.now();
 
     return this.db.updateDoc(account);

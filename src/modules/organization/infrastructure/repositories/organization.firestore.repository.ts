@@ -1,16 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FIRESTORE_COLLECTION_PROVIDERS, LOCKER_PROVIDER } from '../../../../core/constants';
+import { AuthService } from '../../../../core/auth';
+import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
 import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
-import { FirestoreService, LockerService } from '../../../../core/providers';
+import { FirestoreService } from '../../../../core/providers';
 
 import { IOrganizationRepository, Organization } from '../../domain';
 
 @Injectable()
 export class OrganizationFirestoreRepository implements IOrganizationRepository {
   constructor(
-    @Inject(LOCKER_PROVIDER)
-    private readonly locker: LockerService,
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
 
     @Inject(FIRESTORE_COLLECTION_PROVIDERS.ORGANIZATIONS)
     private readonly db: FirestoreService<Organization>,
@@ -30,9 +31,9 @@ export class OrganizationFirestoreRepository implements IOrganizationRepository 
 
   async add(organization: Partial<Organization> & { userId: string }): Promise<Organization> {
     // Initiate some fields
-    organization.createdBy = this.locker.user.uid;
+    organization.createdBy = this.authService.currentUser.uid;
     organization.createdAt = Date.now();
-    organization.updatedBy = this.locker.user.uid;
+    organization.updatedBy = this.authService.currentUser.uid;
     organization.updatedAt = Date.now();
 
     return this.db.addDoc(organization);
@@ -40,7 +41,7 @@ export class OrganizationFirestoreRepository implements IOrganizationRepository 
 
   async update(organization: Partial<Organization> & { id: string }): Promise<Organization> {
     // Update some fields
-    organization.updatedBy = this.locker.user.uid;
+    organization.updatedBy = this.authService.currentUser.uid;
     organization.updatedAt = Date.now();
 
     return this.db.updateDoc(organization);

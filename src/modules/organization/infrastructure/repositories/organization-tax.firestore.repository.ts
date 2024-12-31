@@ -1,16 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FIRESTORE_COLLECTION_PROVIDERS, LOCKER_PROVIDER } from '../../../../core/constants';
+import { AuthService } from '../../../../core/auth';
+import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
 import { QueryFilter } from '../../../../core/models';
-import { FirestoreService, LockerService } from '../../../../core/providers';
+import { FirestoreService } from '../../../../core/providers';
 
 import { IOrganizationTaxRepository, OrganizationTax } from '../../domain';
 
 @Injectable()
 export class OrganizationTaxFirestoreRepository implements IOrganizationTaxRepository {
   constructor(
-    @Inject(LOCKER_PROVIDER)
-    private readonly locker: LockerService,
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
 
     @Inject(FIRESTORE_COLLECTION_PROVIDERS.ORGANIZATIONS_TAXES)
     private readonly db: FirestoreService<OrganizationTax>,
@@ -26,9 +27,9 @@ export class OrganizationTaxFirestoreRepository implements IOrganizationTaxRepos
 
   async add(tax: Partial<OrganizationTax> & { userId: string }): Promise<OrganizationTax> {
     // Initiate some fields
-    tax.createdBy = this.locker.user.uid;
+    tax.createdBy = this.authService.currentUser.uid;
     tax.createdAt = Date.now();
-    tax.updatedBy = this.locker.user.uid;
+    tax.updatedBy = this.authService.currentUser.uid;
     tax.updatedAt = Date.now();
 
     return this.db.addDoc(tax);
@@ -36,7 +37,7 @@ export class OrganizationTaxFirestoreRepository implements IOrganizationTaxRepos
 
   async update(tax: Partial<OrganizationTax> & { id: string }): Promise<OrganizationTax> {
     // Update some fields
-    tax.updatedBy = this.locker.user.uid;
+    tax.updatedBy = this.authService.currentUser.uid;
     tax.updatedAt = Date.now();
 
     return this.db.updateDoc(tax);

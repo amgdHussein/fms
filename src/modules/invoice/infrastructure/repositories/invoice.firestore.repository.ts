@@ -1,16 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FIRESTORE_COLLECTION_PROVIDERS, LOCKER_PROVIDER } from '../../../../core/constants';
+import { AuthService } from '../../../../core/auth';
+import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
 import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
-import { FirestoreService, LockerService } from '../../../../core/providers';
+import { FirestoreService } from '../../../../core/providers';
 
 import { IInvoiceRepository, Invoice } from '../../domain';
 
 @Injectable()
 export class InvoiceFirestoreRepository implements IInvoiceRepository<Invoice> {
   constructor(
-    @Inject(LOCKER_PROVIDER)
-    private readonly locker: LockerService,
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
 
     @Inject(FIRESTORE_COLLECTION_PROVIDERS.INVOICES)
     private readonly db: FirestoreService<Invoice>,
@@ -30,9 +31,9 @@ export class InvoiceFirestoreRepository implements IInvoiceRepository<Invoice> {
 
   async add(invoice: Partial<Invoice>): Promise<Invoice> {
     // Initiate some fields
-    invoice.createdBy = this.locker.user.uid;
+    invoice.createdBy = this.authService.currentUser.uid;
     invoice.createdAt = Date.now();
-    invoice.updatedBy = this.locker.user.uid;
+    invoice.updatedBy = this.authService.currentUser.uid;
     invoice.updatedAt = Date.now();
 
     return this.db.addDoc(invoice);
@@ -40,7 +41,7 @@ export class InvoiceFirestoreRepository implements IInvoiceRepository<Invoice> {
 
   async update(invoice: Partial<Invoice> & { id: string }): Promise<Invoice> {
     // Update some fields
-    invoice.updatedBy = this.locker.user.uid;
+    invoice.updatedBy = this.authService.currentUser.uid;
     invoice.updatedAt = Date.now();
 
     return this.db.updateDoc(invoice);
@@ -49,7 +50,7 @@ export class InvoiceFirestoreRepository implements IInvoiceRepository<Invoice> {
   async updateMany(invoices: (Partial<Invoice> & { id: string })[]): Promise<Invoice[]> {
     invoices.forEach(invoice => {
       // Update some fields
-      invoice.updatedBy = this.locker.user.uid;
+      invoice.updatedBy = this.authService.currentUser.uid;
       invoice.updatedAt = Date.now();
     });
 

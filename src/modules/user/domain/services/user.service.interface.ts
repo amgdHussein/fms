@@ -14,3 +14,5 @@ export interface IUserService {
 
   isUserActive(id: string): Promise<boolean>;
 }
+
+export interface IUserAuthService {}

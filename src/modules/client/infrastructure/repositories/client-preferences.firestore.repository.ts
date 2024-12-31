@@ -1,15 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FIRESTORE_COLLECTION_PROVIDERS, LOCKER_PROVIDER } from '../../../../core/constants';
-import { FirestoreService, LockerService } from '../../../../core/providers';
+import { AuthService } from '../../../../core/auth';
+import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
+import { FirestoreService } from '../../../../core/providers';
 
 import { ClientPreferences, IClientPreferencesRepository } from '../../domain';
 
 @Injectable()
 export class ClientPreferencesFirestoreRepository implements IClientPreferencesRepository {
   constructor(
-    @Inject(LOCKER_PROVIDER)
-    private readonly locker: LockerService,
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
 
     @Inject(FIRESTORE_COLLECTION_PROVIDERS.CLIENTS_PREFERENCES)
     private readonly db: FirestoreService<ClientPreferences>,
@@ -21,9 +22,9 @@ export class ClientPreferencesFirestoreRepository implements IClientPreferencesR
 
   async add(preferences: Partial<ClientPreferences> & { clientId: string }): Promise<ClientPreferences> {
     // Initiate some fields
-    preferences.createdBy = this.locker.user.uid;
+    preferences.createdBy = this.authService.currentUser.uid;
     preferences.createdAt = Date.now();
-    preferences.updatedBy = this.locker.user.uid;
+    preferences.updatedBy = this.authService.currentUser.uid;
     preferences.updatedAt = Date.now();
 
     return this.db.addDoc(preferences);
@@ -31,7 +32,7 @@ export class ClientPreferencesFirestoreRepository implements IClientPreferencesR
 
   async update(preferences: Partial<ClientPreferences> & { id: string }): Promise<ClientPreferences> {
     // Update some fields
-    preferences.updatedBy = this.locker.user.uid;
+    preferences.updatedBy = this.authService.currentUser.uid;
     preferences.updatedAt = Date.now();
 
     return this.db.updateDoc(preferences);

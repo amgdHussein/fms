@@ -1,24 +1,26 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import { ExtractJwt, Strategy } from 'passport-firebase-jwt';
 
-import { AUTH_CONFIGS_PROVIDER, AUTH_PROVIDER, AUTH_STRATEGY } from '../constants';
-import { AuthConfigs } from './auth.config';
+import { AUTH_PROVIDER, AUTH_STRATEGY, FIRE_AUTH_CONFIGS_PROVIDER } from '../constants';
+import { FireAuthConfigs } from '../providers';
+
 import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthStrategy extends PassportStrategy(Strategy, AUTH_STRATEGY) {
   constructor(
-    @Inject(AUTH_CONFIGS_PROVIDER)
-    private readonly configs: AuthConfigs,
+    @Inject(FIRE_AUTH_CONFIGS_PROVIDER)
+    configs: FireAuthConfigs,
 
     @Inject(AUTH_PROVIDER)
     private readonly authService: AuthService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configs.privateKey,
+      secretOrKey: configs.serviceAccount.privateKey,
     });
   }
 

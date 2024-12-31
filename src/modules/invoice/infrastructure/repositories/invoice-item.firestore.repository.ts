@@ -1,16 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FIRESTORE_COLLECTION_PROVIDERS, LOCKER_PROVIDER } from '../../../../core/constants';
+import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
 import { QueryFilter } from '../../../../core/models';
-import { FirestoreService, LockerService } from '../../../../core/providers';
+import { FirestoreService } from '../../../../core/providers';
 
+import { AuthService } from '../../../../core/auth';
 import { IInvoiceItemRepository, Invoice, Item } from '../../domain';
 
 @Injectable()
 export class InvoiceItemFirestoreRepository implements IInvoiceItemRepository {
   constructor(
-    @Inject(LOCKER_PROVIDER)
-    private readonly locker: LockerService,
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
 
     @Inject(FIRESTORE_COLLECTION_PROVIDERS.INVOICES)
     private readonly db: FirestoreService<Invoice>,
@@ -30,9 +31,9 @@ export class InvoiceItemFirestoreRepository implements IInvoiceItemRepository {
 
   async add(item: Partial<Item>, invoiceId: string): Promise<Item> {
     // Initiate some fields
-    item.createdBy = this.locker.user.uid;
+    item.createdBy = this.authService.currentUser.uid;
     item.createdAt = Date.now();
-    item.updatedBy = this.locker.user.uid;
+    item.updatedBy = this.authService.currentUser.uid;
     item.updatedAt = Date.now();
     item.invoiceId = invoiceId;
 
@@ -42,9 +43,9 @@ export class InvoiceItemFirestoreRepository implements IInvoiceItemRepository {
   async addMany(items: Partial<Item>[], invoiceId: string): Promise<Item[]> {
     items.forEach(item => {
       // Initiate some fields
-      item.createdBy = this.locker.user.uid;
+      item.createdBy = this.authService.currentUser.uid;
       item.createdAt = Date.now();
-      item.updatedBy = this.locker.user.uid;
+      item.updatedBy = this.authService.currentUser.uid;
       item.updatedAt = Date.now();
     });
 
@@ -53,7 +54,7 @@ export class InvoiceItemFirestoreRepository implements IInvoiceItemRepository {
 
   async update(item: Partial<Item> & { id: string }, invoiceId: string): Promise<Item> {
     // Update some fields
-    item.updatedBy = this.locker.user.uid;
+    item.updatedBy = this.authService.currentUser.uid;
     item.updatedAt = Date.now();
 
     return this.itemFirestore(invoiceId).updateDoc(item);
@@ -62,7 +63,7 @@ export class InvoiceItemFirestoreRepository implements IInvoiceItemRepository {
   async updateMany(items: (Partial<Item> & { id: string })[], invoiceId: string): Promise<Item[]> {
     items.forEach(item => {
       // Update some fields
-      item.updatedBy = this.locker.user.uid;
+      item.updatedBy = this.authService.currentUser.uid;
       item.updatedAt = Date.now();
     });
 

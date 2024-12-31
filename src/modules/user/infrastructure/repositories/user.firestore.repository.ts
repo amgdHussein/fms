@@ -1,16 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FIRESTORE_COLLECTION_PROVIDERS, LOCKER_PROVIDER } from '../../../../core/constants';
+import { AuthService } from '../../../../core/auth';
+import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
 import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
-import { FirestoreService, LockerService } from '../../../../core/providers';
+import { FirestoreService } from '../../../../core/providers';
 
 import { IUserRepository, User } from '../../domain';
 
 @Injectable()
 export class UserFirestoreRepository implements IUserRepository {
   constructor(
-    @Inject(LOCKER_PROVIDER)
-    private readonly locker: LockerService,
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
 
     @Inject(FIRESTORE_COLLECTION_PROVIDERS.USERS)
     private readonly db: FirestoreService<User>,
@@ -30,9 +31,9 @@ export class UserFirestoreRepository implements IUserRepository {
 
   async add(user: Partial<User>): Promise<User> {
     // Initiate some fields
-    user.createdBy = this.locker.user.uid;
+    user.createdBy = this.authService.currentUser.uid;
     user.createdAt = Date.now();
-    user.updatedBy = this.locker.user.uid;
+    user.updatedBy = this.authService.currentUser.uid;
     user.updatedAt = Date.now();
 
     return this.db.addDoc(user);
@@ -40,7 +41,7 @@ export class UserFirestoreRepository implements IUserRepository {
 
   async set(user: Partial<User> & { id: string }): Promise<User> {
     // Initiate some fields
-    user.updatedBy = this.locker.user.uid;
+    user.updatedBy = this.authService.currentUser.uid;
     user.updatedAt = Date.now();
 
     return this.db.setDoc(user as User);
@@ -48,7 +49,7 @@ export class UserFirestoreRepository implements IUserRepository {
 
   async update(user: Partial<User> & { id: string }): Promise<User> {
     // Update some fields
-    user.updatedBy = this.locker.user.uid;
+    user.updatedBy = this.authService.currentUser.uid;
     user.updatedAt = Date.now();
 
     return this.db.updateDoc(user);

@@ -1,5 +1,5 @@
 import { BullModule } from '@nestjs/bull';
-import { Module, ValidationPipe } from '@nestjs/common';
+import { Module, Scope, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
@@ -8,8 +8,10 @@ import * as Joi from 'joi';
 import { AuthModule } from './core/auth';
 import { ExceptionFilter } from './core/filters';
 import { LoggingInterceptor } from './core/interceptors';
-import { CloudTasksModule, EtaModule, EventEmitterModule, FirestoreModule, HttpModule, LockerModule, RedisModule } from './core/providers';
+import { CloudTasksModule, EtaModule, EventEmitterModule, FireAuthModule, FirestoreModule, GmailModule, HttpModule, RedisModule } from './core/providers';
 
+import { ClsModule } from 'nestjs-cls';
+import { Environment } from './core/constants';
 import { AccountModule, ClientModule, CodeModule, InvoiceModule, OrganizationModule, UserModule } from './modules';
 
 @Module({
@@ -55,22 +57,29 @@ import { AccountModule, ClientModule, CodeModule, InvoiceModule, OrganizationMod
       port: +process.env.REDISPORT,
     }),
 
-    AuthModule.forRoot({
-      projectId: process.env.GCLOUD_PROJECT_ID,
-      clientEmail: process.env.GCLOUD_CLIENT_EMAIL,
-      privateKey: process.env.GCLOUD_PRIVATE_KEY,
-    }),
-
-    LockerModule.forRoot({
+    ClsModule.forRoot({
       global: true,
       interceptor: {
         mount: true, // Automatically mount the ClsMiddleware for all routes
-        // Use the setup method to provide default store values
         setup: (cls, req) => {
+          // Setup/store context data for the current request
           const ctx = req.switchToHttp().getRequest();
-          cls.set('user', ctx.user);
-          cls.set('environment', process.env.APP_ENV);
+          const user = !ctx.user && process.env.NODE_ENV != Environment.PROD ? { uid: 'test' } : ctx.user;
+          cls.set('currentUser', user); // Store the current authenticated user
         },
+      },
+    }),
+
+    // ? Core Modules
+
+    AuthModule,
+
+    FireAuthModule.forRoot({
+      dbURL: process.env.FIREBASE_DATABASE_URL,
+      serviceAccount: {
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY,
       },
     }),
 
@@ -93,6 +102,12 @@ import { AccountModule, ClientModule, CodeModule, InvoiceModule, OrganizationMod
       },
     }),
 
+    GmailModule.forRoot({
+      email: process.env.GMAIL_EMAIL,
+      clientId: process.env.GMAIL_CLIENT_ID,
+      privateKey: process.env.GMAIL_PRIVATE_KEY,
+    }),
+
     EtaModule.forRoot({
       identityUrl: process.env.ETA_IDENTITY_URL,
       apiVersionUrl: process.env.ETA_API_VERSION_URL,
@@ -111,17 +126,20 @@ import { AccountModule, ClientModule, CodeModule, InvoiceModule, OrganizationMod
 
   providers: [
     {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+      scope: Scope.REQUEST,
+    },
+
+    {
       provide: APP_PIPE,
       useValue: new ValidationPipe({
-        disableErrorMessages: false,
-        whitelist: false, // TODO: TURN IT ON AFTER SETTING UP ENTITIES DTO
+        disableErrorMessages: process.env.NODE_ENV == Environment.PROD,
+        whitelist: process.env.NODE_ENV != Environment.DEV,
         transform: true,
       }),
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor,
-    },
+
     {
       provide: APP_FILTER,
       useClass: ExceptionFilter,

@@ -1,16 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FIRESTORE_COLLECTION_PROVIDERS, LOCKER_PROVIDER } from '../../../../core/constants';
+import { AuthService } from '../../../../core/auth';
+import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
 import { QueryFilter } from '../../../../core/models';
-import { FirestoreService, LockerService } from '../../../../core/providers';
+import { FirestoreService } from '../../../../core/providers';
 
 import { IOrganizationProductRepository, Organization, Product } from '../../domain';
 
 @Injectable()
 export class OrganizationProductFirestoreRepository implements IOrganizationProductRepository {
   constructor(
-    @Inject(LOCKER_PROVIDER)
-    private readonly locker: LockerService,
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
 
     @Inject(FIRESTORE_COLLECTION_PROVIDERS.ORGANIZATIONS)
     private readonly db: FirestoreService<Organization>,
@@ -26,9 +27,9 @@ export class OrganizationProductFirestoreRepository implements IOrganizationProd
 
   async add(product: Partial<Product>, organizationId: string): Promise<Product> {
     // Initiate some fields
-    product.createdBy = this.locker.user.uid;
+    product.createdBy = this.authService.currentUser.uid;
     product.createdAt = Date.now();
-    product.updatedBy = this.locker.user.uid;
+    product.updatedBy = this.authService.currentUser.uid;
     product.updatedAt = Date.now();
 
     return this.db.nestedCollection<Product>(organizationId, 'products').addDoc(product);
@@ -36,7 +37,7 @@ export class OrganizationProductFirestoreRepository implements IOrganizationProd
 
   async update(product: Partial<Product> & { id: string }, organizationId: string): Promise<Product> {
     // Update some fields
-    product.updatedBy = this.locker.user.uid;
+    product.updatedBy = this.authService.currentUser.uid;
     product.updatedAt = Date.now();
 
     return this.db.nestedCollection<Product>(organizationId, 'products').updateDoc(product);
