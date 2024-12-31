@@ -1,5 +1,6 @@
 export enum AccountRole {
   OWNER = 0,
-  MANAGER = 1,
-  ACCOUNTANT = 2,
+  FINANCE_MANAGER = 1,
+  OPERATOR = 2,
+  ISSUER = 3,
 }

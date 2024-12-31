@@ -1,25 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import {
-  AddAccount,
-  DeleteAccount,
-  GetAccount,
-  GetAccountPreferences,
-  GetOrganizationAccounts,
-  GetUserAccounts,
-  UpdateAccount,
-  UpdateAccountPreferences,
-} from './application';
-import {
-  ACCOUNT_PREFERENCES_REPOSITORY_PROVIDER,
-  ACCOUNT_PREFERENCES_SERVICE_PROVIDER,
-  ACCOUNT_PREFERENCES_USECASE_PROVIDERS,
-  ACCOUNT_REPOSITORY_PROVIDER,
-  ACCOUNT_SERVICE_PROVIDER,
-  ACCOUNT_USECASE_PROVIDERS,
-} from './domain';
-import { AccountFirestoreRepository, AccountPreferencesFirestoreRepository, AccountPreferencesService, AccountService } from './infrastructure';
-import { AccountController, AccountPreferencesController } from './presentation';
+import { AddAccount, DeleteAccount, GetAccount, GetOrganizationAccounts, GetUserAccounts, UpdateAccount } from './application';
+import { ACCOUNT_REPOSITORY_PROVIDER, ACCOUNT_SERVICE_PROVIDER, ACCOUNT_USECASE_PROVIDERS } from './domain';
+import { AccountFirestoreRepository, AccountService } from './infrastructure';
+import { AccountController } from './presentation';
 
 const validators = [];
 
@@ -49,20 +33,10 @@ const accountUsecases = [
     useClass: GetUserAccounts,
   },
 ];
-const accountPreferencesUsecases = [
-  {
-    provide: ACCOUNT_PREFERENCES_USECASE_PROVIDERS.GET_ACCOUNT_PREFERENCES,
-    useClass: GetAccountPreferences,
-  },
-  {
-    provide: ACCOUNT_PREFERENCES_USECASE_PROVIDERS.UPDATE_ACCOUNT_PREFERENCES,
-    useClass: UpdateAccountPreferences,
-  },
-];
 
 @Module({
   imports: [],
-  controllers: [AccountController, AccountPreferencesController],
+  controllers: [AccountController],
   providers: [
     ...validators,
 
@@ -74,17 +48,8 @@ const accountPreferencesUsecases = [
       provide: ACCOUNT_SERVICE_PROVIDER,
       useClass: AccountService,
     },
-    {
-      provide: ACCOUNT_PREFERENCES_REPOSITORY_PROVIDER,
-      useClass: AccountPreferencesFirestoreRepository,
-    },
-    {
-      provide: ACCOUNT_PREFERENCES_SERVICE_PROVIDER,
-      useClass: AccountPreferencesService,
-    },
 
     ...accountUsecases,
-    ...accountPreferencesUsecases,
   ],
   exports: [
     {

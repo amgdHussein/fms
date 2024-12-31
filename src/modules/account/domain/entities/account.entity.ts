@@ -1,3 +1,4 @@
+import { Phone } from '../../../../core/common';
 import { AccountRole } from './account-role.enum';
 import { AccountStatus } from './account-status.enum';
 import { AccountType } from './account-type.enum';
@@ -5,7 +6,8 @@ import { AccountType } from './account-type.enum';
 export interface Account {
   id: string;
   userId: string;
-  preferencesId: string;
+
+  activeOrganizationId: string; // Organization that the account is currently active in
 
   status: AccountStatus;
   type: AccountType;
@@ -13,6 +15,9 @@ export interface Account {
 
   startAt: number;
   endAt?: number; // Timestamp when the account will no longer be active
+
+  email?: string;
+  phone?: Phone;
 
   createdBy: string; // User who created the account
   createdAt: number; // Timestamp when the account was created
