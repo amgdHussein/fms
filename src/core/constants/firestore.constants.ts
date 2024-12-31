@@ -1,6 +1,10 @@
 export const FIRESTORE_PROVIDER = 'FIRESTORE_PROVIDER';
 export const FIRESTORE_OPTIONS_PROVIDER = 'FIRESTORE_OPTIONS_PROVIDER';
 export enum FIRESTORE_COLLECTION_PROVIDERS {
+  // ? Logging Related
+  LOGS = 'logs',
+  EVENTS = 'events',
+
   // ? User Related
   USERS = 'users',
   USERS_PREFERENCES = 'users-preferences',
