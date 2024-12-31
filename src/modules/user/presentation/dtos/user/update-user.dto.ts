@@ -4,5 +4,5 @@ import { UserDto } from './user.dto';
 
 export class UpdateUserDto extends IntersectionType(
   PickType(UserDto, ['id']),
-  PartialType(OmitType(UserDto, ['id', 'preferencesId', 'role', 'status', 'searchTerms', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'])),
+  PartialType(OmitType(UserDto, ['id', 'role', 'status', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'])),
 ) {}

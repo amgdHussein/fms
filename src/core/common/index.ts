@@ -1,9 +1,11 @@
 export { Address } from './address.model';
 export { Authority } from './authority.enum';
+export { CountryCode } from './country-code.enum';
 export { CurrencyCode } from './currency.enum';
 export { Currency } from './currency.model';
 export { Cycle } from './cycle.enum';
 export { Discount } from './discount.model';
+export { Gender } from './gender.enum';
 export { Identification } from './identification.model';
 export { Language } from './language.enum';
 export { Phone } from './phone.model';
