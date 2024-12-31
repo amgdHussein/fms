@@ -76,14 +76,22 @@ export class FirestoreService<T extends { id: string }> {
   }
 
   /**
-   * Retrieves all documents from the collection that match the specified filters.
-   * @param {QueryFilter[]} [filters] - An array of filters to apply to the query
-   * @return {Promise<T[]>} A promise that resolves with an array of documents that match the filter(s)
+   * Retrieves documents from the collection based on the provided filters, pagination, and sorting options.
+   *
+   * @param {Array<QueryFilter>} [filters] - Optional filters to apply to the query.
+   * @param {number} [page] - Optional page number for pagination.
+   * @param {number} [limit] - Optional number of documents to retrieve per page.
+   * @param {QueryOrder} [orderBy] - Optional sorting order for the query.
+   * @return {Promise<T[]>} A promise that resolves with an array of the retrieved documents.
+   * @throws {InternalServerErrorException} If an error occurs while fetching the documents.
    */
-  async getDocs(filters?: QueryFilter[]): Promise<T[]> {
-    const query: Query<T> = this.buildQuery(filters).withConverter<T>(this.firestoreConverter);
+  async getDocs(filters?: QueryFilter[], page?: number, limit?: number, orderBy?: QueryOrder): Promise<T[]> {
+    let queries: Query<T> = this.buildQuery(filters).withConverter<T>(this.firestoreConverter);
+    if (orderBy) queries = queries.orderBy(orderBy.key, orderBy.dir);
+    if (page && limit && page > 0 && limit > 0) queries = queries.offset(limit * (page - 1));
+    if (limit && limit > 0) queries = queries.limit(limit);
 
-    return query
+    return queries
       .get()
       .then(snapshot => snapshot.docs.map(doc => doc.data()))
       .catch(error => {

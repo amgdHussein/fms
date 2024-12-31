@@ -18,8 +18,8 @@ export class AddUser implements Usecase<User> {
   async execute(user: Partial<User> & { id: string }): Promise<User> {
     return this.userService.addUser(user).then(async user => {
       // Add user related data
-      await this.preferencesService.addPreferences({
-        userId: user.id,
+      await this.preferencesService.setPreferences({
+        id: user.id,
         email: user.email,
         language: Language.ENGLISH, // TODO: PASSED AS PARAMETER OR CALCULATED BASED ON USER'S NATIONALITY
       });

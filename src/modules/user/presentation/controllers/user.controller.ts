@@ -49,7 +49,7 @@ export class UserController {
   }
 
   @Get('/:id')
-  @ApiOperation({ summary: 'Retrieve a user by their unique ID.' }) // Consistent operation summary for fetching a single user
+  @ApiOperation({ summary: 'Retrieve a user by their unique ID.' })
   @ApiParam({
     name: 'id',
     type: String,
@@ -66,7 +66,7 @@ export class UserController {
   }
 
   @Post('/register')
-  @ApiOperation({ summary: 'Register a new user.' }) // Clear summary for user registration
+  @ApiOperation({ summary: 'Register a new user.' })
   @ApiBody({
     type: RegisterUserDto,
     required: true,
@@ -82,7 +82,7 @@ export class UserController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Add a new user to the system.' }) // Summary for adding a new user
+  @ApiOperation({ summary: 'Add a new user to the system.' })
   @ApiBody({
     type: AddUserDto,
     required: true,
@@ -97,8 +97,15 @@ export class UserController {
     return this.addUserUsecase.execute(entity);
   }
 
-  @Put()
-  @ApiOperation({ summary: 'Update user information.' }) // Summary for updating user data
+  @Put(':id')
+  @ApiOperation({ summary: 'Update user information.' })
+  @ApiParam({
+    name: 'id',
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    type: String,
+    description: 'The unique identifier of the user to be updated.',
+  })
   @ApiBody({
     type: UpdateUserDto,
     required: true,
@@ -108,12 +115,12 @@ export class UserController {
     type: UserDto,
     description: 'The updated user details.',
   })
-  async updateUser(@Body() entity: UpdateUserDto): Promise<UserDto> {
-    return this.updateUserUsecase.execute(entity);
+  async updateUser(@Param('id') id: string, @Body() entity: UpdateUserDto): Promise<UserDto> {
+    return this.updateUserUsecase.execute({ ...entity, id });
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete a user by their unique ID.' }) // Clear summary for deleting a user
+  @ApiOperation({ summary: 'Delete a user by their unique ID.' })
   @ApiParam({
     name: 'id',
     example: 'K05ThPKxfugr9yYhA82Z',

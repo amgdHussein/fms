@@ -1,17 +1,24 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 
 import {
   AddUser,
   DeleteUser,
   GetUser,
+  GetUserNotifications,
   GetUserPreferences,
   IsUserExistConstraint,
+  MarkAllAsRead,
+  MarkNotificationAsRead,
+  MarkNotificationAsUnread,
   QueryUsers,
   RegisterUser,
   UpdateUser,
   UpdateUserPreferences,
 } from './application';
 import {
+  USER_NOTIFICATION_REPOSITORY_PROVIDER,
+  USER_NOTIFICATION_SERVICE_PROVIDER,
+  USER_NOTIFICATION_USECASE_PROVIDERS,
   USER_PREFERENCES_REPOSITORY_PROVIDER,
   USER_PREFERENCES_SERVICE_PROVIDER,
   USER_PREFERENCES_USECASE_PROVIDERS,
@@ -19,8 +26,15 @@ import {
   USER_SERVICE_PROVIDER,
   USER_USECASE_PROVIDERS,
 } from './domain';
-import { UserFirestoreRepository, UserPreferencesFirestoreRepository, UserPreferencesService, UserService } from './infrastructure';
-import { UserController, UserPreferencesController } from './presentation';
+import {
+  UserFirestoreRepository,
+  UserNotificationFirestoreRepository,
+  UserNotificationService,
+  UserPreferencesFirestoreRepository,
+  UserPreferencesService,
+  UserService,
+} from './infrastructure';
+import { UserController, UserNotificationController, UserPreferencesController } from './presentation';
 
 const validators = [IsUserExistConstraint];
 const userUsecases = [
@@ -59,10 +73,28 @@ const userPreferencesUsecases = [
     useClass: UpdateUserPreferences,
   },
 ];
+const userNotificationUsecases = [
+  {
+    provide: USER_NOTIFICATION_USECASE_PROVIDERS.GET_USER_NOTIFICATIONS,
+    useClass: GetUserNotifications,
+  },
+  {
+    provide: USER_NOTIFICATION_USECASE_PROVIDERS.MARK_AS_READ,
+    useClass: MarkNotificationAsRead,
+  },
+  {
+    provide: USER_NOTIFICATION_USECASE_PROVIDERS.MARK_AS_UNREAD,
+    useClass: MarkNotificationAsUnread,
+  },
+  {
+    provide: USER_NOTIFICATION_USECASE_PROVIDERS.MARK_ALL_AS_READ,
+    useClass: MarkAllAsRead,
+  },
+];
 
+@Global()
 @Module({
-  imports: [],
-  controllers: [UserController, UserPreferencesController],
+  controllers: [UserController, UserPreferencesController, UserNotificationController],
   providers: [
     ...validators,
 
@@ -82,9 +114,18 @@ const userPreferencesUsecases = [
       provide: USER_PREFERENCES_SERVICE_PROVIDER,
       useClass: UserPreferencesService,
     },
+    {
+      provide: USER_NOTIFICATION_REPOSITORY_PROVIDER,
+      useClass: UserNotificationFirestoreRepository,
+    },
+    {
+      provide: USER_NOTIFICATION_SERVICE_PROVIDER,
+      useClass: UserNotificationService,
+    },
 
     ...userUsecases,
     ...userPreferencesUsecases,
+    ...userNotificationUsecases,
   ],
 })
 export class UserModule {}

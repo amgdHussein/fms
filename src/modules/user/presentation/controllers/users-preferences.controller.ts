@@ -7,7 +7,7 @@ import { USER_PREFERENCES_USECASE_PROVIDERS } from '../../domain';
 import { UpdateUserPreferencesDto, UserPreferencesDto } from '../dtos';
 
 @ApiTags('User Preferences') // Swagger tag for User Preferences APIs
-@Controller('users/preferences')
+@Controller('users')
 export class UserPreferencesController {
   constructor(
     @Inject(USER_PREFERENCES_USECASE_PROVIDERS.GET_USER_PREFERENCES)
@@ -17,8 +17,8 @@ export class UserPreferencesController {
     private readonly updateUserPreferencesUsecase: UpdateUserPreferences,
   ) {}
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Retrieve user preferences by user ID.' }) // Clear operation summary for fetching user preferences
+  @Get(':id/preferences')
+  @ApiOperation({ summary: 'Retrieve user preferences by user ID.' })
   @ApiParam({
     name: 'id',
     type: String,
@@ -34,8 +34,15 @@ export class UserPreferencesController {
     return this.getUserPreferencesUsecase.execute(id);
   }
 
-  @Put()
-  @ApiOperation({ summary: 'Update user preferences.' }) // Operation summary for updating user preferences
+  @Put(':id/preferences')
+  @ApiOperation({ summary: 'Update user preferences.' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    description: 'The unique ID of the user whose preferences are to be retrieved.',
+  })
   @ApiBody({
     type: UpdateUserPreferencesDto,
     required: true,
@@ -45,7 +52,7 @@ export class UserPreferencesController {
     type: UserPreferencesDto,
     description: 'The updated user preferences.',
   })
-  async updateUserPreferences(@Body() entity: UpdateUserPreferencesDto): Promise<UserPreferencesDto> {
-    return this.updateUserPreferencesUsecase.execute(entity);
+  async updateUserPreferences(@Param('id') id: string, @Body() entity: UpdateUserPreferencesDto): Promise<UserPreferencesDto> {
+    return this.updateUserPreferencesUsecase.execute({ ...entity, id });
   }
 }

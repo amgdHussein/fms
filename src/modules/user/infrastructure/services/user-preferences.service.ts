@@ -13,8 +13,12 @@ export class UserPreferencesService implements IUserPreferencesService {
     return this.repo.get(id);
   }
 
-  async addPreferences(preferences: Partial<UserPreferences & { userId: string }>): Promise<UserPreferences> {
+  async addPreferences(preferences: Partial<UserPreferences>): Promise<UserPreferences> {
     return this.repo.add(preferences);
+  }
+
+  async setPreferences(preferences: Partial<UserPreferences> & { id: string }): Promise<UserPreferences> {
+    return this.repo.set(preferences);
   }
 
   async updatePreferences(preferences: Partial<UserPreferences> & { id: string }): Promise<UserPreferences> {
