@@ -3,6 +3,7 @@ import { Global, Module } from '@nestjs/common';
 import {
   AddBranch,
   AddOrganization,
+  AddOrganizationTax,
   DeleteBranch,
   DeleteOrganization,
   GetBranch,
@@ -10,10 +11,12 @@ import {
   GetOrganization,
   GetOrganizationPreferences,
   GetOrganizations,
+  GetOrganizationTax,
   IsOrganizationExistConstraint,
   UpdateBranch,
   UpdateOrganization,
   UpdateOrganizationPreferences,
+  UpdateOrganizationTax,
 } from './application';
 import {
   BRANCH_REPOSITORY_PROVIDER,
@@ -26,6 +29,7 @@ import {
   ORGANIZATION_SERVICE_PROVIDER,
   ORGANIZATION_TAX_REPOSITORY_PROVIDER,
   ORGANIZATION_TAX_SERVICE_PROVIDER,
+  ORGANIZATION_TAX_USECASE_PROVIDERS,
   ORGANIZATION_USECASE_PROVIDERS,
   PRODUCT_REPOSITORY_PROVIDER,
   PRODUCT_SERVICE_PROVIDER,
@@ -43,7 +47,13 @@ import {
   OrganizationTaxFirestoreRepository,
   OrganizationTaxService,
 } from './infrastructure';
-import { OrganizationBranchController, OrganizationController, OrganizationPreferencesController, OrganizationProductController } from './presentation';
+import {
+  OrganizationBranchController,
+  OrganizationController,
+  OrganizationPreferencesController,
+  OrganizationProductController,
+  OrganizationTaxController,
+} from './presentation';
 
 const validators = [IsOrganizationExistConstraint];
 const organizationUsecases = [
@@ -122,11 +132,30 @@ const productsUsecases = [
     useClass: DeleteBranch,
   },
 ];
+const organizationTaxUsecases = [
+  {
+    provide: ORGANIZATION_TAX_USECASE_PROVIDERS.GET_ORGANIZATION_TAX,
+    useClass: GetOrganizationTax,
+  },
+  {
+    provide: ORGANIZATION_TAX_USECASE_PROVIDERS.ADD_ORGANIZATION_TAX,
+    useClass: AddOrganizationTax,
+  },
+  {
+    provide: ORGANIZATION_TAX_USECASE_PROVIDERS.UPDATE_ORGANIZATION_TAX,
+    useClass: UpdateOrganizationTax,
+  },
+];
 
 @Global()
 @Module({
-  imports: [],
-  controllers: [OrganizationController, OrganizationPreferencesController, OrganizationBranchController, OrganizationProductController],
+  controllers: [
+    OrganizationController,
+    OrganizationPreferencesController,
+    OrganizationTaxController,
+    OrganizationBranchController,
+    OrganizationProductController,
+  ],
   providers: [
     ...validators,
 
@@ -175,6 +204,7 @@ const productsUsecases = [
     ...preferencesUsecases,
     ...branchesUsecases,
     ...productsUsecases,
+    ...organizationTaxUsecases,
   ],
   exports: [
     {

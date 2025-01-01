@@ -88,21 +88,6 @@ export class ClientController {
     return this.addClientUsecase.execute(entity);
   }
 
-  @Post('clients/batch')
-  @ApiOperation({ summary: 'Add multiple Clients in a batch.' })
-  @ApiBody({
-    type: AddClientsDto,
-    required: true,
-    description: 'Array of Clients to be added to the database.',
-  })
-  @ApiResponse({
-    type: [ClientDto],
-    description: 'Returns a list of Clients that were recently added.',
-  })
-  async addClients(@Body() dto: AddClientsDto): Promise<ClientDto[]> {
-    return this.addClientsUsecase.execute(dto.clients);
-  }
-
   @Put('clients/:id')
   @ApiOperation({ summary: 'Update existing Client information.' })
   @ApiParam({
@@ -157,5 +142,20 @@ export class ClientController {
   })
   async getOrganizationClients(@Param('organizationId') organizationId: string): Promise<ClientDto[]> {
     return this.getOrganizationClientsUsecase.execute(organizationId);
+  }
+
+  @Post('organizations/:organizationId/clients')
+  @ApiOperation({ summary: 'Add multiple Clients in a batch.' })
+  @ApiBody({
+    type: AddClientsDto,
+    required: true,
+    description: 'Array of Clients to be added to the database.',
+  })
+  @ApiResponse({
+    type: [ClientDto],
+    description: 'Returns a list of Clients that were recently added.',
+  })
+  async addClients(@Body() dto: AddClientsDto): Promise<ClientDto[]> {
+    return this.addClientsUsecase.execute(dto.clients);
   }
 }
