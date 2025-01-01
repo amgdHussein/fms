@@ -23,8 +23,8 @@ export class AddOrganization implements Usecase<Organization> {
   async execute(organization: Partial<Organization> & { userId: string }): Promise<Organization> {
     return this.organizationService.addOrganization(organization).then(async org => {
       // Add organization related data
-      await this.preferencesService.addPreferences({
-        organizationId: org.id,
+      await this.preferencesService.setPreferences({
+        id: org.id,
         currencies: organization.currency ? [organization.currency] : [],
       });
 

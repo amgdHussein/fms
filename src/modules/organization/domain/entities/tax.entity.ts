@@ -1,17 +1,20 @@
-import { Authority } from '../../../../core/common';
+import { Authority, Photo } from '../../../../core/common';
+import { ActivityCode } from '../constants';
 
 export interface OrganizationTax {
   id: string;
   organizationId: string;
   authority: Authority; // Tax authority data for that organization
 
+  configurationFlags: Record<EtaFlag, boolean>; // Flags for the tax authority to control UI/API
+
   taxIdNo: string; // Tax ID number of the organization
+  taxIdPhoto?: Photo; // Photo of the tax ID
+  commercialRegistryNo?: string;
+  commercialRegistryPhoto?: Photo;
+
   clientId: string; // The client ID provided by the FTA
   clientSecret: string; // The client secret provided by the FTA
-  apiVersion: string; // API version (e.g. 1.0) Fixed
-
-  usbPin: string; // The USB token pin (encrypted)
-  usbCertificateName?: string; // The USB token certificate name
 
   activityCodes?: ActivityCode[]; // User must specify the activity codes that are relevant to their business
 
@@ -21,8 +24,4 @@ export interface OrganizationTax {
   updatedAt: number; // Timestamp when the organization tax was last updated
 }
 
-export interface ActivityCode {
-  code: string;
-  description: string;
-  descriptionAr: string;
-}
+export type EtaFlag = 'activeReceipt' | 'activeInvoice';

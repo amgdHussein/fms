@@ -1,11 +1,12 @@
-import { CurrencyCode } from '../../../../core/common';
+import { CountryTimezone, CurrencyCode } from '../../../../core/common';
 
 export interface OrganizationPreferences {
-  id: string;
-  organizationId: string;
+  id: string; // Same as organization ID
 
   currencies: CurrencyCode[]; // Currencies supported by the organization
   financialDate: FinancialDate; // Custom type for date without year
+  timezone: CountryTimezone;
+  startWeekOn?: number; // 0 - 6 (0 = Sunday, 6 = Saturday)
 
   createdBy: string; // User ID who created the preferences
   createdAt: number; // Date when the preferences was created

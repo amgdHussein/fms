@@ -4,10 +4,12 @@ import { OrganizationIndustry } from './industry.enum';
 import { LegalStructure } from './legal-structure.enum';
 import { OrganizationStatus } from './status.enum';
 
+// TODO: REMOVE ALL PREFERENCES IDS AND MAKE THEM AS PARENT ID
+
 export interface Organization {
   id: string;
-  preferencesId: string; // Unique ID for the preferences
   userId: string; // Organization owner
+  branchId: string; // Main/Primary branch
 
   status: OrganizationStatus;
 
@@ -21,9 +23,6 @@ export interface Organization {
   currency: CurrencyCode; // Primary currency
   industry: OrganizationIndustry; // Enum of strings like marketing, software industry
   legalStructure?: LegalStructure;
-
-  timezone: string;
-  startWeekOn?: number; // 0 - 6 (0 = Sunday, 6 = Saturday)
 
   createdBy: string; // User who created the organization
   createdAt: number; // Timestamp when the organization was created

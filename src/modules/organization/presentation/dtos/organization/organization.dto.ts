@@ -5,8 +5,8 @@ import { LegalStructure, Organization, OrganizationIndustry, OrganizationStatus 
 // TODO: FILL THE DTO
 export class OrganizationDto implements Organization {
   id: string;
-  preferencesId: string;
   userId: string;
+  branchId: string;
   status: OrganizationStatus;
   name: string;
   email: string;
@@ -16,8 +16,6 @@ export class OrganizationDto implements Organization {
   currency: CurrencyCode;
   industry: OrganizationIndustry;
   legalStructure?: LegalStructure;
-  timezone: string;
-  startWeekOn?: number;
   createdBy: string;
   createdAt: number;
   updatedBy: string;

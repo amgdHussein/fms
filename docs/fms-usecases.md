@@ -159,9 +159,9 @@ Schema for an online platform for managing invoices.
 ---
 
 - exception handling (custom exceptions entity)
-   <!-- - organization tax support -->
-   <!-- - tax code & eta integration -->
-- tax invoice & eta integration
+  <!-- - organization tax support -->
+  <!-- - tax code & eta integration -->
+  <!-- - tax invoice & eta integration -->
 - code cron jobs
 - invoice cron jobs
 - payment module

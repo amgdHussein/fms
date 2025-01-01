@@ -1,12 +1,13 @@
-import { CurrencyCode } from '../../../../../core/common';
-import { FinancialDate, OrganizationPreferences } from '../../../domain/entities';
+import { CountryTimezone, CurrencyCode } from '../../../../../core/common';
+import { OrganizationPreferences } from '../../../domain/entities';
 
 // TODO: FILL THE DTO
 export class OrganizationPreferencesDto implements OrganizationPreferences {
   id: string;
-  organizationId: string;
   currencies: CurrencyCode[];
-  financialDate: FinancialDate;
+  financialDate: `${string}-${string}`;
+  timezone: CountryTimezone;
+  startWeekOn?: number;
   createdBy: string;
   createdAt: number;
   updatedBy: string;

@@ -126,7 +126,7 @@ module.exports = {
     '@typescript-eslint/consistent-type-definitions': 'error',
 
     // Prefer initializing each enums member value
-    '@typescript-eslint/prefer-enum-initializers': 'error',
+    // '@typescript-eslint/prefer-enum-initializers': 'error',
 
     // Disallow unnecessary constructors
     'no-useless-constructor': 'off',
