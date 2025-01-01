@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { BRANCH_REPOSITORY_PROVIDER, IOrganizationProductRepository, IOrganizationProductService, Product } from '../../domain';
 
 @Injectable()
@@ -13,8 +14,8 @@ export class OrganizationProductService implements IOrganizationProductService {
     return this.repo.get(id, organizationId);
   }
 
-  async getProducts(organizationId: string): Promise<Product[]> {
-    return this.repo.getMany(organizationId);
+  async getProducts(organizationId: string, filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Product[]> {
+    return this.repo.getMany(organizationId, filters, page, limit, order);
   }
 
   async addProduct(product: Partial<Product> & { organizationId: string }): Promise<Product> {

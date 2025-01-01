@@ -23,7 +23,7 @@ export class QueryCodes {
   RequestType?: 'New' | 'Reusage';
 }
 
-export class QueryInvoices {
+export class GetInvoices {
   pageSize: number;
 
   submissionDateFrom: string;

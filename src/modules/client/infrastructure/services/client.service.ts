@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 
 import { Client, CLIENT_REPOSITORY_PROVIDER, IClientRepository, IClientService } from '../../domain';
 
@@ -15,12 +15,8 @@ export class ClientService implements IClientService {
     return this.repo.get(id);
   }
 
-  async getClients(): Promise<Client[]> {
-    return this.repo.getMany([{ key: 'status', op: 'eq', value: 0 }]);
-  }
-
-  async queryClients(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Client>> {
-    return this.repo.query(page, limit, filters, order);
+  async getClients(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Client[]> {
+    return this.repo.getMany(filters, page, limit, order);
   }
 
   async addClient(client: Partial<Client>): Promise<Client> {

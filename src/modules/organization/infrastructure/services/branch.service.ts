@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { BRANCH_REPOSITORY_PROVIDER, IOrganizationBranchRepository, IOrganizationBranchService, OrganizationBranch } from '../../domain';
 
 @Injectable()
@@ -13,8 +14,8 @@ export class OrganizationBranchService implements IOrganizationBranchService {
     return this.repo.get(id);
   }
 
-  async getBranches(organizationId: string): Promise<OrganizationBranch[]> {
-    return this.repo.getMany([{ key: 'organizationId', op: 'eq', value: organizationId }]);
+  async getBranches(organizationId: string, filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<OrganizationBranch[]> {
+    return this.repo.getMany([{ key: 'organizationId', op: 'eq', value: organizationId }, ...filters], page, limit, order);
   }
 
   async addBranch(branch: Partial<OrganizationBranch> & { organizationId: string }): Promise<OrganizationBranch> {

@@ -9,8 +9,8 @@ import {
   GetBranches,
   GetOrganization,
   GetOrganizationPreferences,
+  GetOrganizations,
   IsOrganizationExistConstraint,
-  QueryOrganizations,
   UpdateBranch,
   UpdateOrganization,
   UpdateOrganizationPreferences,
@@ -60,8 +60,8 @@ const organizationUsecases = [
     useClass: UpdateOrganization,
   },
   {
-    provide: ORGANIZATION_USECASE_PROVIDERS.QUERY_ORGANIZATIONS,
-    useClass: QueryOrganizations,
+    provide: ORGANIZATION_USECASE_PROVIDERS.GET_ORGANIZATIONS,
+    useClass: GetOrganizations,
   },
   {
     provide: ORGANIZATION_USECASE_PROVIDERS.DELETE_ORGANIZATION,

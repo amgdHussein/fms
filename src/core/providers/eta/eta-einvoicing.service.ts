@@ -10,7 +10,7 @@ import { ETA_CONFIGS_PROVIDER, ETA_PROVIDER, HTTP_PROVIDER } from '../../constan
 import { Utils } from '../../utils';
 
 import { BadRequestException } from '../../exceptions';
-import { AddEtaInvoice, EtaCredentials, EtaInvoice, InvoiceQueryResult, QueryInvoices } from './entities';
+import { AddEtaInvoice, EtaCredentials, EtaInvoice, GetInvoices, InvoiceQueryResult } from './entities';
 import { EtaConfigs } from './eta.config';
 import { EtaService } from './eta.service';
 
@@ -135,7 +135,7 @@ export class EtaEInvoicingService {
     return firstValueFrom(response);
   }
 
-  async queryDocuments(query: QueryInvoices, credential: EtaCredentials, organizationId: string): Promise<InvoiceQueryResult> {
+  async queryDocuments(query: GetInvoices, credential: EtaCredentials, organizationId: string): Promise<InvoiceQueryResult> {
     const header = await this.eta.login(credential, organizationId);
 
     const remainingQuery = Utils.Eta.buildEtaQuery(query);

@@ -310,7 +310,7 @@ export class FirestoreService<T extends { id: string }> {
    * @param {QueryOrder} order - Order object that contains {field, direction} to sort by field in specified direction
    * @return {Promise<QueryResult<T>>} The query documents data and meta data
    */
-  async query(page = 1, limit = 30, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<T>> {
+  async query(filters?: QueryFilter[], page = 1, limit = 30, order?: QueryOrder): Promise<QueryResult<T>> {
     let queries: Query<T> = this.buildQuery(filters).withConverter<T>(this.firestoreConverter);
     const entities: number = (await queries.count().get()).data().count;
 
@@ -330,7 +330,7 @@ export class FirestoreService<T extends { id: string }> {
       data: data, // items
       page: page, // current page
       pages: Math.ceil(entities / limit), // number of pages
-      perPage: limit, // number of items per page
+      limit: limit, // number of items per page
       total: entities, // total number of items exists
     };
   }

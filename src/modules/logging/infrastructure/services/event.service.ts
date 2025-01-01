@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 
 import { Event, EVENT_REPOSITORY_PROVIDER, EventDetails, EventStatus, EventTask, IEventRepository, IEventService } from '../../domain';
 
@@ -10,8 +10,8 @@ export class EventService implements IEventService {
     private readonly eventRepo: IEventRepository,
   ) {}
 
-  async getEvents(filters?: QueryFilter[], page?: number, limit?: number): Promise<Event[]> {
-    return this.eventRepo.getMany(filters, page, limit);
+  async getEvents(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Event[]> {
+    return this.eventRepo.getMany(filters, page, limit, order);
   }
 
   async getEvent(id: string): Promise<Event> {

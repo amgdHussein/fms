@@ -1,8 +1,7 @@
-import { IntersectionType, OmitType, PartialType, PickType } from '@nestjs/swagger';
+import { OmitType, PartialType } from '@nestjs/swagger';
 
 import { OrganizationDto } from './organization.dto';
 
-export class UpdateOrganizationDto extends IntersectionType(
-  PickType(OrganizationDto, ['id']),
-  PartialType(OmitType(OrganizationDto, ['id', 'userId', 'userId', 'status', 'currency', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'])),
+export class UpdateOrganizationDto extends PartialType(
+  OmitType(OrganizationDto, ['id', 'userId', 'userId', 'status', 'currency', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt']),
 ) {}

@@ -26,10 +26,10 @@ export class OrganizationProductController {
     private readonly getProductsUsecase: GetProducts,
   ) {}
 
-  @Get('organizations/:id/products/:productId')
+  @Get('organizations/:organizationId/products/:productId')
   @ApiOperation({ summary: 'Retrieve a specific product by ID within an organization.' })
   @ApiParam({
-    name: 'id',
+    name: 'organizationId',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
@@ -46,14 +46,14 @@ export class OrganizationProductController {
     type: OrganizationProductDto,
     description: 'Details of the product with the specified ID.',
   })
-  async getProduct(@Param('id') id: string, @Param('productId') productId: string): Promise<OrganizationProductDto> {
-    return this.getProductUsecase.execute(productId, id);
+  async getProduct(@Param('organizationId') organizationId: string, @Param('productId') productId: string): Promise<OrganizationProductDto> {
+    return this.getProductUsecase.execute(productId, organizationId);
   }
 
-  @Get('organizations/:id/products')
+  @Get('organizations/:organizationId/products')
   @ApiOperation({ summary: 'Retrieve all products for a specific organization.' })
   @ApiParam({
-    name: 'id',
+    name: 'organizationId',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
@@ -63,14 +63,14 @@ export class OrganizationProductController {
     type: [OrganizationProductDto],
     description: 'List of all products associated with the organization.',
   })
-  async getOrganizationProducts(@Param('id') id: string): Promise<OrganizationProductDto[]> {
-    return this.getProductsUsecase.execute(id);
+  async getOrganizationProducts(@Param('organizationId') organizationId: string): Promise<OrganizationProductDto[]> {
+    return this.getProductsUsecase.execute(organizationId);
   }
 
-  @Post('organizations/:id/products')
+  @Post('organizations/:organizationId/products')
   @ApiOperation({ summary: 'Create a new product for a specific organization.' })
   @ApiParam({
-    name: 'id',
+    name: 'organizationId',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
@@ -85,18 +85,25 @@ export class OrganizationProductController {
     type: OrganizationProductDto,
     description: 'The newly created product.',
   })
-  async addProduct(@Param('id') id: string, @Body() dto: AddOrganizationProductDto): Promise<OrganizationProductDto> {
-    return this.addProductUsecase.execute({ ...dto, organizationId: id });
+  async addProduct(@Param('organizationId') organizationId: string, @Body() dto: AddOrganizationProductDto): Promise<OrganizationProductDto> {
+    return this.addProductUsecase.execute({ ...dto, organizationId });
   }
 
-  @Put('organizations/:id/products')
+  @Put('organizations/:organizationId/products/:productId')
   @ApiOperation({ summary: 'Update an existing product within an organization.' })
   @ApiParam({
-    name: 'id',
+    name: 'organizationId',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
     description: 'The unique identifier of the organization.',
+  })
+  @ApiParam({
+    name: 'productId',
+    type: String,
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    description: 'The unique identifier of the product within the organization.',
   })
   @ApiBody({
     type: UpdateOrganizationProductDto,
@@ -107,14 +114,18 @@ export class OrganizationProductController {
     type: OrganizationProductDto,
     description: 'The updated product details.',
   })
-  async updateProduct(@Param('id') id: string, @Body() dto: UpdateOrganizationProductDto): Promise<OrganizationProductDto> {
-    return this.updateProductUsecase.execute({ ...dto, organizationId: id });
+  async updateProduct(
+    @Param('organizationId') organizationId: string,
+    @Param('productId') productId: string,
+    @Body() dto: UpdateOrganizationProductDto,
+  ): Promise<OrganizationProductDto> {
+    return this.updateProductUsecase.execute({ ...dto, organizationId, id: productId });
   }
 
-  @Delete('organizations/:id/products/:productId')
+  @Delete('organizations/:organizationId/products/:productId')
   @ApiOperation({ summary: 'Delete a specific product by ID from an organization.' })
   @ApiParam({
-    name: 'id',
+    name: 'organizationId',
     type: String,
     example: 'K05ThPKxfugr9yYhA82Z',
     required: true,
@@ -131,7 +142,7 @@ export class OrganizationProductController {
     type: OrganizationProductDto,
     description: 'Details of the deleted product.',
   })
-  async deleteProduct(@Param('id') id: string, @Param('productId') productId: string): Promise<OrganizationProductDto> {
-    return this.deleteProductUsecase.execute(productId, id);
+  async deleteProduct(@Param('organizationId') organizationId: string, @Param('productId') productId: string): Promise<OrganizationProductDto> {
+    return this.deleteProductUsecase.execute(productId, organizationId);
   }
 }

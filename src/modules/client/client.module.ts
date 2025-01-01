@@ -6,8 +6,9 @@ import {
   DeleteClient,
   GetClient,
   GetClientPreferences,
+  GetClients,
+  GetOrganizationClients,
   IsClientExistConstraint,
-  QueryClients,
   UpdateClient,
   UpdateClientPreferences,
 } from './application';
@@ -50,12 +51,16 @@ const clientUsecases = [
     useClass: UpdateClient,
   },
   {
-    provide: CLIENT_USECASE_PROVIDERS.QUERY_CLIENTS,
-    useClass: QueryClients,
+    provide: CLIENT_USECASE_PROVIDERS.GET_CLIENTS,
+    useClass: GetClients,
   },
   {
     provide: CLIENT_USECASE_PROVIDERS.DELETE_CLIENT,
     useClass: DeleteClient,
+  },
+  {
+    provide: CLIENT_USECASE_PROVIDERS.GET_ORGANIZATION_CLIENTS,
+    useClass: GetOrganizationClients,
   },
 ];
 const preferencesUsecases = [

@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AuthService } from '../../../../core/auth';
 import { Authority } from '../../../../core/common';
 import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
 
 import { IInvoiceSubmissionRepository, Invoice, Submission } from '../../domain';
@@ -26,8 +26,8 @@ export class InvoiceSubmissionFirestoreRepository implements IInvoiceSubmissionR
     return this.submissionFirestore(invoiceId).getDoc(id);
   }
 
-  async getMany(invoiceId: string, filters?: QueryFilter[]): Promise<Submission[]> {
-    return this.submissionFirestore(invoiceId).getDocs(filters);
+  async getMany(invoiceId: string, filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Submission[]> {
+    return this.submissionFirestore(invoiceId).getDocs(filters, page, limit, order);
   }
 
   async add(submission: Partial<Submission> & { authority: Authority; submissionId: string; status: string }, invoiceId: string): Promise<Submission> {

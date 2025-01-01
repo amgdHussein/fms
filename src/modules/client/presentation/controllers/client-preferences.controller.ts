@@ -7,7 +7,7 @@ import { CLIENT_PREFERENCES_USECASE_PROVIDERS } from '../../domain';
 import { ClientPreferencesDto, UpdateClientPreferencesDto } from '../dtos';
 
 @ApiTags('Client Preferences')
-@Controller('clients/preferences')
+@Controller('clients')
 export class ClientPreferencesController {
   constructor(
     @Inject(CLIENT_PREFERENCES_USECASE_PROVIDERS.GET_CLIENT_PREFERENCES)
@@ -17,8 +17,8 @@ export class ClientPreferencesController {
     private readonly updatePreferencesUsecase: UpdateClientPreferences,
   ) {}
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Retrieve client preferences by ID.' }) // Operation summary
+  @Get(':id/preferences')
+  @ApiOperation({ summary: 'Retrieve client preferences by ID.' })
   @ApiParam({
     name: 'id',
     type: String,
@@ -34,8 +34,15 @@ export class ClientPreferencesController {
     return this.getPreferencesUsecase.execute(id);
   }
 
-  @Put()
-  @ApiOperation({ summary: 'Update client preferences.' }) // Operation summary
+  @Put(':id/preferences')
+  @ApiOperation({ summary: 'Update client preferences.' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    description: 'The unique identifier of the client.',
+  })
   @ApiBody({
     type: UpdateClientPreferencesDto,
     required: true,
@@ -45,7 +52,7 @@ export class ClientPreferencesController {
     type: ClientPreferencesDto,
     description: 'The updated client preferences.',
   })
-  async updateClientPreferences(@Body() dto: UpdateClientPreferencesDto): Promise<ClientPreferencesDto> {
-    return this.updatePreferencesUsecase.execute(dto);
+  async updateClientPreferences(@Param('id') id: string, @Body() dto: UpdateClientPreferencesDto): Promise<ClientPreferencesDto> {
+    return this.updatePreferencesUsecase.execute({ ...dto, id });
   }
 }

@@ -30,7 +30,7 @@ export class LogController {
   })
   @ApiQuery({
     type: Number,
-    name: 'perPage',
+    name: 'limit',
     required: false,
     example: 10,
     description: 'The number of logs per page, for pagination. Defaults to 10 if not provided.',
@@ -40,13 +40,13 @@ export class LogController {
     type: [LogDto],
     description: 'Returns a list of logs matching the provided filters, sorted by date.',
   })
-  async getLogs(@Query('userId') userId: string, @Query('page') page: string, @Query('perPage') perPage: string): Promise<LogDto[]> {
+  async getLogs(@Query('userId') userId: string, @Query('page') page: string, @Query('limit') limit: string): Promise<LogDto[]> {
     const filters: QueryFilter[] = [];
 
     if (userId) {
       filters.push({ key: 'userId', op: 'eq', value: userId });
     }
 
-    return this.getLogsUsecase.execute(filters, +page || 1, +perPage || 10);
+    return this.getLogsUsecase.execute(filters, +page || 1, +limit || 10);
   }
 }

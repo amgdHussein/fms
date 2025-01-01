@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { CLOUD_TASKS_PROVIDER } from '../../../../core/constants';
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { CloudTasksService } from '../../../../core/providers';
 
 import { IOrganizationRepository, IOrganizationService, Organization, ORGANIZATION_REPOSITORY_PROVIDER } from '../../domain';
@@ -22,12 +22,8 @@ export class OrganizationService implements IOrganizationService {
     return this.repo.get(id);
   }
 
-  async getOrganizations(filters?: QueryFilter[]): Promise<Organization[]> {
-    return this.repo.getMany(filters);
-  }
-
-  async queryOrganizations(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Organization>> {
-    return this.repo.query(page, limit, filters, order);
+  async getOrganizations(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Organization[]> {
+    return this.repo.getMany(filters, page, limit, order);
   }
 
   async addOrganization(organization: Partial<Organization> & { userId: string }): Promise<Organization> {

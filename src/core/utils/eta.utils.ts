@@ -3,7 +3,7 @@ import * as moment from 'moment-timezone';
 import { CurrencyCode } from '../common';
 
 import { ETA_TAX_SUB_TYPES_WITH_TYPE } from '../providers/eta/constants';
-import { AddEtaInvoice, EtaInvoiceLine, Issuer, QueryCodes, QueryInvoices, TaxableItems } from '../providers/eta/entities';
+import { AddEtaInvoice, EtaInvoiceLine, GetInvoices, Issuer, QueryCodes, TaxableItems } from '../providers/eta/entities';
 
 import { Client, ClientTax } from '../../modules/client/domain';
 import { Code } from '../../modules/code/domain';
@@ -12,7 +12,7 @@ import { Organization, OrganizationBranch, OrganizationTax } from '../../modules
 
 import { roundToFive, roundToTwo } from './math.utils';
 
-export function buildEtaQuery(obj: Partial<QueryCodes> | Partial<QueryInvoices>): string {
+export function buildEtaQuery(obj: Partial<QueryCodes> | Partial<GetInvoices>): string {
   return Object.entries(obj)
     .filter(([, value]) => value && value !== undefined && value !== null)
     .map(([key, value]) => `${key}=${encodeURIComponent(value.toString())}`)

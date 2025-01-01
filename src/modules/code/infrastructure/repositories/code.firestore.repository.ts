@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { AuthService } from '../../../../core/auth';
 import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
 
 import { Organization } from '../../../organization/domain';
@@ -26,8 +26,8 @@ export class CodeFirestoreRepository implements ICodeRepository {
     return this.codeFirestore(organizationId).getDoc(id);
   }
 
-  async getMany(organizationId: string, filters?: QueryFilter[]): Promise<Code[]> {
-    return this.codeFirestore(organizationId).getDocs(filters);
+  async getMany(organizationId: string, filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Code[]> {
+    return this.codeFirestore(organizationId).getDocs(filters, page, limit, order);
   }
 
   async add(code: Partial<Code>, organizationId: string): Promise<Code> {

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { AuthService } from '../../../../core/auth';
 import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
 
 import { Account, AccountStatus, IAccountRepository } from '../../domain';
@@ -21,8 +21,8 @@ export class AccountFirestoreRepository implements IAccountRepository {
     return this.db.getDoc(id);
   }
 
-  async getMany(filters?: QueryFilter[]): Promise<Account[]> {
-    return this.db.getDocs(filters);
+  async getMany(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Account[]> {
+    return this.db.getDocs(filters, page, limit, order);
   }
 
   async add(account: Partial<Account>): Promise<Account> {

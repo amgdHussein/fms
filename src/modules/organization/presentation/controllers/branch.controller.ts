@@ -43,23 +43,6 @@ export class OrganizationBranchController {
     return this.getBranchUsecase.execute(id);
   }
 
-  @Get('organizations/:id/branches')
-  @ApiOperation({ summary: 'Retrieve all branches associated with a specific organization.' })
-  @ApiParam({
-    name: 'id',
-    type: String,
-    example: 'K05ThPKxfugr9yYhA82Z',
-    required: true,
-    description: 'The unique identifier of the organization.',
-  })
-  @ApiResponse({
-    type: [OrganizationBranchDto],
-    description: 'List of branches belonging to the organization.',
-  })
-  async getOrganizationBranches(@Param('id') id: string): Promise<OrganizationBranchDto[]> {
-    return this.getOrganizationBranchesUsecase.execute(id);
-  }
-
   @Post('branches')
   @ApiOperation({ summary: 'Create a new branch for an organization.' })
   @ApiBody({
@@ -75,7 +58,7 @@ export class OrganizationBranchController {
     return this.addBranchUsecase.execute(dto);
   }
 
-  @Put('branches')
+  @Put('branches/:id')
   @ApiOperation({ summary: 'Update the details of an existing branch.' })
   @ApiBody({
     type: UpdateOrganizationBranchDto,
@@ -86,8 +69,8 @@ export class OrganizationBranchController {
     type: OrganizationBranchDto,
     description: 'The updated branch details.',
   })
-  async updateBranch(@Body() entity: UpdateOrganizationBranchDto): Promise<OrganizationBranchDto> {
-    return this.updateBranchUsecase.execute(entity);
+  async updateBranch(@Param('id') id: string, @Body() entity: UpdateOrganizationBranchDto): Promise<OrganizationBranchDto> {
+    return this.updateBranchUsecase.execute({ ...entity, id });
   }
 
   @Delete('branches/:id')
@@ -105,5 +88,22 @@ export class OrganizationBranchController {
   })
   async deleteBranch(@Param('id') id: string): Promise<OrganizationBranchDto> {
     return this.deleteBranchUsecase.execute(id);
+  }
+
+  @Get('organizations/:organizationId/branches')
+  @ApiOperation({ summary: 'Retrieve all branches associated with a specific organization.' })
+  @ApiParam({
+    name: 'organizationId',
+    type: String,
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    description: 'The unique identifier of the organization.',
+  })
+  @ApiResponse({
+    type: [OrganizationBranchDto],
+    description: 'List of branches belonging to the organization.',
+  })
+  async getOrganizationBranches(@Param('organizationId') organizationId: string): Promise<OrganizationBranchDto[]> {
+    return this.getOrganizationBranchesUsecase.execute(organizationId);
   }
 }

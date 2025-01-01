@@ -9,10 +9,10 @@ import {
   GetClientInvoices,
   GetInvoice,
   GetInvoiceItems,
+  GetInvoices,
   GetOrganizationInvoices,
   IsInvoiceExistConstraint,
   ProcessEtaInvoices,
-  QueryInvoices,
   SubmitEtaInvoices,
   UpdateInvoice,
 } from './application';
@@ -61,8 +61,8 @@ const invoiceUsecases = [
     useClass: DeleteInvoice,
   },
   {
-    provide: INVOICE_USECASE_PROVIDERS.QUERY_INVOICES,
-    useClass: QueryInvoices,
+    provide: INVOICE_USECASE_PROVIDERS.GET_INVOICES,
+    useClass: GetInvoices,
   },
   {
     provide: INVOICE_USECASE_PROVIDERS.GET_CLIENT_INVOICES,

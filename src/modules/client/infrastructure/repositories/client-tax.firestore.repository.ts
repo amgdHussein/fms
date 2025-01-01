@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { AuthService } from '../../../../core/auth';
 import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
 
 import { ClientTax, IClientTaxRepository } from '../../domain';
@@ -21,8 +21,8 @@ export class ClientTaxFirestoreRepository implements IClientTaxRepository {
     return this.db.getDoc(id);
   }
 
-  async getMany(filters?: QueryFilter[]): Promise<ClientTax[]> {
-    return this.db.getDocs(filters);
+  async getMany(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<ClientTax[]> {
+    return this.db.getDocs(filters, page, limit, order);
   }
 
   async add(tax: Partial<ClientTax> & { userId: string }): Promise<ClientTax> {

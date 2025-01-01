@@ -13,8 +13,12 @@ export class ClientPreferencesService implements IClientPreferencesService {
     return this.repo.get(id);
   }
 
-  async addPreferences(preferences: Partial<ClientPreferences> & { clientId: string }): Promise<ClientPreferences> {
+  async addPreferences(preferences: Partial<ClientPreferences>): Promise<ClientPreferences> {
     return this.repo.add(preferences);
+  }
+
+  async setPreferences(preferences: Partial<ClientPreferences> & { id: string }): Promise<ClientPreferences> {
+    return this.repo.set(preferences);
   }
 
   async updatePreferences(preferences: Partial<ClientPreferences> & { id: string }): Promise<ClientPreferences> {

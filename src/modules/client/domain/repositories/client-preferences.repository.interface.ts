@@ -2,4 +2,6 @@ import { Repository } from '../../../../core/interfaces';
 
 import { ClientPreferences } from '../entities';
 
-export type IClientPreferencesRepository = Repository<ClientPreferences>;
+export interface IClientPreferencesRepository extends Repository<ClientPreferences> {
+  set(preferences: Partial<ClientPreferences> & { id: string }): Promise<ClientPreferences>;
+}

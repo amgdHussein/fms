@@ -9,8 +9,6 @@ import { CancelEtaInvoiceDto, InvoiceDto, ProcessEtaInvoicesDto, SubmitEtaInvoic
 @ApiTags('ETA Invoices')
 @Controller()
 export class EtaInvoiceController {
-  // @Controller('invoices/eta')
-
   constructor(
     @Inject(ETA_INVOICE_USECASE_PROVIDERS.SUBMIT_INVOICES)
     private readonly submitInvoicesUsecase: SubmitEtaInvoices,

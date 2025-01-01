@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { AuthService } from '../../../../core/auth';
 import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
 
 import { IInvoiceRepository, Invoice } from '../../domain';
@@ -21,12 +21,8 @@ export class InvoiceFirestoreRepository implements IInvoiceRepository<Invoice> {
     return this.db.getDoc(id);
   }
 
-  async getMany(filters?: QueryFilter[]): Promise<Invoice[]> {
-    return this.db.getDocs(filters);
-  }
-
-  async query(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Invoice>> {
-    return this.db.query(page, limit, filters, order);
+  async getMany(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Invoice[]> {
+    return this.db.getDocs(filters, page, limit, order);
   }
 
   async add(invoice: Partial<Invoice>): Promise<Invoice> {

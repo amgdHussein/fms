@@ -20,7 +20,17 @@ export class ClientPreferencesFirestoreRepository implements IClientPreferencesR
     return this.db.getDoc(id);
   }
 
-  async add(preferences: Partial<ClientPreferences> & { clientId: string }): Promise<ClientPreferences> {
+  async add(preferences: Partial<ClientPreferences>): Promise<ClientPreferences> {
+    // Initiate some fields
+    preferences.createdBy = this.authService.currentUser.uid;
+    preferences.createdAt = Date.now();
+    preferences.updatedBy = this.authService.currentUser.uid;
+    preferences.updatedAt = Date.now();
+
+    return this.db.addDoc(preferences);
+  }
+
+  async set(preferences: Partial<ClientPreferences> & { id: string }): Promise<ClientPreferences> {
     // Initiate some fields
     preferences.createdBy = this.authService.currentUser.uid;
     preferences.createdAt = Date.now();

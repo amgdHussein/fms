@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 
 import {
   IInvoiceItemRepository,
@@ -28,12 +28,8 @@ export class InvoiceService implements IInvoiceService {
     return this.invoiceRepo.get(id);
   }
 
-  async getInvoices(filters?: QueryFilter[]): Promise<Invoice[]> {
-    return this.invoiceRepo.getMany(filters);
-  }
-
-  async queryInvoices(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Invoice>> {
-    return this.invoiceRepo.query(page, limit, filters, order);
+  async getInvoices(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Invoice[]> {
+    return this.invoiceRepo.getMany(filters, page, limit, order);
   }
 
   async addInvoice(invoice: Partial<Invoice>): Promise<Invoice> {

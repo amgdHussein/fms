@@ -1,15 +1,14 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { QueryDto, QueryResultDto } from '../../../../core/dtos';
 import {
   AddInvoice,
   DeleteInvoice,
   GetClientInvoices,
   GetInvoice,
   GetInvoiceItems,
+  GetInvoices,
   GetOrganizationInvoices,
-  QueryInvoices,
   UpdateInvoice,
 } from '../../application';
 import { INVOICE_USECASE_PROVIDERS } from '../../domain';
@@ -28,8 +27,8 @@ export class InvoiceController {
     @Inject(INVOICE_USECASE_PROVIDERS.UPDATE_INVOICE)
     private readonly updateInvoiceUsecase: UpdateInvoice,
 
-    @Inject(INVOICE_USECASE_PROVIDERS.QUERY_INVOICES)
-    private readonly queryInvoicesUsecase: QueryInvoices,
+    @Inject(INVOICE_USECASE_PROVIDERS.GET_INVOICES)
+    private readonly getInvoicesUsecase: GetInvoices,
 
     @Inject(INVOICE_USECASE_PROVIDERS.DELETE_INVOICE)
     private readonly deleteInvoiceUsecase: DeleteInvoice,
@@ -45,19 +44,27 @@ export class InvoiceController {
   ) {}
 
   @Get('invoices')
-  @ApiOperation({ summary: 'Get all/N invoices with/without filter the results.' })
-  @ApiBody({
-    type: QueryDto,
+  @ApiQuery({
+    type: Number,
+    name: 'page',
     required: false,
-    description: 'Object contains List of query params are applied on the database, sort by field, as well as number of invoice needed.',
+    example: 1,
+    description: 'The page number to retrieve, for pagination. Defaults to 1 if not provided.',
   })
+  @ApiQuery({
+    type: Number,
+    name: 'limit',
+    required: false,
+    example: 15,
+    description: 'The number of staff per page, for pagination. Defaults to 15 if not provided.',
+  })
+  @ApiOperation({ summary: 'Get all/N invoices with/without filter the results.' })
   @ApiResponse({
-    type: QueryResultDto<InvoiceDto>,
+    type: [InvoiceDto],
     description: 'List of invoices that meet all the query filters, and with length less than or equal to limit number.',
   })
-  async queryInvoices(@Query() query: QueryDto): Promise<QueryResultDto<InvoiceDto>> {
-    const { page, limit, filters, order } = query;
-    return this.queryInvoicesUsecase.execute(page, limit, filters, order);
+  async getInvoices(@Query('page') page: string, @Query('limit') limit: string): Promise<InvoiceDto[]> {
+    return this.getInvoicesUsecase.execute([], +page, +limit);
   }
 
   @Get('invoices/:id')
@@ -94,15 +101,8 @@ export class InvoiceController {
     return this.getInvoiceItemsUsecase.execute(id);
   }
 
-  @Post('organizations/:organizationId/invoices')
+  @Post('invoices')
   @ApiOperation({ summary: 'Add new invoice.' })
-  @ApiParam({
-    name: 'organizationId',
-    type: String,
-    example: 'K05ThPKxfugr9yYhA82Z',
-    required: true,
-    description: 'The id of the organization',
-  })
   @ApiBody({
     type: AddInvoiceDto,
     required: true,
@@ -112,12 +112,19 @@ export class InvoiceController {
     type: InvoiceDto,
     description: 'Invoice recently added.',
   })
-  async addInvoice(@Param('organizationId') id: string, @Body() dto: AddInvoiceDto): Promise<InvoiceDto> {
-    return this.addInvoiceUsecase.execute({ ...dto, organizationId: id, issue: dto.issue || false });
+  async addInvoice(@Body() dto: AddInvoiceDto): Promise<InvoiceDto> {
+    return this.addInvoiceUsecase.execute({ ...dto, issue: dto.issue || false });
   }
 
-  @Put('invoices')
+  @Put('invoices/:id')
   @ApiOperation({ summary: 'Update invoice info.' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    description: 'The id of the invoice',
+  })
   @ApiBody({
     type: UpdateInvoiceDto,
     required: true,
@@ -127,8 +134,8 @@ export class InvoiceController {
     type: InvoiceDto,
     description: 'Updated invoice.',
   })
-  async updateInvoice(@Body() entity: UpdateInvoiceDto): Promise<InvoiceDto> {
-    return this.updateInvoiceUsecase.execute(entity);
+  async updateInvoice(@Param('id') id: string, @Body() entity: UpdateInvoiceDto): Promise<InvoiceDto> {
+    return this.updateInvoiceUsecase.execute({ ...entity, id });
   }
 
   @Delete('invoices/:id')

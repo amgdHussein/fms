@@ -46,40 +46,6 @@ export class AccountController {
     return this.getAccountUsecase.execute(id);
   }
 
-  @Get('organizations/:id/accounts')
-  @ApiOperation({ summary: 'Retrieve all accounts for a specified organization.' })
-  @ApiParam({
-    name: 'id',
-    example: 'K05ThPKxfugr9yYhA82Z',
-    required: true,
-    type: String,
-    description: 'The organization ID to fetch associated accounts.',
-  })
-  @ApiResponse({
-    type: Array<AccountDto>,
-    description: 'Returns a list of accounts for the specified organization.',
-  })
-  async getOrganizationAccounts(@Param('id') id: string): Promise<AccountDto[]> {
-    return this.getOrganizationAccountsUsecase.execute(id);
-  }
-
-  @Get('users/:id/accounts')
-  @ApiOperation({ summary: 'Retrieve all accounts for a specified user.' })
-  @ApiParam({
-    name: 'id',
-    example: 'K05ThPKxfugr9yYhA82Z',
-    required: true,
-    type: String,
-    description: 'The user ID to fetch associated accounts.',
-  })
-  @ApiResponse({
-    type: Array<AccountDto>,
-    description: 'Returns a list of accounts for the specified user.',
-  })
-  async getUserAccounts(@Param('id') id: string): Promise<AccountDto[]> {
-    return this.getUserAccountsUsecase.execute(id);
-  }
-
   @Post('accounts')
   @ApiOperation({ summary: 'Add a new Account.' })
   @ApiBody({
@@ -95,8 +61,15 @@ export class AccountController {
     return this.addAccountUsecase.execute(entity);
   }
 
-  @Put('accounts')
+  @Put('accounts/:id')
   @ApiOperation({ summary: 'Update existing account information.' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    description: 'The unique identifier of the account.',
+  })
   @ApiBody({
     type: UpdateAccountDto,
     required: true,
@@ -106,8 +79,8 @@ export class AccountController {
     type: AccountDto,
     description: 'Returns the updated Account.',
   })
-  async updateAccount(@Body() entity: UpdateAccountDto): Promise<AccountDto> {
-    return this.updateAccountUsecase.execute(entity);
+  async updateAccount(@Param('id') id: string, @Body() entity: UpdateAccountDto): Promise<AccountDto> {
+    return this.updateAccountUsecase.execute({ ...entity, id });
   }
 
   @Delete('accounts/:id')
@@ -125,5 +98,39 @@ export class AccountController {
   })
   async deleteAccount(@Param('id') id: string): Promise<AccountDto> {
     return this.deleteAccountUsecase.execute(id);
+  }
+
+  @Get('organizations/:organizationId/accounts')
+  @ApiOperation({ summary: 'Retrieve all accounts for a specified organization.' })
+  @ApiParam({
+    name: 'organizationId',
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    type: String,
+    description: 'The organization ID to fetch associated accounts.',
+  })
+  @ApiResponse({
+    type: Array<AccountDto>,
+    description: 'Returns a list of accounts for the specified organization.',
+  })
+  async getOrganizationAccounts(@Param('organizationId') organizationId: string): Promise<AccountDto[]> {
+    return this.getOrganizationAccountsUsecase.execute(organizationId);
+  }
+
+  @Get('users/:userId/accounts')
+  @ApiOperation({ summary: 'Retrieve all accounts for a specified user.' })
+  @ApiParam({
+    name: 'userId',
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    type: String,
+    description: 'The user ID to fetch associated accounts.',
+  })
+  @ApiResponse({
+    type: Array<AccountDto>,
+    description: 'Returns a list of accounts for the specified user.',
+  })
+  async getUserAccounts(@Param('userId') userId: string): Promise<AccountDto[]> {
+    return this.getUserAccountsUsecase.execute(userId);
   }
 }

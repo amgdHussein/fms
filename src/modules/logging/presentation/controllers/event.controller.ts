@@ -23,7 +23,7 @@ export class EventController {
   })
   @ApiQuery({
     type: Number,
-    name: 'perPage',
+    name: 'limit',
     required: false,
     example: 10,
     description: 'The number of events per page. Defaults to 10 if not specified.',
@@ -33,7 +33,7 @@ export class EventController {
     type: [EventDto],
     description: 'Returns a paginated list of events, sorted by date.',
   })
-  async getEvents(@Query('page') page: string, @Query('perPage') perPage: string): Promise<EventDto[]> {
-    return this.getEventsUsecase.execute(+page || 1, +perPage || 10);
+  async getEvents(@Query('page') page: string, @Query('limit') limit: string): Promise<EventDto[]> {
+    return this.getEventsUsecase.execute(+page, +limit);
   }
 }

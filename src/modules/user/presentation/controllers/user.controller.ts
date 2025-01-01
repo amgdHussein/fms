@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { QueryDto, QueryResultDto } from '../../../../core/dtos';
 import { AuthenticationGuard } from '../../../../core/guards';
 
 import { AddUser, DeleteUser, GetUser, QueryUsers, RegisterUser, UpdateUser } from '../../application';
@@ -34,18 +33,26 @@ export class UserController {
 
   @Get()
   @ApiOperation({ summary: 'Retrieve all or filtered users with pagination.' }) // Improved operation summary
-  @ApiBody({
-    type: QueryDto,
+  @ApiQuery({
+    type: Number,
+    name: 'page',
     required: false,
-    description: 'Optional query parameters to filter users, including sorting and pagination settings.',
+    example: 1,
+    description: 'The page number to retrieve, for pagination. Defaults to 1 if not provided.',
+  })
+  @ApiQuery({
+    type: Number,
+    name: 'limit',
+    required: false,
+    example: 15,
+    description: 'The number of staff per page, for pagination. Defaults to 15 if not provided.',
   })
   @ApiResponse({
-    type: QueryResultDto<UserDto>,
+    type: [UserDto],
     description: 'A list of users that match the specified query filters and pagination settings.',
   })
-  async queryUsers(@Query() query: QueryDto): Promise<QueryResultDto<UserDto>> {
-    const { page, limit, filters, order } = query;
-    return this.queryUsersUsecase.execute(page, limit, filters, order);
+  async queryUsers(@Query('page') page: string, @Query('limit') limit: string): Promise<UserDto[]> {
+    return this.queryUsersUsecase.execute([], +page, +limit);
   }
 
   @Get('/:id')

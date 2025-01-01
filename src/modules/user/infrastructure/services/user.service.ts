@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 
 import { IUserRepository, IUserService, User, USER_REPOSITORY_PROVIDER, UserRole, UserStatus } from '../../domain';
 
@@ -15,12 +15,8 @@ export class UserService implements IUserService {
     return this.repo.get(id);
   }
 
-  async getUsers(filters?: QueryFilter[]): Promise<User[]> {
-    return this.repo.getMany(filters);
-  }
-
-  async queryUsers(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<User>> {
-    return this.repo.query(page, limit, filters, order);
+  async getUsers(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<User[]> {
+    return this.repo.getMany(filters, page, limit, order);
   }
 
   async registerUser(id: string, email: string, role: UserRole = UserRole.USER): Promise<User> {

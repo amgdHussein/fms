@@ -1,8 +1,8 @@
 import { Repository } from '../../../../core/interfaces';
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 
 import { Account } from '../entities';
 
 export interface IAccountRepository extends Repository<Account> {
-  getMany(filters?: QueryFilter[]): Promise<Account[]>;
+  getMany(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Account[]>;
 }

@@ -1,9 +1,7 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { QueryDto, QueryResultDto } from '../../../../core/dtos';
-
-import { AddOrganization, DeleteOrganization, GetOrganization, QueryOrganizations, UpdateOrganization } from '../../application';
+import { AddOrganization, DeleteOrganization, GetOrganization, GetOrganizations, UpdateOrganization } from '../../application';
 import { ORGANIZATION_USECASE_PROVIDERS } from '../../domain';
 import { AddOrganizationDto, OrganizationDto, UpdateOrganizationDto } from '../dtos';
 
@@ -20,27 +18,35 @@ export class OrganizationController {
     @Inject(ORGANIZATION_USECASE_PROVIDERS.UPDATE_ORGANIZATION)
     private readonly updateOrganizationUsecase: UpdateOrganization,
 
-    @Inject(ORGANIZATION_USECASE_PROVIDERS.QUERY_ORGANIZATIONS)
-    private readonly queryOrganizationsUsecase: QueryOrganizations,
+    @Inject(ORGANIZATION_USECASE_PROVIDERS.GET_ORGANIZATIONS)
+    private readonly getOrganizationsUsecase: GetOrganizations,
 
     @Inject(ORGANIZATION_USECASE_PROVIDERS.DELETE_ORGANIZATION)
     private readonly deleteOrganizationUsecase: DeleteOrganization,
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Retrieve organizations with optional filters and pagination.' }) // Operation summary for listing/filtering organizations
-  @ApiBody({
-    type: QueryDto,
+  @ApiOperation({ summary: 'Retrieve organizations with optional filters and pagination.' })
+  @ApiQuery({
+    type: Number,
+    name: 'page',
     required: false,
-    description: 'Optional filters, sorting criteria, and pagination settings for querying organizations.',
+    example: 1,
+    description: 'The page number to retrieve, for pagination. Defaults to 1 if not provided.',
+  })
+  @ApiQuery({
+    type: Number,
+    name: 'limit',
+    required: false,
+    example: 15,
+    description: 'The number of staff per page, for pagination. Defaults to 15 if not provided.',
   })
   @ApiResponse({
-    type: QueryResultDto<OrganizationDto>,
+    type: [OrganizationDto],
     description: 'List of organizations matching the query parameters and pagination settings.',
   })
-  async queryOrganizations(@Query() query: QueryDto): Promise<QueryResultDto<OrganizationDto>> {
-    const { page, limit, filters, order } = query;
-    return this.queryOrganizationsUsecase.execute(page, limit, filters, order);
+  async getOrganizations(@Query('page') page: string, @Query('limit') limit: string): Promise<OrganizationDto[]> {
+    return this.getOrganizationsUsecase.execute([], +page, +limit);
   }
 
   @Get(':id')
@@ -75,8 +81,15 @@ export class OrganizationController {
     return this.addOrganizationUsecase.execute(dto);
   }
 
-  @Put()
-  @ApiOperation({ summary: 'Update an existing organization.' }) // Operation summary for updating an organization
+  @Put(':id')
+  @ApiOperation({ summary: 'Update an existing organization.' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    description: 'The unique identifier of the organization.',
+  })
   @ApiBody({
     type: UpdateOrganizationDto,
     required: true,
@@ -86,8 +99,8 @@ export class OrganizationController {
     type: OrganizationDto,
     description: 'The updated organization details.',
   })
-  async updateOrganization(@Body() entity: UpdateOrganizationDto): Promise<OrganizationDto> {
-    return this.updateOrganizationUsecase.execute(entity);
+  async updateOrganization(@Param('id') id: string, @Body() entity: UpdateOrganizationDto): Promise<OrganizationDto> {
+    return this.updateOrganizationUsecase.execute({ ...entity, id });
   }
 
   @Delete(':id')

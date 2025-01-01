@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 
 import { ILogRepository, ILogService, Log, LOG_REPOSITORY_PROVIDER, LogDetails, LogStatus, LogTask } from '../../domain';
 
@@ -11,8 +11,8 @@ export class LogService implements ILogService {
     private readonly logRepo: ILogRepository,
   ) {}
 
-  async getLogs(filters?: QueryFilter[], page?: number, limit?: number): Promise<Log[]> {
-    return this.logRepo.getMany(filters, page, limit);
+  async getLogs(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Log[]> {
+    return this.logRepo.getMany(filters, page, limit, order);
   }
 
   async getLog(id: string): Promise<Log> {

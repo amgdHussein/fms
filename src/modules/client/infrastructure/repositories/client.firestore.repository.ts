@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { AuthService } from '../../../../core/auth';
 import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
 
 import { Client, IClientRepository } from '../../domain';
@@ -21,12 +21,8 @@ export class ClientFirestoreRepository implements IClientRepository {
     return this.db.getDoc(id);
   }
 
-  async getMany(filters?: QueryFilter[]): Promise<Client[]> {
-    return this.db.getDocs(filters);
-  }
-
-  async query(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Client>> {
-    return this.db.query(page, limit, filters, order);
+  async getMany(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Client[]> {
+    return this.db.getDocs(filters, page, limit, order);
   }
 
   async add(client: Partial<Client>): Promise<Client> {

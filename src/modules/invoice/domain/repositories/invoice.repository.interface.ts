@@ -1,8 +1,7 @@
 import { Repository } from '../../../../core/interfaces';
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 
 export interface IInvoiceRepository<T> extends Repository<T> {
-  getMany(filters?: QueryFilter[]): Promise<T[]>;
+  getMany(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<T[]>;
   updateMany(invoices: (Partial<T> & { id: string })[]): Promise<T[]>;
-  query(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<T>>;
 }
