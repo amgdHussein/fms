@@ -3,9 +3,10 @@ import { Account, AccountRole, AccountStatus, AccountType } from '../../../domai
 
 // TODO: FILL THE DTO
 export class AccountDto implements Account {
+  isProductionMode: boolean;
   id: string;
   userId: string;
-  activeOrganizationId: string;
+  organizationId: string;
   status: AccountStatus;
   type: AccountType;
   role: AccountRole;

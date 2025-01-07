@@ -44,6 +44,8 @@ export interface Invoice {
   issuedAt: number; // Timestamp when the invoice was issued
   dueAt?: number; // Timestamp when the invoice is due
 
+  isProductionMode: boolean; // Whether the account is in production mode
+
   createdBy: string; // User who created the invoice
   createdAt: number; // Timestamp when the invoice was created
   updatedBy: string; // User who last updated the invoice

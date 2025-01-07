@@ -32,6 +32,9 @@ export class InvoiceDto implements Invoice {
   reference?: string[];
   issuedAt: number;
   dueAt?: number;
+
+  isProductionMode: boolean; // Whether the account is in production mode
+
   createdBy: string;
   createdAt: number;
   updatedBy: string;

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { Account, ACCOUNT_REPOSITORY_PROVIDER, IAccountRepository, IAccountService } from '../../domain';
+import { Account, ACCOUNT_REPOSITORY_PROVIDER, AccountStatus, IAccountRepository, IAccountService } from '../../domain';
 
 @Injectable()
 export class AccountService implements IAccountService {
@@ -14,6 +14,9 @@ export class AccountService implements IAccountService {
   }
 
   async addAccount(account: Partial<Account> & { userId: string }): Promise<Account> {
+    account.startAt = Date.now();
+    account.status = AccountStatus.ACTIVE;
+    account.isProductionMode = true;
     return this.repo.add(account);
   }
 

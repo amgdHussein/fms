@@ -12,6 +12,7 @@ import {
   GetOrganizationPreferences,
   GetOrganizations,
   GetOrganizationTax,
+  GetOrganizationTaxByTaxId,
   IsOrganizationExistConstraint,
   UpdateBranch,
   UpdateOrganization,
@@ -136,6 +137,10 @@ const organizationTaxUsecases = [
   {
     provide: ORGANIZATION_TAX_USECASE_PROVIDERS.GET_ORGANIZATION_TAX,
     useClass: GetOrganizationTax,
+  },
+  {
+    provide: ORGANIZATION_TAX_USECASE_PROVIDERS.GET_ORGANIZATION_TAX_BY_TAX_ID,
+    useClass: GetOrganizationTaxByTaxId,
   },
   {
     provide: ORGANIZATION_TAX_USECASE_PROVIDERS.ADD_ORGANIZATION_TAX,

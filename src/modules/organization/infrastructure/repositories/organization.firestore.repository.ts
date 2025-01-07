@@ -5,7 +5,7 @@ import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/
 import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
 
-import { IOrganizationRepository, Organization } from '../../domain';
+import { IOrganizationRepository, Organization, OrganizationStatus } from '../../domain';
 
 @Injectable()
 export class OrganizationFirestoreRepository implements IOrganizationRepository {
@@ -27,6 +27,8 @@ export class OrganizationFirestoreRepository implements IOrganizationRepository 
 
   async add(organization: Partial<Organization> & { userId: string }): Promise<Organization> {
     // Initiate some fields
+
+    organization.status = OrganizationStatus.ACTIVE;
     organization.createdBy = this.authService.currentUser.uid;
     organization.createdAt = Date.now();
     organization.updatedBy = this.authService.currentUser.uid;

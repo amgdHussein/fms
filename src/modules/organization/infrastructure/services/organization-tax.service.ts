@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { Authority } from '../../../../core/common';
-import { BadRequestException } from '../../../../core/exceptions';
+import { BadRequestException, NotFoundException } from '../../../../core/exceptions';
 import { IOrganizationTaxRepository, IOrganizationTaxService, ORGANIZATION_REPOSITORY_PROVIDER, OrganizationTax } from '../../domain';
 
 @Injectable()
@@ -28,6 +28,16 @@ export class OrganizationTaxService implements IOrganizationTaxService {
 
         throw new BadRequestException(`Organization has no taxes details with ${authority}!`);
       });
+  }
+
+  async getOrganizationTaxByTaxId(taxIdNo: string): Promise<OrganizationTax> {
+    return this.repo.getMany([{ key: 'taxIdNo', op: 'eq', value: taxIdNo }]).then(taxes => {
+      if (taxes.length) {
+        return taxes[0];
+      }
+
+      throw new NotFoundException(`No organization with tax id ${taxIdNo}!`);
+    });
   }
 
   async addTax(tax: Partial<OrganizationTax> & { organizationId: string; authority: Authority }): Promise<OrganizationTax> {

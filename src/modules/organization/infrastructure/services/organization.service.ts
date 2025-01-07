@@ -27,8 +27,8 @@ export class OrganizationService implements IOrganizationService {
   }
 
   async addOrganization(organization: Partial<Organization> & { userId: string }): Promise<Organization> {
-    return this.repo.add(organization).then(async newOrganization => {
-      await this.cloudTasksService.createQueue(newOrganization.id);
+    return this.repo.add(organization).then(newOrganization => {
+      // await this.cloudTasksService.createQueue(newOrganization.id); // TODO: UNCOMMENT IN PRODUCTION
       return newOrganization;
     });
   }

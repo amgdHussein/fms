@@ -24,6 +24,8 @@ export interface Organization {
   industry: OrganizationIndustry; // Enum of strings like marketing, software industry
   legalStructure?: LegalStructure;
 
+  isProductionMode: boolean; // Whether the account is in production mode
+
   createdBy: string; // User who created the organization
   createdAt: number; // Timestamp when the organization was created
   updatedBy: string; // User who last updated the organization

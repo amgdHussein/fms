@@ -6,8 +6,7 @@ import { AccountType } from './account-type.enum';
 export interface Account {
   id: string;
   userId: string;
-
-  activeOrganizationId: string; // Organization that the account is currently active in
+  organizationId: string; // Organization that the account is currently active in
 
   status: AccountStatus;
   type: AccountType;
@@ -18,6 +17,8 @@ export interface Account {
 
   email?: string;
   phone?: Phone;
+
+  isProductionMode: boolean; // Whether the account is in production mode
 
   createdBy: string; // User who created the account
   createdAt: number; // Timestamp when the account was created

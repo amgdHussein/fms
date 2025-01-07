@@ -3,7 +3,7 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/s
 
 import { Authority } from '../../../../core/common';
 
-import { AddOrganizationTax, GetOrganizationTax, UpdateOrganizationTax } from '../../application';
+import { AddOrganizationTax, GetOrganizationTax, GetOrganizationTaxByTaxId, UpdateOrganizationTax } from '../../application';
 import { ORGANIZATION_TAX_USECASE_PROVIDERS } from '../../domain';
 import { AddOrganizationTaxDto, OrganizationTaxDto, UpdateOrganizationTaxDto } from '../dtos';
 
@@ -13,6 +13,9 @@ export class OrganizationTaxController {
   constructor(
     @Inject(ORGANIZATION_TAX_USECASE_PROVIDERS.GET_ORGANIZATION_TAX)
     private readonly getOrganizationTaxUsecase: GetOrganizationTax,
+
+    @Inject(ORGANIZATION_TAX_USECASE_PROVIDERS.GET_ORGANIZATION_TAX_BY_TAX_ID)
+    private readonly getOrganizationTaxByTaxIdUsecase: GetOrganizationTaxByTaxId,
 
     @Inject(ORGANIZATION_TAX_USECASE_PROVIDERS.ADD_ORGANIZATION_TAX)
     private readonly addOrganizationTaxUsecase: AddOrganizationTax,
@@ -42,7 +45,31 @@ export class OrganizationTaxController {
     description: 'The organization tax.',
   })
   async getOrganizationTax(@Param('organizationId') organizationId: string, @Param('authority') authority: Authority): Promise<OrganizationTaxDto> {
-    return this.getOrganizationTaxUsecase.execute(organizationId, authority);
+    return await this.getOrganizationTaxUsecase.execute(organizationId, authority);
+  }
+
+  @Get('tax/:taxIdNo')
+  @ApiOperation({ summary: 'Get organization by tax id number' })
+  @ApiParam({
+    name: 'organizationId',
+    type: String,
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    description: 'ID of the organization.',
+  })
+  @ApiParam({
+    name: 'taxIdNo',
+    type: String,
+    example: '15849452',
+    required: true,
+    description: 'Tax id of the organization.',
+  })
+  @ApiResponse({
+    type: OrganizationTaxDto,
+    description: 'The organization tax.',
+  })
+  async getOrganizationByTaxId(@Param('taxIdNo') taxIdNo: string): Promise<OrganizationTaxDto> {
+    return await this.getOrganizationTaxByTaxIdUsecase.execute(taxIdNo);
   }
 
   // TODO: CAN NOT ADD SAME AUTHORITY TWICE
@@ -76,7 +103,7 @@ export class OrganizationTaxController {
     @Param('authority') authority: Authority,
     @Body() dto: AddOrganizationTaxDto,
   ): Promise<OrganizationTaxDto> {
-    return this.addOrganizationTaxUsecase.execute({ ...dto, organizationId, authority });
+    return await this.addOrganizationTaxUsecase.execute({ ...dto, organizationId, authority });
   }
 
   @Put(':organizationId/:authority')
@@ -104,11 +131,11 @@ export class OrganizationTaxController {
     type: OrganizationTaxDto,
     description: 'The newly created organization tax.',
   })
-  async updateOrganization(
+  async updateOrganizationTax(
     @Param('organizationId') organizationId: string,
     @Param('authority') authority: Authority,
     @Body() dto: UpdateOrganizationTaxDto,
   ): Promise<OrganizationTaxDto> {
-    return this.updateOrganizationTaxUsecase.execute(dto, organizationId, authority);
+    return await this.updateOrganizationTaxUsecase.execute(dto, organizationId, authority);
   }
 }
