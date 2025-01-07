@@ -77,9 +77,9 @@ import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, 
     FireAuthModule.forRoot({
       dbURL: process.env.FIREBASE_DATABASE_URL,
       serviceAccount: {
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY,
+        projectId: process.env.GCLOUD_PROJECT_ID,
+        clientEmail: process.env.GCLOUD_CLIENT_EMAIL,
+        privateKey: process.env.GCLOUD_PRIVATE_KEY,
       },
     }),
 
