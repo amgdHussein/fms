@@ -12,8 +12,13 @@ export class AddInvoice implements Usecase<Invoice> {
   ) {}
 
   async execute(invoice: Partial<Invoice> & { organizationId: string; issue: boolean }): Promise<Invoice> {
-    return this.invoiceService.addInvoice(invoice).then(invoice => {
+    const { items, ...invoiceData } = invoice;
+    return this.invoiceService.addInvoice(invoiceData).then(async invoice => {
       // TODO: SEND EMAIL TO CLIENT IF ISSUE IS TRUE
+      if (items && items.length) {
+        invoice.items = await this.invoiceService.addItems(items, invoice.id);
+      }
+
       return invoice;
     });
   }
