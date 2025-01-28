@@ -50,7 +50,7 @@ export class CodeService implements ICodeService {
   }
 
   async addCodes(codes: Partial<Code>[], authority: Authority, organizationId: string): Promise<Code[]> {
-    const orgTax: OrganizationTax = await this.orgTaxService.getOrganizationTax(organizationId, authority);
+    const orgTax: OrganizationTax = await this.orgTaxService.getTax(organizationId);
 
     switch (authority) {
       case Authority.ETA: {
@@ -121,7 +121,7 @@ export class CodeService implements ICodeService {
     const organizationId = code.organizationId;
     const authority = code.authority;
 
-    const orgTax: OrganizationTax = await this.orgTaxService.getOrganizationTax(organizationId, authority);
+    const orgTax: OrganizationTax = await this.orgTaxService.getTax(organizationId);
 
     switch (authority) {
       case Authority.ETA: {
@@ -143,7 +143,7 @@ export class CodeService implements ICodeService {
   }
 
   async reuseCodes(codes: Partial<Code>[], authority: Authority, organizationId: string): Promise<Code[]> {
-    const orgTax: OrganizationTax = await this.orgTaxService.getOrganizationTax(organizationId, authority);
+    const orgTax: OrganizationTax = await this.orgTaxService.getTax(organizationId);
 
     switch (authority) {
       case Authority.ETA: {

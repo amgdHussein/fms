@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { Authority } from '../../../../../core/common';
+import { BadRequestException } from '../../../../../core/exceptions';
 import { Usecase } from '../../../../../core/interfaces';
 
 import { IOrganizationTaxService, ORGANIZATION_TAX_SERVICE_PROVIDER, OrganizationTax } from '../../../domain';
@@ -12,8 +13,13 @@ export class UpdateOrganizationTax implements Usecase<OrganizationTax> {
     private readonly orgTaxService: IOrganizationTaxService,
   ) {}
 
-  async execute(tax: Partial<OrganizationTax>, organizationId: string, authority: Authority): Promise<OrganizationTax> {
-    const existingTax = await this.orgTaxService.getOrganizationTax(organizationId, authority);
-    return this.orgTaxService.updateTax({ ...tax, id: existingTax.id });
+  async execute(tax: Partial<OrganizationTax> & { id: string; authority: Authority }): Promise<OrganizationTax> {
+    const existingTax = await this.orgTaxService.getTaxByTaxIdNumber(tax.taxIdNo, tax.authority);
+
+    if (existingTax) {
+      throw new BadRequestException(`Organization with tax id ${tax.taxIdNo} already exists!`);
+    }
+
+    return this.orgTaxService.updateTax(tax);
   }
 }

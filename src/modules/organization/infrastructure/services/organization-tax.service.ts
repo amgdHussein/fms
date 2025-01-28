@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { Authority } from '../../../../core/common';
-import { BadRequestException, NotFoundException } from '../../../../core/exceptions';
-import { IOrganizationTaxRepository, IOrganizationTaxService, ORGANIZATION_TAX_REPOSITORY_PROVIDER, OrganizationTax } from '../../domain';
+import { NotFoundException } from '../../../../core/exceptions';
+import { IOrganizationTaxRepository, IOrganizationTaxService, ORGANIZATION_REPOSITORY_PROVIDER, OrganizationTax } from '../../domain';
 
 @Injectable()
 export class OrganizationTaxService implements IOrganizationTaxService {
   constructor(
-    @Inject(ORGANIZATION_TAX_REPOSITORY_PROVIDER)
+    @Inject(ORGANIZATION_REPOSITORY_PROVIDER)
     private readonly repo: IOrganizationTaxRepository,
   ) {}
 
@@ -15,10 +15,10 @@ export class OrganizationTaxService implements IOrganizationTaxService {
     return this.repo.get(id);
   }
 
-  async getOrganizationTax(organizationId: string, authority: Authority): Promise<OrganizationTax> {
+  async getTaxByTaxIdNumber(taxIdNo: string, authority: Authority): Promise<OrganizationTax> {
     return this.repo
       .getMany([
-        { key: 'organizationId', op: 'eq', value: organizationId },
+        { key: 'taxIdNo', op: 'eq', value: taxIdNo },
         { key: 'authority', op: 'eq', value: authority },
       ])
       .then(taxes => {
@@ -26,21 +26,11 @@ export class OrganizationTaxService implements IOrganizationTaxService {
           return taxes[0];
         }
 
-        throw new BadRequestException(`Organization has no taxes details with ${authority}!`);
+        throw new NotFoundException(`No organization with tax id ${taxIdNo}!`);
       });
   }
 
-  async getOrganizationTaxByTaxId(taxIdNo: string): Promise<OrganizationTax> {
-    return this.repo.getMany([{ key: 'taxIdNo', op: 'eq', value: taxIdNo }]).then(taxes => {
-      if (taxes.length) {
-        return taxes[0];
-      }
-
-      throw new NotFoundException(`No organization with tax id ${taxIdNo}!`);
-    });
-  }
-
-  async addTax(tax: Partial<OrganizationTax> & { organizationId: string; authority: Authority }): Promise<OrganizationTax> {
+  async setTax(tax: OrganizationTax): Promise<OrganizationTax> {
     return this.repo.add(tax);
   }
 

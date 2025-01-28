@@ -86,7 +86,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
 
     const organizationId: string = invoices[0].organizationId;
     const organization: Organization = await this.organizationService.getOrganization(organizationId);
-    const organizationTax: OrganizationTax = await this.organizationTaxService.getOrganizationTax(organizationId, Authority.ETA);
+    const organizationTax: OrganizationTax = await this.organizationTaxService.getTax(organizationId);
 
     // Extract unique client IDs and fetch clients and their taxes
     const uniqueClientIds = Array.from(new Set(invoices.map(invoice => invoice.clientId)));
@@ -162,7 +162,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
 
     // Get organization credentials and submit invoices
     const authority = Authority.ETA;
-    const organizationTax: OrganizationTax = await this.organizationTaxService.getOrganizationTax(organizationId, authority);
+    const organizationTax: OrganizationTax = await this.organizationTaxService.getTax(organizationId);
     const { clientId, clientSecret } = organizationTax;
 
     const { submissionId, rejectedDocuments, acceptedDocuments } = await this.etaEInvoicing.addInvoices(documents, { clientId, clientSecret }, organizationId);
@@ -225,7 +225,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
 
   async cancelInvoice(id: string, uuid: string, status: 'cancelled' | 'rejected', reason: string): Promise<TaxInvoice> {
     const invoice = await this.invoiceRepo.get(id);
-    const organizationTax: OrganizationTax = await this.organizationTaxService.getOrganizationTax(invoice.organizationId, Authority.ETA);
+    const organizationTax: OrganizationTax = await this.organizationTaxService.getTax(invoice.organizationId);
     const credential = { clientId: organizationTax.clientId, clientSecret: organizationTax.clientSecret };
 
     return this.etaEInvoicing.rejectOrCancelInvoice(uuid, status, reason, credential, invoice.organizationId).then(async response => {

@@ -3,7 +3,7 @@ import { Global, Module } from '@nestjs/common';
 import {
   AddBranch,
   AddOrganization,
-  AddOrganizationTax,
+  AssignOrganizationTax,
   DeleteBranch,
   DeleteOrganization,
   GetBranch,
@@ -12,12 +12,12 @@ import {
   GetOrganizationPreferences,
   GetOrganizations,
   GetOrganizationTax,
-  GetOrganizationTaxByTaxId,
   IsOrganizationExistConstraint,
   UpdateBranch,
   UpdateOrganization,
   UpdateOrganizationPreferences,
   UpdateOrganizationTax,
+  ValidateAuthorityTaxNumber,
 } from './application';
 import {
   BRANCH_REPOSITORY_PROVIDER,
@@ -139,12 +139,12 @@ const organizationTaxUsecases = [
     useClass: GetOrganizationTax,
   },
   {
-    provide: ORGANIZATION_TAX_USECASE_PROVIDERS.GET_ORGANIZATION_TAX_BY_TAX_ID,
-    useClass: GetOrganizationTaxByTaxId,
+    provide: ORGANIZATION_TAX_USECASE_PROVIDERS.VALIDATE_AUTHORITY_TAX_NUMBER,
+    useClass: ValidateAuthorityTaxNumber,
   },
   {
-    provide: ORGANIZATION_TAX_USECASE_PROVIDERS.ADD_ORGANIZATION_TAX,
-    useClass: AddOrganizationTax,
+    provide: ORGANIZATION_TAX_USECASE_PROVIDERS.ASSIGN_ORGANIZATION_TAX,
+    useClass: AssignOrganizationTax,
   },
   {
     provide: ORGANIZATION_TAX_USECASE_PROVIDERS.UPDATE_ORGANIZATION_TAX,

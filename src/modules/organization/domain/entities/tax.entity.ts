@@ -2,8 +2,7 @@ import { Authority, Photo } from '../../../../core/common';
 import { ActivityCode } from '../constants';
 
 export interface OrganizationTax {
-  id: string;
-  organizationId: string;
+  id: string; // The ID of the organization
   authority: Authority; // Tax authority data for that organization
 
   configurationFlags: Record<EtaFlag, boolean>; // Flags for the tax authority to control UI/API
