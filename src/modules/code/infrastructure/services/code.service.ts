@@ -27,7 +27,7 @@ export class CodeService implements ICodeService {
   ) {}
 
   async getCodes(organizationId: string, filters?: QueryFilter[]): Promise<Code[]> {
-    return this.codeRepo.getMany(organizationId, [...filters, { key: 'status', op: 'neq', value: 2 }]);
+    return this.codeRepo.getMany(organizationId, [...filters, { key: 'status', op: 'neq', value: CodeStatus.INACTIVE }]);
   }
 
   async getCode(id: string, organizationId: string): Promise<Code> {

@@ -30,14 +30,14 @@ export class OrganizationPreferencesFirestoreRepository implements IOrganization
     return this.db.addDoc(preferences);
   }
 
-  async set(preferences: Partial<OrganizationPreferences> & { id: string }): Promise<OrganizationPreferences> {
+  async set(preferences: OrganizationPreferences): Promise<OrganizationPreferences> {
     // Initiate some fields
     preferences.createdBy = this.authService.currentUser.uid;
     preferences.createdAt = Date.now();
     preferences.updatedBy = this.authService.currentUser.uid;
     preferences.updatedAt = Date.now();
 
-    return this.db.addDoc(preferences);
+    return this.db.setDoc(preferences);
   }
 
   async update(preferences: Partial<OrganizationPreferences> & { id: string }): Promise<OrganizationPreferences> {

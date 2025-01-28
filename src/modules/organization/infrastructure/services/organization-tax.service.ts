@@ -2,12 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { Authority } from '../../../../core/common';
 import { BadRequestException, NotFoundException } from '../../../../core/exceptions';
-import { IOrganizationTaxRepository, IOrganizationTaxService, ORGANIZATION_REPOSITORY_PROVIDER, OrganizationTax } from '../../domain';
+import { IOrganizationTaxRepository, IOrganizationTaxService, ORGANIZATION_TAX_REPOSITORY_PROVIDER, OrganizationTax } from '../../domain';
 
 @Injectable()
 export class OrganizationTaxService implements IOrganizationTaxService {
   constructor(
-    @Inject(ORGANIZATION_REPOSITORY_PROVIDER)
+    @Inject(ORGANIZATION_TAX_REPOSITORY_PROVIDER)
     private readonly repo: IOrganizationTaxRepository,
   ) {}
 
