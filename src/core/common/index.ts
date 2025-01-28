@@ -2,6 +2,7 @@ export { Address } from './address.model';
 export { Authority } from './authority.enum';
 export { CountryCode } from './country-code.enum';
 export { CountryTimezone } from './country-timezone.enum';
+export { Country } from './country.model';
 export { CurrencyCode } from './currency.enum';
 export { Currency } from './currency.model';
 export { Cycle } from './cycle.enum';
