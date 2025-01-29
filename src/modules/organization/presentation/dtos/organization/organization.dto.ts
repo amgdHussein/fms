@@ -17,8 +17,6 @@ export class OrganizationDto implements Organization {
   industry: OrganizationIndustry;
   legalStructure?: LegalStructure;
 
-  isProductionMode: boolean; // Whether the account is in production mode
-
   createdBy: string;
   createdAt: number;
   updatedBy: string;

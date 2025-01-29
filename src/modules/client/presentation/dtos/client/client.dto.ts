@@ -3,7 +3,6 @@ import { Client, ClientStatus } from '../../../domain';
 
 // TODO: FILL THE DTO
 export class ClientDto implements Client {
-  isProductionMode: boolean;
   id: string;
   organizationId: string;
   name: string;

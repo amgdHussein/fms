@@ -16,7 +16,6 @@ export class OrganizationProductDto implements Product {
   unitType: string;
   availableUnits: number;
   discount?: Discount;
-  isProductionMode: boolean; // Whether the account is in production mode
 
   createdBy: string;
   createdAt: number;

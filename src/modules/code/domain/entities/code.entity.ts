@@ -28,8 +28,6 @@ export interface Code {
   comment?: string; // Comment for the code
   cause?: string; // Cause of the submission failure
 
-  isProductionMode: boolean; // Whether the account is in production mode
-
   createdBy: string; // User who created the tax-code
   createdAt: number; // Timestamp when the tax-code was created
   updatedBy: string; // User who last updated the tax-code

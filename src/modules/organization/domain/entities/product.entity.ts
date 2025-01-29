@@ -26,8 +26,6 @@ export interface Product {
 
   discount?: Discount; // Discount applied to the product
 
-  isProductionMode: boolean; // Whether the account is in production mode
-
   createdBy: string; // User who created the product
   createdAt: number; // Timestamp when the product was created
   updatedBy: string; // User who last updated the product

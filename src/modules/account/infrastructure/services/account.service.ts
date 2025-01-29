@@ -16,7 +16,6 @@ export class AccountService implements IAccountService {
   async addAccount(account: Partial<Account> & { userId: string }): Promise<Account> {
     account.startAt = Date.now();
     account.status = AccountStatus.ACTIVE;
-    account.isProductionMode = true;
     return this.repo.add(account);
   }
 

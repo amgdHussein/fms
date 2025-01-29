@@ -50,6 +50,7 @@ export class OrganizationProductController {
     return this.getProductUsecase.execute(productId, organizationId);
   }
 
+  //TODO: ADD FILTERS
   @Get('organizations/:organizationId/products')
   @ApiOperation({ summary: 'Retrieve all products for a specific organization.' })
   @ApiParam({

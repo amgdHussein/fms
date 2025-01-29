@@ -20,8 +20,6 @@ export class CodeDto implements Code {
   category: string;
   comment?: string;
 
-  isProductionMode: boolean;
-
   // Swagger properties
   createdBy: string;
   createdAt: number;

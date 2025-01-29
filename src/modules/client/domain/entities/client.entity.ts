@@ -14,7 +14,6 @@ export interface Client {
   currency: CurrencyCode;
 
   // openingBalances?: OpeningBalance[]; // Array of opening balances
-  isProductionMode: boolean; // Whether the account is in production mode
 
   createdBy: string; // User who created the client
   createdAt: number; // Timestamp when the client was created
