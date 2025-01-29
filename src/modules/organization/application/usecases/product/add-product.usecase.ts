@@ -2,12 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { Usecase } from '../../../../../core/interfaces';
 
-import { BRANCH_SERVICE_PROVIDER, IOrganizationProductService, Product } from '../../../domain';
+import { IOrganizationProductService, Product, PRODUCT_SERVICE_PROVIDER } from '../../../domain';
 
 @Injectable()
 export class AddProduct implements Usecase<Product> {
   constructor(
-    @Inject(BRANCH_SERVICE_PROVIDER)
+    @Inject(PRODUCT_SERVICE_PROVIDER)
     private readonly productService: IOrganizationProductService,
   ) {}
 

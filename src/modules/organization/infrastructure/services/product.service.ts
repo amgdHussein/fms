@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { QueryFilter, QueryOrder } from '../../../../core/models';
-import { BRANCH_REPOSITORY_PROVIDER, IOrganizationProductRepository, IOrganizationProductService, Product } from '../../domain';
+import { IOrganizationProductRepository, IOrganizationProductService, Product, PRODUCT_REPOSITORY_PROVIDER } from '../../domain';
 
 @Injectable()
 export class OrganizationProductService implements IOrganizationProductService {
   constructor(
-    @Inject(BRANCH_REPOSITORY_PROVIDER)
+    @Inject(PRODUCT_REPOSITORY_PROVIDER)
     private readonly repo: IOrganizationProductRepository,
   ) {}
 

@@ -3,20 +3,25 @@ import { Global, Module } from '@nestjs/common';
 import {
   AddBranch,
   AddOrganization,
+  AddProduct,
   AssignOrganizationTax,
   DeleteBranch,
   DeleteOrganization,
+  DeleteProduct,
   GetBranch,
   GetBranches,
   GetOrganization,
   GetOrganizationPreferences,
   GetOrganizations,
   GetOrganizationTax,
+  GetProduct,
+  GetProducts,
   IsOrganizationExistConstraint,
   UpdateBranch,
   UpdateOrganization,
   UpdateOrganizationPreferences,
   UpdateOrganizationTax,
+  UpdateProduct,
   ValidateAuthorityTaxNumber,
 } from './application';
 import {
@@ -114,23 +119,23 @@ const branchesUsecases = [
 const productsUsecases = [
   {
     provide: PRODUCT_USECASE_PROVIDERS.GET_PRODUCT,
-    useClass: GetBranch,
+    useClass: GetProduct,
   },
   {
     provide: PRODUCT_USECASE_PROVIDERS.ADD_PRODUCT,
-    useClass: AddBranch,
+    useClass: AddProduct,
   },
   {
     provide: PRODUCT_USECASE_PROVIDERS.UPDATE_PRODUCT,
-    useClass: UpdateBranch,
+    useClass: UpdateProduct,
   },
   {
     provide: PRODUCT_USECASE_PROVIDERS.GET_PRODUCTS,
-    useClass: GetBranches,
+    useClass: GetProducts,
   },
   {
     provide: PRODUCT_USECASE_PROVIDERS.DELETE_PRODUCT,
-    useClass: DeleteBranch,
+    useClass: DeleteProduct,
   },
 ];
 const organizationTaxUsecases = [

@@ -61,7 +61,7 @@ export class OrganizationTaxController {
     description: 'The organization tax.',
   })
   async getOrganizationByTaxId(@Param('authority') authority: Authority, @Param('taxIdNo') taxIdNo: string): Promise<OrganizationTaxDto> {
-    return this.validateAuthorityTaxNumberUsecase.execute(taxIdNo, authority);
+    return await this.validateAuthorityTaxNumberUsecase.execute(taxIdNo, authority);
   }
 
   @Post('organizations/:organizationId/tax')
@@ -83,7 +83,7 @@ export class OrganizationTaxController {
     description: 'The newly created organization tax.',
   })
   async addOrganizationTax(@Param('organizationId') organizationId: string, @Body() dto: AssignOrganizationTaxDto): Promise<OrganizationTaxDto> {
-    return this.assignOrganizationTaxUsecase.execute({ ...dto, organizationId });
+    return await this.assignOrganizationTaxUsecase.execute({ ...dto, organizationId });
   }
 
   @Put('organizations/:organizationId/tax')
