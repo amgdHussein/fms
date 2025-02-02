@@ -4,7 +4,6 @@ import { ClientPreferences } from '../../../domain/entities';
 // TODO: FILL THE DTO
 export class ClientPreferencesDto implements ClientPreferences {
   id: string;
-  clientId: string;
   currencies: CurrencyCode[];
   createdBy: string;
   createdAt: number;

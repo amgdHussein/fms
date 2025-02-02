@@ -11,6 +11,7 @@ import {
   IsClientExistConstraint,
   UpdateClient,
   UpdateClientPreferences,
+  ValidateClientTaxNumber,
 } from './application';
 import {
   CLIENT_PREFERENCES_REPOSITORY_PROVIDER,
@@ -18,18 +19,9 @@ import {
   CLIENT_PREFERENCES_USECASE_PROVIDERS,
   CLIENT_REPOSITORY_PROVIDER,
   CLIENT_SERVICE_PROVIDER,
-  CLIENT_TAX_REPOSITORY_PROVIDER,
-  CLIENT_TAX_SERVICE_PROVIDER,
   CLIENT_USECASE_PROVIDERS,
 } from './domain';
-import {
-  ClientFirestoreRepository,
-  ClientPreferencesFirestoreRepository,
-  ClientPreferencesService,
-  ClientService,
-  ClientTaxFirestoreRepository,
-  ClientTaxService,
-} from './infrastructure';
+import { ClientFirestoreRepository, ClientPreferencesFirestoreRepository, ClientPreferencesService, ClientService } from './infrastructure';
 import { ClientController, ClientPreferencesController } from './presentation';
 
 const validators = [IsClientExistConstraint];
@@ -57,6 +49,10 @@ const clientUsecases = [
   {
     provide: CLIENT_USECASE_PROVIDERS.DELETE_CLIENT,
     useClass: DeleteClient,
+  },
+  {
+    provide: CLIENT_USECASE_PROVIDERS.VALIDATE_CLIENT_TAX_NUMBER,
+    useClass: ValidateClientTaxNumber,
   },
   {
     provide: CLIENT_USECASE_PROVIDERS.GET_ORGANIZATION_CLIENTS,
@@ -89,14 +85,6 @@ const preferencesUsecases = [
       useClass: ClientService,
     },
     {
-      provide: CLIENT_TAX_REPOSITORY_PROVIDER,
-      useClass: ClientTaxFirestoreRepository,
-    },
-    {
-      provide: CLIENT_TAX_SERVICE_PROVIDER,
-      useClass: ClientTaxService,
-    },
-    {
       provide: CLIENT_PREFERENCES_REPOSITORY_PROVIDER,
       useClass: ClientPreferencesFirestoreRepository,
     },
@@ -112,10 +100,6 @@ const preferencesUsecases = [
     {
       provide: CLIENT_SERVICE_PROVIDER,
       useClass: ClientService,
-    },
-    {
-      provide: CLIENT_TAX_SERVICE_PROVIDER,
-      useClass: ClientTaxService,
     },
   ],
 })

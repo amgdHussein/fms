@@ -5,7 +5,7 @@ import { CurrencyCode } from '../common';
 import { ETA_TAX_SUB_TYPES_WITH_TYPE } from '../providers/eta/constants';
 import { AddEtaInvoice, EtaInvoiceLine, GetInvoices, Issuer, QueryCodes, TaxableItems } from '../providers/eta/entities';
 
-import { Client, ClientTax } from '../../modules/client/domain';
+import { Client } from '../../modules/client/domain';
 import { Code } from '../../modules/code/domain';
 import { InvoiceForm, Item, ItemTax, TaxInvoice } from '../../modules/invoice/domain';
 import { Organization, OrganizationBranch, OrganizationTax } from '../../modules/organization/domain';
@@ -141,7 +141,6 @@ function mapEtaExportInvoiceItems(invoice: TaxInvoice, codes: Code[]): EtaInvoic
 function getMappedEtaInvoice(
   invoice: TaxInvoice,
   client: Client,
-  clientTax: ClientTax,
   organization: Organization,
   organizationTax: OrganizationTax,
   branch: OrganizationBranch,
@@ -164,9 +163,9 @@ function getMappedEtaInvoice(
 
   // Setup client address
   const receiver = {
-    id: clientTax.taxIdNo,
+    id: client.identificationId,
     name: client.name,
-    type: clientTax.type,
+    type: client.type,
     address: {
       country: client.address.country,
       governate: client.address.country,
@@ -198,7 +197,6 @@ function getMappedEtaInvoice(
 function getMappedEtaCreditOrDebit(
   invoice: TaxInvoice,
   client: Client,
-  clientTax: ClientTax,
   organization: Organization,
   organizationTax: OrganizationTax,
   branch: OrganizationBranch,
@@ -221,9 +219,9 @@ function getMappedEtaCreditOrDebit(
 
   // Setup client address
   const receiver = {
-    id: clientTax.taxIdNo,
+    id: client.identificationId,
     name: client.name,
-    type: clientTax.type,
+    type: client.type,
     address: {
       country: client.address.country,
       governate: client.address.country,
@@ -256,7 +254,6 @@ function getMappedEtaCreditOrDebit(
 function getMappedEtaExportInvoice(
   invoice: TaxInvoice,
   client: Client,
-  clientTax: ClientTax,
   organization: Organization,
   organizationTax: OrganizationTax,
   branch: OrganizationBranch,
@@ -279,9 +276,9 @@ function getMappedEtaExportInvoice(
 
   // Setup client address
   const receiver = {
-    id: clientTax.taxIdNo,
+    id: client.identificationId,
     name: client.name,
-    type: clientTax.type,
+    type: client.type,
     address: {
       country: client.address.country,
       governate: client.address.country,
@@ -314,7 +311,6 @@ function getMappedEtaExportInvoice(
 function getMappedEtaExportCreditOrDebitInvoice(
   invoice: TaxInvoice,
   client: Client,
-  clientTax: ClientTax,
   organization: Organization,
   organizationTax: OrganizationTax,
   branch: OrganizationBranch,
@@ -337,9 +333,9 @@ function getMappedEtaExportCreditOrDebitInvoice(
 
   // Setup client address
   const receiver = {
-    id: clientTax.taxIdNo,
+    id: client.identificationId,
     name: client.name,
-    type: clientTax.type,
+    type: client.type,
     address: {
       country: client.address.country,
       governate: client.address.country,
@@ -373,7 +369,6 @@ function getMappedEtaExportCreditOrDebitInvoice(
 export function mapInvoiceToEtaInvoice(
   invoice: TaxInvoice,
   client: Client,
-  clientTax: ClientTax,
   organization: Organization,
   organizationTax: OrganizationTax,
   branch: OrganizationBranch,
@@ -381,13 +376,13 @@ export function mapInvoiceToEtaInvoice(
 ): AddEtaInvoice {
   switch (invoice.form) {
     case InvoiceForm.INVOICE:
-      return getMappedEtaInvoice(invoice, client, clientTax, organization, organizationTax, branch, codes);
+      return getMappedEtaInvoice(invoice, client, organization, organizationTax, branch, codes);
     case InvoiceForm.CREDIT || InvoiceForm.DEBIT:
-      return getMappedEtaCreditOrDebit(invoice, client, clientTax, organization, organizationTax, branch, codes);
+      return getMappedEtaCreditOrDebit(invoice, client, organization, organizationTax, branch, codes);
     case InvoiceForm.EXPORT_INVOICE:
-      return getMappedEtaExportInvoice(invoice, client, clientTax, organization, organizationTax, branch, codes);
+      return getMappedEtaExportInvoice(invoice, client, organization, organizationTax, branch, codes);
     case InvoiceForm.EXPORT_CREDIT || InvoiceForm.EXPORT_DEBIT:
-      return getMappedEtaExportCreditOrDebitInvoice(invoice, client, clientTax, organization, organizationTax, branch, codes);
+      return getMappedEtaExportCreditOrDebitInvoice(invoice, client, organization, organizationTax, branch, codes);
     default:
       throw new Error('Invoice type not supported');
   }

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { QueryFilter, QueryOrder } from '../../../../core/models';
 
+import { BadRequestException } from '../../../../core/exceptions';
 import { Client, CLIENT_REPOSITORY_PROVIDER, IClientRepository, IClientService } from '../../domain';
 
 @Injectable()
@@ -17,6 +18,21 @@ export class ClientService implements IClientService {
 
   async getClients(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Client[]> {
     return this.repo.getMany(filters, page, limit, order);
+  }
+
+  async getClientByTaxNumber(taxIdNo: string, organizationId: string): Promise<Client> {
+    return this.repo
+      .getMany([
+        { key: 'identificationId', op: 'eq', value: taxIdNo },
+        { key: 'organizationId', op: 'eq', value: organizationId },
+      ])
+      .then(clients => {
+        if (clients.length) {
+          return clients[0];
+        }
+
+        throw new BadRequestException(`No client with tax number ${taxIdNo}!`);
+      });
   }
 
   async addClient(client: Partial<Client>): Promise<Client> {

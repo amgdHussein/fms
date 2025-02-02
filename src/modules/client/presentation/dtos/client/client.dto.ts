@@ -1,4 +1,5 @@
-import { Address, CurrencyCode, Identification, Phone } from '../../../../../core/common';
+import { Address, CurrencyCode, Phone } from '../../../../../core/common';
+import { IssuerType } from '../../../../../core/providers';
 import { Client, ClientStatus } from '../../../domain';
 
 // TODO: FILL THE DTO
@@ -10,7 +11,8 @@ export class ClientDto implements Client {
   status: ClientStatus;
   phone?: Phone;
   address: Address;
-  identification: Identification;
+  identificationId: string; // Identification number
+  type: IssuerType;
   currency: CurrencyCode;
   createdBy: string;
   createdAt: number;

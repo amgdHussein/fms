@@ -24,6 +24,7 @@ import {
   UpdateProduct,
   ValidateAuthorityTaxNumber,
 } from './application';
+import { DraftProduct } from './application/usecases/product/draft-product.usecase';
 import {
   BRANCH_REPOSITORY_PROVIDER,
   BRANCH_SERVICE_PROVIDER,
@@ -124,6 +125,10 @@ const productsUsecases = [
   {
     provide: PRODUCT_USECASE_PROVIDERS.ADD_PRODUCT,
     useClass: AddProduct,
+  },
+  {
+    provide: PRODUCT_USECASE_PROVIDERS.DRAFT_PRODUCT,
+    useClass: DraftProduct,
   },
   {
     provide: PRODUCT_USECASE_PROVIDERS.UPDATE_PRODUCT,

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AddClient, AddClients, DeleteClient, GetClient, GetClients, GetOrganizationClients, UpdateClient } from '../../application';
+import { AddClient, AddClients, DeleteClient, GetClient, GetClients, GetOrganizationClients, UpdateClient, ValidateClientTaxNumber } from '../../application';
 import { CLIENT_USECASE_PROVIDERS } from '../../domain';
 
 import { AddClientDto, AddClientsDto, ClientDto, UpdateClientDto } from '../dtos';
@@ -30,6 +30,9 @@ export class ClientController {
 
     @Inject(CLIENT_USECASE_PROVIDERS.DELETE_CLIENT)
     private readonly deleteClientUsecase: DeleteClient,
+
+    @Inject(CLIENT_USECASE_PROVIDERS.VALIDATE_CLIENT_TAX_NUMBER)
+    private readonly validateClientTaxNumberUsecase: ValidateClientTaxNumber,
   ) {}
 
   @Get('clients')
@@ -157,5 +160,29 @@ export class ClientController {
   })
   async addClients(@Body() dto: AddClientsDto): Promise<ClientDto[]> {
     return this.addClientsUsecase.execute(dto.clients);
+  }
+
+  @Get('organizations/:organizationId/clients/tax/:identificationId')
+  @ApiOperation({ summary: 'Validate if there is client with provided identification id number.' })
+  @ApiParam({
+    name: 'organizationId',
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    type: String,
+    description: 'The unique identifier of the organization.',
+  })
+  @ApiParam({
+    name: 'identificationId',
+    type: String,
+    example: '15849452',
+    required: true,
+    description: 'Client identification id.',
+  })
+  @ApiResponse({
+    type: ClientDto,
+    description: 'Return the Client that match provided identification id.',
+  })
+  async getOrganizationByTaxId(@Param('identificationId') identificationId: string, @Param('organizationId') organizationId: string): Promise<ClientDto> {
+    return await this.validateClientTaxNumberUsecase.execute(identificationId, organizationId);
   }
 }

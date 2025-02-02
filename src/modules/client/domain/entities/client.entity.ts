@@ -1,4 +1,5 @@
-import { Address, CurrencyCode, Identification, Phone } from '../../../../core/common';
+import { Address, CurrencyCode, Phone } from '../../../../core/common';
+import { IssuerType } from '../../../../core/providers';
 import { ClientStatus } from './client-status.enum';
 
 export interface Client {
@@ -10,8 +11,10 @@ export interface Client {
   status: ClientStatus;
   phone?: Phone;
   address: Address;
-  identification: Identification;
   currency: CurrencyCode;
+
+  identificationId: string; // Identification number
+  type: IssuerType;
 
   // openingBalances?: OpeningBalance[]; // Array of opening balances
 

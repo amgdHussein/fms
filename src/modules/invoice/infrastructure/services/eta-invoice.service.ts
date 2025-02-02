@@ -9,7 +9,7 @@ import { Utils } from '../../../../core/utils';
 
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { CLIENT_SERVICE_PROVIDER, CLIENT_TAX_SERVICE_PROVIDER, IClientService, IClientTaxService } from '../../../client/domain';
+import { CLIENT_SERVICE_PROVIDER, IClientService } from '../../../client/domain';
 import { CODE_SERVICE_PROVIDER, ICodeService } from '../../../code/domain';
 import {
   BRANCH_SERVICE_PROVIDER,
@@ -69,9 +69,6 @@ export class EtaInvoiceService implements IEtaInvoiceService {
 
     @Inject(CLIENT_SERVICE_PROVIDER)
     private readonly clientService: IClientService,
-
-    @Inject(CLIENT_TAX_SERVICE_PROVIDER)
-    private readonly clientTaxService: IClientTaxService,
   ) {}
 
   async processInvoices(ids: string[]): Promise<boolean> {
@@ -90,9 +87,9 @@ export class EtaInvoiceService implements IEtaInvoiceService {
 
     // Extract unique client IDs and fetch clients and their taxes
     const uniqueClientIds = Array.from(new Set(invoices.map(invoice => invoice.clientId)));
+    //TODO: REVIEW THIS AFTER DELETE CLIENT TAXES
     const clients = await Promise.all(uniqueClientIds.map(async clientId => this.clientService.getClient(clientId)));
-    const clientTaxes = await Promise.all(clients.map(async client => this.clientTaxService.getClientTax(client.id, client.organizationId, Authority.ETA)));
-    const clientMap = new Map(clients.map((client, index) => [client.id, { client, tax: clientTaxes[index] }]));
+    const clientMap = new Map(clients.map(client => [client.id, { client }]));
 
     // TODO: TEST THE QUERY WITH ARRAY-CONTAINS, AND REVISE FIRESTORE TO_FIRESTORE CONVERTER
     const allCodeIds = invoices.flatMap(invoice => invoice.items.map(item => item.codeId));
@@ -101,7 +98,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
 
     const promises = invoices.map(async invoice => {
       const branch = await this.branchService.getBranch(invoice.branchId);
-      const { client, tax: clientTax } = clientMap.get(invoice.clientId) || {};
+      const { client } = clientMap.get(invoice.clientId) || {};
 
       // Initiate processing the invoice
       await this.invoiceRepo.update({ id: invoice.id, taxStatus: TaxInvoiceStatus.PROCESSING });
@@ -110,7 +107,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
         invoiceId: invoice.id,
         organizationId: invoice.organizationId,
         taxId: organizationTax.taxIdNo,
-        etaDocument: Utils.Object.dropUndefined(Utils.Eta.mapInvoiceToEtaInvoice(invoice, client, clientTax, organization, organizationTax, branch, codes)),
+        etaDocument: Utils.Object.dropUndefined(Utils.Eta.mapInvoiceToEtaInvoice(invoice, client, organization, organizationTax, branch, codes)),
         action: 'SentToSign',
       });
 

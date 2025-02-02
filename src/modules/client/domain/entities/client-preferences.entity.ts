@@ -2,7 +2,6 @@ import { CurrencyCode } from '../../../../core/common';
 
 export interface ClientPreferences {
   id: string;
-  clientId: string;
 
   currencies: CurrencyCode[]; // Currencies supported by the organization
 
