@@ -130,6 +130,7 @@ export class ClientController {
     return this.deleteClientUsecase.execute(id);
   }
 
+  //TODO: ADD QUERY PARAMS FOR FILTERING AND PAGINATION
   @Get('organizations/:organizationId/clients')
   @ApiOperation({ summary: 'Retrieve all Clients for an organization.' })
   @ApiParam({
