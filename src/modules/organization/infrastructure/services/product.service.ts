@@ -19,7 +19,7 @@ export class OrganizationProductService implements IOrganizationProductService {
   }
 
   async addProduct(product: Partial<Product> & { organizationId: string }): Promise<Product> {
-    return this.repo.add(product);
+    return this.repo.add(product, product.organizationId);
   }
 
   async updateProduct(product: Partial<Product> & { id: string; organizationId: string }): Promise<Product> {

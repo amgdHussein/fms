@@ -4,6 +4,7 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/s
 import { AddProduct, DeleteProduct, GetProduct, GetProducts, UpdateProduct } from '../../application';
 import { PRODUCT_USECASE_PROVIDERS } from '../../domain';
 
+import { DraftProduct } from '../../application/usecases/product/draft-product.usecase';
 import { AddOrganizationProductDto, OrganizationProductDto, UpdateOrganizationProductDto } from '../dtos';
 
 @ApiTags('Products')
@@ -15,6 +16,9 @@ export class OrganizationProductController {
 
     @Inject(PRODUCT_USECASE_PROVIDERS.ADD_PRODUCT)
     private readonly addProductUsecase: AddProduct,
+
+    @Inject(PRODUCT_USECASE_PROVIDERS.DRAFT_PRODUCT)
+    private readonly draftProductUsecase: DraftProduct,
 
     @Inject(PRODUCT_USECASE_PROVIDERS.UPDATE_PRODUCT)
     private readonly updateProductUsecase: UpdateProduct,
@@ -88,6 +92,44 @@ export class OrganizationProductController {
   })
   async addProduct(@Param('organizationId') organizationId: string, @Body() dto: AddOrganizationProductDto): Promise<OrganizationProductDto> {
     return this.addProductUsecase.execute({ ...dto, organizationId });
+  }
+
+  //TODO: IMPLEMENT
+  @Post('organizations/:organizationId/products')
+  @ApiOperation({ summary: 'Add multiple Products in a batch.' })
+  @ApiBody({
+    // type: AddClientsDto,
+    // required: true,
+    // description: 'Array of Clients to be added to the database.',
+  })
+  @ApiResponse({
+    // type: [ClientDto],
+    // description: 'Returns a list of Clients that were recently added.',
+  })
+  addProducts(@Body() dto: any): any {
+    // return this.addClientsUsecase.execute(dto.clients);
+  }
+
+  @Post('organizations/:organizationId/products/draft')
+  @ApiOperation({ summary: 'Create a new draft product for a specific organization.' })
+  @ApiParam({
+    name: 'organizationId',
+    type: String,
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    description: 'The unique identifier of the organization.',
+  })
+  @ApiBody({
+    type: AddOrganizationProductDto,
+    required: true,
+    description: 'Details required to create a new product within the organization.',
+  })
+  @ApiResponse({
+    type: OrganizationProductDto,
+    description: 'The newly created product.',
+  })
+  async addDraftProduct(@Param('organizationId') organizationId: string, @Body() dto: AddOrganizationProductDto): Promise<OrganizationProductDto> {
+    return this.draftProductUsecase.execute({ ...dto, organizationId });
   }
 
   @Put('organizations/:organizationId/products/:productId')
