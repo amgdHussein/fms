@@ -33,6 +33,9 @@ export enum FIRESTORE_COLLECTION_PROVIDERS {
   SIGNATURES = 'signatures',
   SUBMISSIONS = 'submissions',
 
+  // ? Receipts Related
+  RECEIPTS = 'receipts',
+
   PAYMENTS = 'payments',
 }
 

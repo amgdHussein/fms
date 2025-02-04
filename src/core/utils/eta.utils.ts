@@ -3,7 +3,7 @@ import * as moment from 'moment-timezone';
 import { CurrencyCode } from '../common';
 
 import { ETA_TAX_SUB_TYPES_WITH_TYPE } from '../providers/eta/constants';
-import { AddEtaInvoice, EtaInvoiceLine, GetInvoices, Issuer, QueryCodes, TaxableItems } from '../providers/eta/entities';
+import { AddEtaInvoice, EtaInvoiceLine, GetInvoices, Issuer, IssuerType, QueryCodes, TaxableItems } from '../providers/eta/entities';
 
 import { Client } from '../../modules/client/domain';
 import { Code } from '../../modules/code/domain';
@@ -150,7 +150,7 @@ function getMappedEtaInvoice(
   const issuer: Issuer = {
     id: organizationTax.taxIdNo,
     name: organization.name,
-    type: 'B', // IssuerType
+    type: IssuerType.BUSINESS, // IssuerType
     address: {
       branchID: branch.branchId,
       country: branch.country,
@@ -206,7 +206,7 @@ function getMappedEtaCreditOrDebit(
   const issuer: Issuer = {
     id: organizationTax.taxIdNo,
     name: organization.name,
-    type: 'B', // IssuerType
+    type: IssuerType.BUSINESS, // IssuerType
     address: {
       branchID: branch.branchId,
       country: branch.country,
@@ -263,7 +263,7 @@ function getMappedEtaExportInvoice(
   const issuer: Issuer = {
     id: organizationTax.taxIdNo,
     name: organization.name,
-    type: 'B', // IssuerType
+    type: IssuerType.BUSINESS, // IssuerType
     address: {
       branchID: branch.branchId,
       country: branch.country,
@@ -320,7 +320,7 @@ function getMappedEtaExportCreditOrDebitInvoice(
   const issuer: Issuer = {
     id: organizationTax.taxIdNo,
     name: organization.name,
-    type: 'B', // IssuerType
+    type: IssuerType.BUSINESS, // IssuerType
     address: {
       branchID: branch.branchId,
       country: branch.country,

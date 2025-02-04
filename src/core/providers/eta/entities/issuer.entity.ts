@@ -26,4 +26,9 @@ export interface IssuerAddress {
  * P => Natural Person
  * F => Foreigner
  */
-export type IssuerType = 'B' | 'P' | 'F' | 0 | 1 | 2;
+// export type IssuerType = 'B' | 'P' | 'F' | 0 | 1 | 2;
+export enum IssuerType {
+  BUSINESS = 'B',
+  PERSON = 'P',
+  FOREIGNER = 'F',
+}

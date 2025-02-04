@@ -49,7 +49,7 @@ export class PaymentService implements IPaymentService {
     return this.repo.add(payment).then(async addedPayment => {
       // Update the invoice status
       await this.invoiceService.updateInvoice({
-        id: addedPayment.invoiceId,
+        id: addedPayment.entityId,
         //TODO: FIX BELOW
         // paymentId: addedPayment.id,
         status: InvoiceStatus.PAID,
@@ -69,7 +69,7 @@ export class PaymentService implements IPaymentService {
       const updated = [];
       for (const payment of addedPayments) {
         updated.push({
-          id: payment.invoiceId,
+          id: payment.entityId,
           paymentId: payment.id,
           status: InvoiceStatus.PAID,
         });

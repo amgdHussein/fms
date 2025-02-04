@@ -14,6 +14,7 @@ import { RedisService } from '../redis';
 
 import { EtaAccessToken, EtaCredentials } from './entities';
 import { EtaConfigs } from './eta.config';
+import { EReceiptCredentials } from './temp-entity/receipt.entity';
 
 @Injectable()
 export class EtaService {
@@ -31,7 +32,7 @@ export class EtaService {
   ) {}
 
   async login(credential: EtaCredentials, organizationId: string): Promise<AxiosHeaders | RawAxiosRequestHeaders> {
-    let token = await this.redis.get(`eta-token-${organizationId}`);
+    let token = await this.redis.get(`eta-invoice-token-${organizationId}`);
 
     if (!token) {
       const url = this.configs.apiTokenUrl;
@@ -63,9 +64,65 @@ export class EtaService {
       );
 
       token = response.access_token;
-      await this.redis.set(`eta-token-${organizationId}`, response.access_token, response.expires_in);
+      await this.redis.set(`eta-invoice-token-${organizationId}`, response.access_token, response.expires_in);
     }
 
+    return {
+      'Api-Version': 'alpha',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+  }
+
+  async authenticatePos(credential: EReceiptCredentials, organizationId: string): Promise<AxiosHeaders | RawAxiosRequestHeaders> {
+    const posSerial = credential.pos.serialNo; //'TaxEgypt2024';
+    let token = await this.redis.get(`eta-receipt-token-${organizationId}-${posSerial}`);
+
+    console.log('token', token);
+    console.log('condition ', !token);
+
+    if (!token) {
+      const url = this.configs.apiTokenUrl;
+
+      const header = {
+        'Api-Version': 'alpha',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
+
+      const body = {
+        grant_type: 'client_credential',
+        client_id: credential.clientId,
+        client_secret: credential.clientSecret,
+      };
+
+      const response = await firstValueFrom(
+        this.http
+          .post<EtaAccessToken>(url, body, {
+            headers: {
+              ...header,
+              posserial: posSerial,
+              pososversion: credential.pos.osVersion, //'os'
+            },
+            httpsAgent: new https.Agent({
+              secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
+            }),
+          })
+          .pipe(
+            map(response => response.data as EtaAccessToken),
+            catchError(error => {
+              this.logger.error(`EtaService ~ authenticatePos Error:${error}`);
+              throw new BadRequestException('Invalid pos eta token credential!');
+            }),
+          ),
+      );
+
+      console.log('set new token!!');
+
+      token = response.access_token;
+      await this.redis.set(`eta-receipt-token-${organizationId}-${posSerial}`, response.access_token, response.expires_in);
+    }
+
+    console.log('🚀 ~ authenticatePos end');
     return {
       'Api-Version': 'alpha',
       'Content-Type': 'application/json',

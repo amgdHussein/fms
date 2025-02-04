@@ -1,9 +1,10 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 
-import { ETA_COMMON_PROVIDER, ETA_CONFIGS_PROVIDER, ETA_E_INVOICING_PROVIDER, ETA_PROVIDER } from '../../constants';
+import { ETA_COMMON_PROVIDER, ETA_CONFIGS_PROVIDER, ETA_E_INVOICING_PROVIDER, ETA_E_RECEIPT_PROVIDER, ETA_PROVIDER } from '../../constants';
 
 import { EtaCommonService } from './eta-common.service';
 import { EtaEInvoicingService } from './eta-einvoicing.service';
+import { EtaEReceiptService } from './eta-ereceipt.service';
 import { EtaConfigs } from './eta.config';
 import { EtaService } from './eta.service';
 
@@ -25,6 +26,11 @@ export class EtaModule {
       useClass: EtaEInvoicingService,
     };
 
+    const receiptServiceProvider: Provider = {
+      provide: ETA_E_RECEIPT_PROVIDER,
+      useClass: EtaEReceiptService,
+    };
+
     const commonServiceProvider: Provider = {
       provide: ETA_COMMON_PROVIDER,
       useClass: EtaCommonService,
@@ -32,8 +38,8 @@ export class EtaModule {
 
     const targetModule: DynamicModule = {
       global: true,
-      providers: [configsProvider, etaServiceProvider, commonServiceProvider, invoiceServiceProvider],
-      exports: [etaServiceProvider, commonServiceProvider, invoiceServiceProvider],
+      providers: [configsProvider, etaServiceProvider, commonServiceProvider, invoiceServiceProvider, receiptServiceProvider],
+      exports: [etaServiceProvider, commonServiceProvider, invoiceServiceProvider, receiptServiceProvider],
       module: EtaModule,
     };
 

@@ -1,16 +1,32 @@
+import { Currency } from '../../../../core/common';
+import { PaymentMethod } from './payment-method.enum';
+
 export interface Payment {
   id: string;
+  organizationId: string; // Unique ID for the organization
+
   clientId: string;
-  systemId: string;
   clientName: string;
-  invoiceId: string;
-  invoiceNumber: string;
-  amount: number;
+
+  category: PaymentCategory;
+
+  entityId: string;
+  entityNumber: string;
+
   type: PaymentType;
-  currency: string;
-  paidAt: number;
-  comment?: string;
-  isProductionMode: boolean;
+  status: PaymentStatus;
+  amount: number;
+  currency: Currency;
+
+  transactionId: string; // External ID from the payment gateway
+
+  method: PaymentMethod;
+  referenceId: string; // Reference ID from the payment gateway
+
+  processedAt: number; // Timestamp when the payment was processed
+  paidAt: number; // Timestamp when the payment was paid.
+
+  notes?: string;
 
   createdBy?: string;
   createdAt?: number;
@@ -18,10 +34,15 @@ export interface Payment {
   updatedAt?: number;
 }
 
+export enum PaymentCategory {
+  INVOICE,
+  RECEIPT,
+  SUBSCRIPTION,
+}
+
 export enum PaymentType {
-  CHECK = 0,
-  CREDIT = 1,
-  CASH = 2,
+  INCOME = 0,
+  EXPENSE = 1,
 }
 
 export enum PaymentStatus {

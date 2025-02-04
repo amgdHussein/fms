@@ -1,4 +1,6 @@
+import { CurrencyCode } from './currency.enum';
+
 export interface Currency {
-  code: string;
+  code: CurrencyCode;
   rate: number;
 }

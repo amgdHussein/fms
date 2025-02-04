@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 
-import { Payment, PaymentType } from '../../domain/entities';
+import { Type } from 'class-transformer';
+import { CurrencyDto } from '../../../../core/dtos/currency.dto';
+import { Payment, PaymentMethod, PaymentType } from '../../domain/entities';
+import { PaymentCategory, PaymentStatus } from '../../domain/entities/payment.entity';
 
 export class PaymentDto implements Payment {
   @IsNotEmpty()
@@ -18,24 +21,13 @@ export class PaymentDto implements Payment {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    name: 'systemId',
+    name: 'organizationId',
     type: String,
     required: true,
-    example: '1681214766653',
-    description: 'System id',
+    example: 'a5s4d15as414s5dd',
+    description: 'organizationId',
   })
-  systemId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'invoiceNumber',
-    type: String,
-    required: true,
-    example: '16812',
-    description: 'Invoice number',
-  })
-  invoiceNumber: string;
+  organizationId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -60,26 +52,59 @@ export class PaymentDto implements Payment {
   clientName: string;
 
   @IsNotEmpty()
+  @IsEnum(PaymentCategory)
+  @ApiProperty({
+    name: 'category',
+    enum: PaymentCategory,
+    required: true,
+    example: PaymentCategory.INVOICE,
+    description: 'The category of payment',
+  })
+  category: PaymentCategory;
+
+  @IsNotEmpty()
   @IsString()
   @ApiProperty({
-    name: 'invoiceId',
+    name: 'entityId',
     type: String,
     required: true,
     example: 'inv-67890',
-    description: 'Unique identifier of the invoice related to the payment',
+    description: 'Unique identifier of the kind of category related to the payment',
   })
-  invoiceId: string;
+  entityId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'entityNumber',
+    type: String,
+    required: true,
+    example: '16812',
+    description: 'Entity number',
+  })
+  entityNumber: string;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsEnum(PaymentType)
   @ApiProperty({
-    name: 'paidAt',
-    type: Number,
+    name: 'type',
+    enum: PaymentType,
     required: true,
-    example: 3500,
-    description: 'The timestamp of when the payment was made',
+    example: PaymentType.INCOME,
+    description: 'The type of payment',
   })
-  paidAt: number;
+  type: PaymentType;
+
+  @IsNotEmpty()
+  @IsEnum(PaymentStatus)
+  @ApiProperty({
+    name: 'status',
+    enum: PaymentStatus,
+    required: true,
+    example: PaymentStatus.COMPLETED,
+    description: 'The status of payment',
+  })
+  status: PaymentStatus;
 
   @IsNotEmpty()
   @IsNumber()
@@ -93,26 +118,70 @@ export class PaymentDto implements Payment {
   amount: number;
 
   @IsNotEmpty()
-  @IsEnum(PaymentType)
-  @ApiProperty({
-    name: 'type',
-    enum: PaymentType,
-    required: true,
-    example: PaymentType.CASH,
-    description: 'The method of payment',
-  })
-  type: PaymentType;
-
-  @IsNotEmpty()
-  @IsString()
+  @ValidateNested()
+  @Type(() => CurrencyDto)
   @ApiProperty({
     name: 'currency',
-    type: String,
+    type: () => CurrencyDto,
     required: true,
-    example: 'USD',
-    description: 'The currency in which the payment is made',
+    description: 'Currency details',
   })
-  currency: string;
+  currency: CurrencyDto;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    name: 'transactionId',
+    type: String,
+    required: false,
+    example: 'asd41854d5as4d54',
+    description: 'TransactionId ID in our system',
+  })
+  transactionId: string;
+
+  @IsNotEmpty()
+  @IsEnum(PaymentMethod)
+  @ApiProperty({
+    name: 'method',
+    enum: PaymentMethod,
+    required: true,
+    example: PaymentMethod.CASH,
+    description: 'The method of payment',
+  })
+  method: PaymentMethod;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    name: 'referenceId',
+    type: String,
+    required: false,
+    example: 'cs_test_a11YYufWQzNY63zpQ6QSNRQhkUpVph4WRmzW0zWJO2znZKdVujZ0N0S22u',
+    description: 'Reference ID from the payment gateway',
+  })
+  referenceId: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+    name: 'processedAt',
+    type: Number,
+    required: true,
+    example: 3500,
+    description: 'The timestamp of when the payment was being processed',
+  })
+  processedAt: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+    name: 'paidAt',
+    type: Number,
+    required: true,
+    example: 3500,
+    description: 'The timestamp of when the payment was made',
+  })
+  paidAt: number;
 
   @IsOptional()
   @IsString()
@@ -123,18 +192,7 @@ export class PaymentDto implements Payment {
     example: 'The client paid in cash',
     description: 'Additional notes related to the payment',
   })
-  comment?: string;
-
-  @IsNotEmpty()
-  @IsBoolean()
-  @ApiProperty({
-    name: 'isProductionMode',
-    type: Boolean,
-    required: true,
-    example: true,
-    description: 'The database mode',
-  })
-  isProductionMode: boolean;
+  notes?: string;
 
   @IsOptional()
   @IsNotEmpty()
