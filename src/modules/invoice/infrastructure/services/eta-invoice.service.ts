@@ -160,9 +160,13 @@ export class EtaInvoiceService implements IEtaInvoiceService {
     // Get organization credentials and submit invoices
     const authority = Authority.ETA;
     const organizationTax: OrganizationTax = await this.organizationTaxService.getTax(organizationId);
-    const { clientId, clientSecret } = organizationTax;
+    const { eInvoiceCredentials } = organizationTax;
 
-    const { submissionId, rejectedDocuments, acceptedDocuments } = await this.etaEInvoicing.addInvoices(documents, { clientId, clientSecret }, organizationId);
+    const { submissionId, rejectedDocuments, acceptedDocuments } = await this.etaEInvoicing.addInvoices(
+      documents,
+      { clientId: eInvoiceCredentials.clientId, clientSecret: eInvoiceCredentials.clientSecret },
+      organizationId,
+    );
 
     const submissions = [];
     const updateInvoices = [];
@@ -178,7 +182,11 @@ export class EtaInvoiceService implements IEtaInvoiceService {
       updateInvoices.push({ id: invoiceId, uuid: document.uuid, taxStatus: TaxInvoiceStatus.SUBMITTED });
 
       // Add successful submitted invoice to queue
-      invoiceQueues.push({ uuid: document.uuid, invoiceId, credential: { clientId, clientSecret } });
+      invoiceQueues.push({
+        uuid: document.uuid,
+        invoiceId,
+        credential: { clientId: eInvoiceCredentials.clientId, clientSecret: eInvoiceCredentials.clientSecret },
+      });
     }
 
     // Append rejected submissions to the list
@@ -223,7 +231,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
   async cancelInvoice(id: string, uuid: string, status: 'cancelled' | 'rejected', reason: string): Promise<TaxInvoice> {
     const invoice = await this.invoiceRepo.get(id);
     const organizationTax: OrganizationTax = await this.organizationTaxService.getTax(invoice.organizationId);
-    const credential = { clientId: organizationTax.clientId, clientSecret: organizationTax.clientSecret };
+    const credential = { clientId: organizationTax.eInvoiceCredentials.clientId, clientSecret: organizationTax.eInvoiceCredentials.clientSecret };
 
     return this.etaEInvoicing.rejectOrCancelInvoice(uuid, status, reason, credential, invoice.organizationId).then(async response => {
       if (response) {

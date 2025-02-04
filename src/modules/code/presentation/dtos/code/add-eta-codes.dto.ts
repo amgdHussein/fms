@@ -17,7 +17,7 @@ class AddETACodeDto extends OmitType(CodeDto, [
   'updatedBy',
 ]) {
   linkedCode?: string; // Optional
-  nationalCode?: string; // Required
+  internationalCode?: string; // Required
 }
 
 export class AddETACodesDto {

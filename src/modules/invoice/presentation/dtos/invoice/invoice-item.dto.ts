@@ -1,5 +1,6 @@
 import { Discount } from '../../../../../core/common';
-import { Item, ItemTax } from '../../../domain';
+import { ProductTax } from '../../../../organization/domain';
+import { Item } from '../../../domain';
 
 // TODO: FILL THE DTO
 export class InvoiceItemDto implements Item {
@@ -24,7 +25,7 @@ export class InvoiceItemDto implements Item {
   totalAmount: number;
   wightType?: string;
   wight?: number;
-  taxes?: ItemTax[];
+  taxes?: ProductTax[];
   taxDiscount?: Discount;
   profitOrLoss?: number;
   createdBy: string;

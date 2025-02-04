@@ -1,5 +1,5 @@
 import { Authority, Discount } from '../../../../core/common';
-import { ItemTax } from '../../../invoice/domain';
+import { ProductTax } from './product-tax.entity';
 
 export enum ProductStatus {
   ACTIVE = 0,
@@ -22,14 +22,14 @@ export interface Product {
 
   unitPrice: number; // Price per unit of the product
   unitType: string; // Type of the unit (car, kilogram, man, ...)
-  availableUnits: number; // Number of units of the product
+  availableUnits?: number; // Number of units of the product
 
   discount?: Discount; // Discount applied to the product
 
   authority?: Authority; // Tax authority data for that organization
   codeId?: string; // code id in the db
   // code: string;
-  taxes?: ItemTax[]; // To apply each kind of tax-type on the invoice items
+  taxes?: ProductTax[]; // To apply each kind of tax-type on the invoice items
   taxDiscount?: Discount; // Value not rate (value that discounted from item before calc line amount)
   profitOrLoss?: number; // The difference in value when selling goods already taxed, indicating profit or loss, e.g., +200 EGP if sold for more, -100 EGP if sold for less
 

@@ -43,6 +43,7 @@ export class OrganizationBranchController {
     return this.getBranchUsecase.execute(id);
   }
 
+  //TODO: MAKE THIS ACCEPT BULK NOT SINGLE
   @Post('branches')
   @ApiOperation({ summary: 'Create a new branch for an organization.' })
   @ApiBody({

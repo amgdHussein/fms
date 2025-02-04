@@ -7,8 +7,8 @@ import { AddEtaInvoice, EtaInvoiceLine, GetInvoices, Issuer, QueryCodes, Taxable
 
 import { Client } from '../../modules/client/domain';
 import { Code } from '../../modules/code/domain';
-import { InvoiceForm, Item, ItemTax, TaxInvoice } from '../../modules/invoice/domain';
-import { Organization, OrganizationBranch, OrganizationTax } from '../../modules/organization/domain';
+import { InvoiceForm, Item, TaxInvoice } from '../../modules/invoice/domain';
+import { Organization, OrganizationBranch, OrganizationTax, ProductTax } from '../../modules/organization/domain';
 
 import { roundToFive, roundToTwo } from './math.utils';
 
@@ -26,7 +26,7 @@ function getTotalItemsDiscount(items: Item[]): number {
 
 function getItemTaxableFees(item: Item): number {
   const TAXABLE_FEES_LIST = ['T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
-  const totalTaxableFees = item.taxes.reduce((acc: number, tax: ItemTax) => {
+  const totalTaxableFees = item.taxes.reduce((acc: number, tax: ProductTax) => {
     if (TAXABLE_FEES_LIST.includes(tax?.taxType)) {
       return acc + tax.value;
     }
@@ -42,7 +42,7 @@ function getTaxType(subType: string): 'fixed' | 'percentage' {
 }
 
 function getTaxRate(
-  tax: ItemTax,
+  tax: ProductTax,
   netAmount: number,
   profitOrLoss: number,
   totalTaxableFees: number,

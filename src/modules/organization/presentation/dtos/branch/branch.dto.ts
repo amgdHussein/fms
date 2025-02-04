@@ -7,7 +7,7 @@ export class OrganizationBranchDto implements OrganizationBranch {
   organizationId: string;
   branchId: string;
   name: string;
-  posDevices: PosDevice[];
+  posDevices?: PosDevice[];
   street: string;
   city: string;
   country: string;

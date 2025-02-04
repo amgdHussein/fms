@@ -1,4 +1,4 @@
-export interface ItemTax {
+export interface ProductTax {
   taxType: string;
   subType?: string;
   type: 'fixed' | 'percentage';

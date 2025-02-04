@@ -14,6 +14,9 @@ export class ClientDto implements Client {
   identificationId: string; // Identification number
   type: IssuerType;
   currency: CurrencyCode;
+
+  openingBalance: number; // Array of opening balances
+
   createdBy: string;
   createdAt: number;
   updatedBy: string;

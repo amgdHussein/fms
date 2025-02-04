@@ -37,6 +37,6 @@ export interface Code {
 
   // * ETA
   linkedCode?: string; // EGS Related Linked Code
-  nationalCode?: string; // Global Product Classification (GPC) code
+  internationalCode?: string; // Global Product Classification (GPC) code
   authorityCodeType?: EtaCodeType; // EGS, GS1
 }

@@ -1,4 +1,4 @@
-import { CurrencyCode, Phone, Photo } from '../../../../../core/common';
+import { Address, CurrencyCode, Phone, Photo } from '../../../../../core/common';
 
 import { LegalStructure, Organization, OrganizationIndustry, OrganizationStatus } from '../../../domain';
 
@@ -8,13 +8,20 @@ export class OrganizationDto implements Organization {
   userId: string;
   branchId: string;
   status: OrganizationStatus;
+
   name: string;
   email: string;
+  address: Address;
+
   phone?: Phone;
-  logo: Photo;
+  mobile?: Phone;
+  fax?: Phone;
+
+  logo?: Photo;
   website?: string;
+
   currency: CurrencyCode;
-  industry: OrganizationIndustry;
+  industry?: OrganizationIndustry;
   legalStructure?: LegalStructure;
 
   createdBy: string;

@@ -1,4 +1,4 @@
-import { Address, CountryCode, Gender, Identification, Phone, Photo } from '../../../../core/common';
+import { CountryCode, Identification, Phone, Photo } from '../../../../core/common';
 
 import { UserRole } from './user-role.enum';
 import { UserStatus } from './user-status.enum';
@@ -11,11 +11,11 @@ export interface User {
   name: string; // First name and last name
   email: string;
   phone: Phone; // Phone object
-  address: Address; // Address object
-  nationality: CountryCode; // Nationality
+  country: CountryCode; // Address object
   identification: Identification;
-  dateOfBirth: number; // Date of birth
-  gender: Gender;
+  // nationality: CountryCode; // Nationality
+  // dateOfBirth: number; // Date of birth
+  // gender: Gender;
   createdBy: string; // User who created the user
   createdAt: number; // Timestamp when the user was created
   updatedBy: string; // User who last updated the user

@@ -1,5 +1,5 @@
 import { Discount } from '../../../../core/common';
-import { ItemTax } from './item-tax.entity';
+import { ProductTax } from '../../../organization/domain/entities/product-tax.entity';
 
 export interface Item {
   id: string;
@@ -29,7 +29,7 @@ export interface Item {
   wightType?: string; // Type of wight measurement of unit (gram, kilogram, ton, etc.)
   wight?: number; // The total weight of the items
 
-  taxes?: ItemTax[]; // To apply each kind of tax-type on the invoice items
+  taxes?: ProductTax[]; // To apply each kind of tax-type on the invoice items
   taxDiscount?: Discount; // Value not rate (value that discounted from item before calc line amount)
   profitOrLoss?: number; // The difference in value when selling goods already taxed, indicating profit or loss, e.g., +200 EGP if sold for more, -100 EGP if sold for less
 

@@ -1,4 +1,4 @@
-import { Address, CountryCode, Gender, Identification, Phone, Photo } from '../../../../../core/common';
+import { CountryCode, Identification, Phone, Photo } from '../../../../../core/common';
 import { User, UserRole, UserStatus } from '../../../domain/entities';
 
 // TODO: FILL THE DTO
@@ -10,11 +10,11 @@ export class UserDto implements User {
   name: string;
   email: string;
   phone: Phone;
-  address: Address;
-  nationality: CountryCode;
+  country: CountryCode;
   identification: Identification;
-  dateOfBirth: number;
-  gender: Gender;
+  // nationality: CountryCode;
+  // dateOfBirth: number;
+  // gender: Gender;
   createdBy: string;
   createdAt: number;
   updatedBy: string;

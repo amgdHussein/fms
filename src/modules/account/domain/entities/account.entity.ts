@@ -18,6 +18,9 @@ export interface Account {
   email?: string;
   phone?: Phone;
 
+  //TODO: THINK OF IT
+  // isProductionMode: boolean; // Whether the account is in production mode
+
   createdBy: string; // User who created the account
   createdAt: number; // Timestamp when the account was created
   updatedBy: string; // User who last updated the account

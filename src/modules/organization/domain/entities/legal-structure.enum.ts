@@ -1,6 +1,9 @@
-// TODO: ADD ALL LEGAL STRUCTURES PROVIDED BY THE SYSTEM
 export enum LegalStructure {
-  // Legal structure code
   SPI = 'SPI',
   LLC = 'LLC',
+  SMC = 'SMC',
+  GPC = 'GPC',
+  LPC = 'LPC',
+  JSC = 'JSC',
+  PLBS = 'PLBS',
 }

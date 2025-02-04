@@ -1,4 +1,4 @@
-import { CurrencyCode, Phone, Photo } from '../../../../core/common';
+import { Address, CurrencyCode, Phone, Photo } from '../../../../core/common';
 
 import { OrganizationIndustry } from './industry.enum';
 import { LegalStructure } from './legal-structure.enum';
@@ -15,13 +15,17 @@ export interface Organization {
 
   name: string; // Company name or organization name
   email: string; // Email address of the organization
-  phone?: Phone; // Phone number of the organization
+  address: Address;
 
-  logo: Photo;
+  phone?: Phone; // Phone number of the organization
+  mobile?: Phone;
+  fax?: Phone;
+
+  logo?: Photo;
   website?: string;
 
   currency: CurrencyCode; // Primary currency
-  industry: OrganizationIndustry; // Enum of strings like marketing, software industry
+  industry?: OrganizationIndustry; // Enum of strings like marketing, software industry
   legalStructure?: LegalStructure;
 
   createdBy: string; // User who created the organization

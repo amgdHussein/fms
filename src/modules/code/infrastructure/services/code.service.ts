@@ -57,10 +57,10 @@ export class CodeService implements ICodeService {
         const authorityCodeType: EtaCodeType = EtaCodeType.EGS;
 
         const etaCodes: EgsCodeUsage[] = codes.map(code => {
-          const { code: itemCode, name, nameAr, description, descriptionAr, activeAt, expireAt, linkedCode, nationalCode, comment: requestReason } = code;
+          const { code: itemCode, name, nameAr, description, descriptionAr, activeAt, expireAt, linkedCode, internationalCode, comment: requestReason } = code;
           return {
             codeType: authorityCodeType,
-            parentCode: nationalCode,
+            parentCode: internationalCode,
             itemCode,
             codeName: name,
             codeNameAr: nameAr,
@@ -74,7 +74,7 @@ export class CodeService implements ICodeService {
         });
 
         // Summit to ETA
-        const credential = { clientId: orgTax.clientId, clientSecret: orgTax.clientSecret };
+        const credential = { clientId: orgTax.eInvoiceCredentials.clientId, clientSecret: orgTax.eInvoiceCredentials.clientSecret };
         const { passedItems, failedItems } = await this.etaCommon.addCodes(etaCodes, credential, organizationId);
 
         // Get passed and failed items
@@ -125,7 +125,7 @@ export class CodeService implements ICodeService {
 
     switch (authority) {
       case Authority.ETA: {
-        const credential = { clientId: orgTax.clientId, clientSecret: orgTax.clientSecret };
+        const credential = { clientId: orgTax.eInvoiceCredentials.clientId, clientSecret: orgTax.eInvoiceCredentials.clientSecret };
 
         const { description, descriptionAr, expireAt, linkedCode, code: itemCode } = code;
         const publishedCode = {
@@ -152,7 +152,7 @@ export class CodeService implements ICodeService {
           return { itemCode, codeType, comment };
         });
 
-        const credential = { clientId: orgTax.clientId, clientSecret: orgTax.clientSecret };
+        const credential = { clientId: orgTax.eInvoiceCredentials.clientId, clientSecret: orgTax.eInvoiceCredentials.clientSecret };
         const { passedItems, failedItems } = await this.etaCommon.reuseCodes(etaCodes, credential, organizationId);
 
         const passedCodes = [];
@@ -193,7 +193,7 @@ export class CodeService implements ICodeService {
 
             activeAt: moment(publishedCode.activeFrom).valueOf(),
             expireAt: moment(publishedCode.activeTo).valueOf(),
-            nationalCode: publishedCode.parentCodeLookupValue,
+            internationalCode: publishedCode.parentCodeLookupValue,
             linkedCode: publishedCode.linkedCode,
           });
 

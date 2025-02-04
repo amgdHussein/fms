@@ -1,19 +1,19 @@
 import { Authority, Photo } from '../../../../core/common';
+import { EtaCredentials } from '../../../../core/providers';
 import { ActivityCode } from '../constants';
 
 export interface OrganizationTax {
   id: string; // The ID of the organization
   authority: Authority; // Tax authority data for that organization
 
-  configurationFlags: Record<EtaFlag, boolean>; // Flags for the tax authority to control UI/API
+  configurationFlags?: Record<EtaFlag, boolean>; // Flags for the tax authority to control UI/API
 
   taxIdNo: string; // Tax ID number of the organization
   taxIdPhoto?: Photo; // Photo of the tax ID
   commercialRegistryNo?: string;
   commercialRegistryPhoto?: Photo;
 
-  clientId: string; // The client ID provided by the FTA
-  clientSecret: string; // The client secret provided by the FTA
+  eInvoiceCredentials?: EtaCredentials; // E-Invoice credentials for the organization
 
   activityCodes?: ActivityCode[]; // User must specify the activity codes that are relevant to their business
 
