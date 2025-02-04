@@ -32,6 +32,8 @@ export enum FIRESTORE_COLLECTION_PROVIDERS {
   INVOICES = 'invoices',
   SIGNATURES = 'signatures',
   SUBMISSIONS = 'submissions',
+
+  PAYMENTS = 'payments',
 }
 
 export const FIRESTORE_QUERY_MAX_LIMIT = 1e2;

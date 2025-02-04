@@ -1,31 +1,33 @@
-import { Currency } from '../../../../core/common';
-
-import { PaymentMethod } from './payment-method.enum';
-import { PaymentStatus } from './payment-status.enum';
-import { PaymentType } from './payment-type.enum';
-
 export interface Payment {
   id: string;
-  organizationId: string; // Unique ID for the organization
-  profileId: string; // Unique ID for the client profile
-  clientId: string; // Unique ID for the client
-  invoiceId: string; // Unique ID for the invoice
-
-  type: PaymentType;
-  status: PaymentStatus;
-  currency: Currency;
+  clientId: string;
+  systemId: string;
+  clientName: string;
+  invoiceId: string;
+  invoiceNumber: string;
   amount: number;
+  type: PaymentType;
+  currency: string;
+  paidAt: number;
+  comment?: string;
+  isProductionMode: boolean;
 
-  method: PaymentMethod;
-  transactionId: string; // External ID from the payment gateway
+  createdBy?: string;
+  createdAt?: number;
+  updatedBy?: string;
+  updatedAt?: number;
+}
 
-  notes?: string;
+export enum PaymentType {
+  CHECK = 0,
+  CREDIT = 1,
+  CASH = 2,
+}
 
-  processedAt: number; // Timestamp when the payment was processed
-  paidAt: number; // Timestamp when the payment was paid
-
-  createdBy: string; // User who created the payment
-  createdAt: number; // Timestamp when the payment was created
-  updatedBy: string; // User who last updated the payment
-  updatedAt: number; // Timestamp when the payment was last updated
+export enum PaymentStatus {
+  PENDING = 0,
+  COMPLETED = 1,
+  FAILED = 2,
+  PARTIALLY_PAID = 3,
+  REFUNDED = 4,
 }

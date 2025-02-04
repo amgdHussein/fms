@@ -1,9 +1,6 @@
 export enum PaymentMethod {
-  CREDIT_CARD = 0,
-  BANK_TRANSFER = 1,
-  CASH = 2,
-  CHECK = 3,
-  STRIPE = 4,
-  PAYPAL = 5,
-  CRYPTO = 6,
+  CREDIT_CARD = 'CREDIT_CARD',
+  BANK_TRANSFER = 'BANK_TRANSFER',
+  PAYPAL = 'PAYPAL',
+  WE_PAY = 'WE_PAY',
 }

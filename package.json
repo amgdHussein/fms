@@ -54,7 +54,8 @@
     "passport": "^0.7.0",
     "passport-firebase-jwt": "^1.2.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "stripe": "^17.6.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
