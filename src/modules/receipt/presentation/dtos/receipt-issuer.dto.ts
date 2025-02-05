@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { PhoneDto } from '../../../../core/dtos/phone.dto';
-import { OrganizationBranchDto } from '../../../organization/presentation';
 import { ReceiptIssuer } from '../../domain/entities/receipt.entity';
+import { ReceiverAddressDto } from './receipt-receiver.dto';
 
 export class ReceiptIssuerDto implements ReceiptIssuer {
   @IsString()
@@ -30,14 +30,14 @@ export class ReceiptIssuerDto implements ReceiptIssuer {
 
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => OrganizationBranchDto)
+  @Type(() => ReceiverAddressDto)
   @ApiProperty({
-    name: 'branch',
-    type: () => OrganizationBranchDto,
+    name: 'address',
+    type: () => ReceiverAddressDto,
     required: true,
-    description: 'The selected branch of the organization',
+    description: 'The organization address',
   })
-  branch: OrganizationBranchDto;
+  address: ReceiverAddressDto;
 
   @IsOptional()
   @IsNotEmpty()

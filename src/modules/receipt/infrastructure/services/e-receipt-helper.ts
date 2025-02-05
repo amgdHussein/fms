@@ -10,7 +10,7 @@ import {
 } from '../../../../core/providers/eta/temp-entity/receipt.entity';
 import { roundToTwo } from '../../../../core/utils/math.utils';
 import { Code } from '../../../code/domain';
-import { ProductTax } from '../../../organization/domain';
+import { OrganizationBranch, ProductTax } from '../../../organization/domain';
 import { Receipt, ReceiptItem, ReceiptType } from '../../domain/entities/receipt.entity';
 
 export function getEReceiptMappedTaxTotals(invoiceLines: ReceiptItem[]): { taxType: string; amount: number }[] {
@@ -215,7 +215,7 @@ function generateReceiptUUID(receiptObject: any): string {
   return receiptUUID;
 }
 
-export function getMappedEtaReceipt(receipt: Receipt, codes: Code[], credentials: EReceiptCredentials): EtaReceipt {
+export function getMappedEtaReceipt(receipt: Receipt, codes: Code[], branch: OrganizationBranch, credentials: EReceiptCredentials): EtaReceipt {
   // map invoice to eta invoice
   const mappedEReceipt: EtaReceipt = {
     header: {
@@ -234,13 +234,13 @@ export function getMappedEtaReceipt(receipt: Receipt, codes: Code[], credentials
     seller: {
       rin: receipt.issuer.taxId,
       companyTradeName: receipt.issuer.name,
-      branchCode: receipt.issuer.branch.branchId,
+      branchCode: branch.branchId,
       branchAddress: {
-        country: receipt.issuer.branch.country,
-        governate: receipt.issuer.branch.governorate,
-        regionCity: receipt.issuer.branch.city,
-        street: receipt.issuer.branch.street,
-        buildingNumber: receipt.issuer.branch.buildingNumber,
+        country: branch.country,
+        street: branch.street,
+        regionCity: branch.city.length ? branch.city : branch.country,
+        governate: branch.governorate.length ? branch.governorate : branch.country,
+        buildingNumber: branch.buildingNumber.length ? branch.buildingNumber : branch.country,
       },
       deviceSerialNumber: credentials.pos.serialNo, // 'TaxEgypt2024', //TODO: GET DEVICE SERIAL FROM ORGANIZATION
       syndicateLicenseNumber: 'C', // Optional. In case it is a person, then it is a number of minimum 10 characters, if the number is less than 10 characters, leading zeros should be added, example: “0001234567”. In case it is a company, the value should be “C”

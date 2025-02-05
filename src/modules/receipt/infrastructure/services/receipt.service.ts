@@ -88,7 +88,7 @@ export class ReceiptService implements IReceiptService {
     const itemsCodes = await this.getUsedCodes(receipt);
     // console.log('itemsCodes', itemsCodes.length);
 
-    const etaDocument = getMappedEtaReceipt(receipt, itemsCodes, credentials);
+    const etaDocument = getMappedEtaReceipt(receipt, itemsCodes, branch, credentials);
 
     // console.log('etaDocument', JSON.stringify(etaDocument));
 

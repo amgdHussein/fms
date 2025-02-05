@@ -1,6 +1,5 @@
 import { Phone } from '../../../../core/common';
 import { IssuerType } from '../../../../core/providers';
-import { OrganizationBranch } from '../../../organization/domain';
 
 export interface Receipt {
   id: string;
@@ -61,7 +60,7 @@ export enum Authority {
 export interface ReceiptIssuer {
   name: string;
   taxId: string;
-  branch: OrganizationBranch;
+  address: ReceiverAddress;
   email?: string;
   phone?: Phone;
 }
