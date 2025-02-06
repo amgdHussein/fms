@@ -27,7 +27,7 @@ export class CodeService implements ICodeService {
   ) {}
 
   async getCodes(organizationId: string, filters?: QueryFilter[]): Promise<Code[]> {
-    return this.codeRepo.getMany(organizationId, [...filters, { key: 'status', op: 'neq', value: CodeStatus.INACTIVE }]);
+    return this.codeRepo.getMany(organizationId, [...filters, { key: 'status', operator: 'neq', value: CodeStatus.INACTIVE }]);
   }
 
   async getCode(id: string, organizationId: string): Promise<Code> {
@@ -223,7 +223,7 @@ export class CodeService implements ICodeService {
   }
 
   async importCodes(authority: Authority, organizationId: string): Promise<Code[]> {
-    const codes = await this.codeRepo.getMany(organizationId, [{ key: 'authority', op: 'eq', value: authority }]);
+    const codes = await this.codeRepo.getMany(organizationId, [{ key: 'authority', operator: 'eq', value: authority }]);
 
     switch (authority) {
       case Authority.ETA: {

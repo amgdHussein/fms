@@ -18,8 +18,8 @@ export class OrganizationTaxService implements IOrganizationTaxService {
   async getTaxByTaxIdNumber(taxIdNo: string, authority: Authority): Promise<OrganizationTax> {
     return this.repo
       .getMany([
-        { key: 'taxIdNo', op: 'eq', value: taxIdNo },
-        { key: 'authority', op: 'eq', value: authority },
+        { key: 'taxIdNo', operator: 'eq', value: taxIdNo },
+        { key: 'authority', operator: 'eq', value: authority },
       ])
       .then(taxes => {
         if (taxes.length) {

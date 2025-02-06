@@ -4,7 +4,7 @@ export type ParamType = string | boolean | number | Date;
 
 export class QueryFilter {
   constructor(
-    public op: QueryOp, // The query operator
+    public operator: QueryOp, // The query operator
     public key: string,
     public value: ParamType | ParamType[],
   ) {}

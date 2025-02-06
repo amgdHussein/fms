@@ -23,8 +23,8 @@ export class ClientService implements IClientService {
   async getClientByTaxNumber(taxIdNo: string, organizationId: string): Promise<Client> {
     return this.repo
       .getMany([
-        { key: 'identificationId', op: 'eq', value: taxIdNo },
-        { key: 'organizationId', op: 'eq', value: organizationId },
+        { key: 'identificationId', operator: 'eq', value: taxIdNo },
+        { key: 'organizationId', operator: 'eq', value: organizationId },
       ])
       .then(clients => {
         if (clients.length) {

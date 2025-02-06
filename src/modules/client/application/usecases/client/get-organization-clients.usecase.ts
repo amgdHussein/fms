@@ -12,6 +12,6 @@ export class GetOrganizationClients implements Usecase<Client> {
   ) {}
 
   async execute(organizationId: string): Promise<Client[]> {
-    return this.clientService.getClients([{ key: 'organizationId', op: 'eq', value: organizationId }]);
+    return this.clientService.getClients([{ key: 'organizationId', operator: 'eq', value: organizationId }]);
   }
 }

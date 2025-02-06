@@ -39,7 +39,7 @@ export class UserNotificationService implements IUserNotificationService {
   }
 
   async markAllAsRead(userId: string): Promise<Notification[]> {
-    const notifications = await this.repo.getMany(userId, [{ key: 'status', op: 'neq', value: NotificationStatus.READ }]);
+    const notifications = await this.repo.getMany(userId, [{ key: 'status', operator: 'neq', value: NotificationStatus.READ }]);
 
     notifications.forEach(notification => {
       notification.status = NotificationStatus.READ;

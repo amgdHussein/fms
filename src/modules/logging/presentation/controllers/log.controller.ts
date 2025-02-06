@@ -44,7 +44,7 @@ export class LogController {
     const filters: QueryFilter[] = [];
 
     if (userId) {
-      filters.push({ key: 'userId', op: 'eq', value: userId });
+      filters.push({ key: 'userId', operator: 'eq', value: userId });
     }
 
     return this.getLogsUsecase.execute(filters, +page || 1, +limit || 10);

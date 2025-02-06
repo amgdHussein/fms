@@ -12,17 +12,18 @@ import { Item } from './item.entity';
 export interface Invoice {
   id: string;
   organizationId: string; // Unique ID for the organization
-  branchId: string; // Organization branch ID
   clientId: string; // ID of the client
-  profileId: string; // ID of the client profile
+
+  profileId?: string; // ID of the client profile
+  branchId?: string; // Organization branch ID
 
   sender: Sender; // The user who issued the receipt
   receiver: Receiver; // The user who issued the receipt
 
   invoiceNumber: string; // Next incrementing number for the invoice (organization specific)
 
-  name: string; // Name of the invoice
-  description?: string; // Description of the invoice
+  // name: string; // Name of the invoice
+  // description?: string; // Description of the invoice
 
   type: InvoiceType; // Nature of the invoice (e.g., standard, tax)
   form: InvoiceForm; // Form/type of the invoice (e.g., credit, debit)

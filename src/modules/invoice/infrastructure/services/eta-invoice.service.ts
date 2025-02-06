@@ -94,7 +94,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
     // TODO: TEST THE QUERY WITH ARRAY-CONTAINS, AND REVISE FIRESTORE TO_FIRESTORE CONVERTER
     const allCodeIds = invoices.flatMap(invoice => invoice.items.map(item => item.codeId));
     const uniqueCodeIds = Array.from(new Set(allCodeIds));
-    const codes = await this.codeService.getCodes(organizationId, [{ key: 'id', op: 'arco', value: uniqueCodeIds }]);
+    const codes = await this.codeService.getCodes(organizationId, [{ key: 'id', operator: 'arco', value: uniqueCodeIds }]);
 
     const promises = invoices.map(async invoice => {
       const branch = await this.branchService.getBranch(invoice.branchId);

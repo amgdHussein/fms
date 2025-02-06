@@ -12,6 +12,6 @@ export class GetClientInvoices implements Usecase<Invoice> {
   ) {}
 
   async execute(clientId: string): Promise<Invoice[]> {
-    return this.invoiceService.getInvoices([{ key: 'clientId', op: 'eq', value: clientId }]);
+    return this.invoiceService.getInvoices([{ key: 'clientId', operator: 'eq', value: clientId }]);
   }
 }

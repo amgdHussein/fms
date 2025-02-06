@@ -13,7 +13,7 @@ export class GetClients implements Usecase<Client> {
   ) {}
 
   async execute(filters: QueryFilter[] = [], page = 1, limit = 30, order?: QueryOrder): Promise<Client[]> {
-    filters.push({ key: 'status', op: 'neq', value: ClientStatus.DELETED });
+    filters.push({ key: 'status', operator: 'neq', value: ClientStatus.DELETED });
     return this.clientService.getClients(filters, page, limit, order);
   }
 }

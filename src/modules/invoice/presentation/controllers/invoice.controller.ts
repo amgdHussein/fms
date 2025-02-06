@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { QueryDto } from '../../../../core/dtos';
 import {
   AddInvoice,
   DeleteInvoice,
@@ -43,29 +44,36 @@ export class InvoiceController {
     private readonly getInvoiceItemsUsecase: GetInvoiceItems,
   ) {}
 
-  @Get('invoices')
-  @ApiQuery({
-    type: Number,
-    name: 'page',
-    required: false,
-    example: 1,
-    description: 'The page number to retrieve, for pagination. Defaults to 1 if not provided.',
-  })
-  @ApiQuery({
-    type: Number,
-    name: 'limit',
-    required: false,
-    example: 15,
-    description: 'The number of staff per page, for pagination. Defaults to 15 if not provided.',
-  })
+  //TODO: Revise => I ADD QUERY FILTERS TO THIS ENDPOINT
+  @Post('invoices/query')
+  // @ApiQuery({
+  //   type: Number,
+  //   name: 'page',
+  //   required: false,
+  //   example: 1,
+  //   description: 'The page number to retrieve, for pagination. Defaults to 1 if not provided.',
+  // })
+  // @ApiQuery({
+  //   type: Number,
+  //   name: 'limit',
+  //   required: false,
+  //   example: 15,
+  //   description: 'The number of staff per page, for pagination. Defaults to 15 if not provided.',
+  // })
   @ApiOperation({ summary: 'Get all/N invoices with/without filter the results.' })
   @ApiResponse({
     type: [InvoiceDto],
     description: 'List of invoices that meet all the query filters, and with length less than or equal to limit number.',
   })
-  async getInvoices(@Query('page') page: string, @Query('limit') limit: string): Promise<InvoiceDto[]> {
-    return this.getInvoicesUsecase.execute([], +page, +limit);
+  async getInvoices(@Body() query: QueryDto): Promise<InvoiceDto[]> {
+    return this.getInvoicesUsecase.execute(query.filters, query.page, query.limit, query.order);
   }
+
+  // OLD ENDPOINT
+  // async getInvoices(@Body() query: QueryDto): Promise<QueryResultDto<EInvoiceDto>> {
+  //   const { page, limit, filters, order } = query;
+  //   return await this.invoiceService.getInvoices(page, limit, filters, order);
+  // }
 
   @Get('invoices/:id')
   @ApiOperation({ summary: 'Get invoice by id.' })

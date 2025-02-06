@@ -8,15 +8,17 @@ import { Receiver, Sender } from '../../../domain/entities/invoice.entity';
 export class InvoiceDto implements Invoice {
   id: string;
   organizationId: string;
-  branchId: string;
-  profileId: string;
   clientId: string;
+
+  branchId?: string;
+  profileId?: string;
+
   sender: Sender; // The user who issued the receipt
   receiver: Receiver; // The user who issued the receipt
 
   invoiceNumber: string;
-  name: string;
-  description?: string;
+  // name: string;
+  // description?: string;
   address?: Address;
   type: InvoiceType;
   form: InvoiceForm;

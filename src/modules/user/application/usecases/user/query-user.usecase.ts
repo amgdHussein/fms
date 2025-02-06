@@ -13,7 +13,7 @@ export class QueryUsers implements Usecase<User> {
   ) {}
 
   async execute(filters: QueryFilter[] = [], page = 1, limit = 10, order?: QueryOrder): Promise<User[]> {
-    filters.push({ key: 'status', op: 'neq', value: UserStatus.DELETED });
+    filters.push({ key: 'status', operator: 'neq', value: UserStatus.DELETED });
     return this.userService.getUsers(filters, page, limit, order);
   }
 }

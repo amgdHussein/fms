@@ -15,7 +15,7 @@ export class OrganizationBranchService implements IOrganizationBranchService {
   }
 
   async getBranches(organizationId: string, filters: QueryFilter[] = [], page?: number, limit?: number, order?: QueryOrder): Promise<OrganizationBranch[]> {
-    return this.repo.getMany([{ key: 'organizationId', op: 'eq', value: organizationId }, ...filters], page, limit, order);
+    return this.repo.getMany([{ key: 'organizationId', operator: 'eq', value: organizationId }, ...filters], page, limit, order);
   }
 
   async addBranch(branch: Partial<OrganizationBranch> & { organizationId: string }): Promise<OrganizationBranch> {

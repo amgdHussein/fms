@@ -345,7 +345,7 @@ export class FirestoreService<T extends { id: string }> {
 
     if (filters && filters.length > 0) {
       for (const param of filters) {
-        query = query.where(param.key, this.filterOpToFirestoreOp[param.op], param.value);
+        query = query.where(param.key, this.filterOpToFirestoreOp[param.operator], param.value);
       }
     }
 
