@@ -10,7 +10,7 @@ export class AddPayments implements Usecase<Payment> {
     private readonly paymentService: IPaymentService,
   ) {}
 
-  async execute(payments: Payment[]): Promise<Payment[]> {
+  async execute(payments: Partial<Payment>[]): Promise<Payment[]> {
     return await this.paymentService.addPayments(payments);
   }
 }

@@ -25,11 +25,11 @@ export class PaymentFirestoreRepository implements IPaymentRepository {
     return await this.db.getDoc(id);
   }
 
-  async add(payment: Payment): Promise<Payment> {
+  async add(payment: Partial<Payment>): Promise<Payment> {
     return await this.db.addDoc(payment);
   }
 
-  async addBatch(payments: Payment[]): Promise<Payment[]> {
+  async addBatch(payments: Partial<Payment>[]): Promise<Payment[]> {
     return await this.db.addDocs(payments);
   }
 

@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
-import { Type } from 'class-transformer';
 import { CurrencyDto } from '../../../../core/dtos/currency.dto';
 import { Payment, PaymentMethod, PaymentType } from '../../domain/entities';
 import { PaymentCategory, PaymentStatus } from '../../domain/entities/payment.entity';
@@ -117,15 +116,16 @@ export class PaymentDto implements Payment {
   })
   amount: number;
 
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => CurrencyDto)
-  @ApiProperty({
-    name: 'currency',
-    type: () => CurrencyDto,
-    required: true,
-    description: 'Currency details',
-  })
+  //TODO: FIX
+  // @IsNotEmpty()
+  // @ValidateNested()
+  // @Type(() => CurrencyDto)
+  // @ApiProperty({
+  //   name: 'currency',
+  //   type: () => CurrencyDto,
+  //   required: true,
+  //   description: 'Currency details',
+  // })
   currency: CurrencyDto;
 
   @IsOptional()

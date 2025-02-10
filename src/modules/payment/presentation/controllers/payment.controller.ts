@@ -118,6 +118,8 @@ export class PaymentController {
     description: 'Payment recently added.',
   })
   async addPayment(@Body() entity: AddPaymentDto): Promise<PaymentDto> {
+    console.log('entity', entity);
+
     return this.addPaymentUsecase.execute({
       id: '',
       ...entity,
@@ -142,6 +144,7 @@ export class PaymentController {
     console.log('dto', dto);
     const payments = dto.payments.map(payment => ({
       id: '',
+      processedAt: 0, //TODO: REMOVE
       ...payment,
     }));
 

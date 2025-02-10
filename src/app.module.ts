@@ -13,6 +13,7 @@ import { CloudTasksModule, EtaModule, EventEmitterModule, FireAuthModule, Firest
 import { ClsModule } from 'nestjs-cls';
 import { Environment } from './core/constants';
 import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, OrganizationModule, UserModule } from './modules';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -123,6 +124,7 @@ import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, 
     OrganizationModule,
     CodeModule,
     InvoiceModule,
+    PaymentModule,
   ],
 
   providers: [

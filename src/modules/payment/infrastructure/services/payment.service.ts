@@ -41,7 +41,7 @@ export class PaymentService implements IPaymentService {
     return await this.repo.get(id);
   }
 
-  async addPayment(payment: Payment): Promise<Payment> {
+  async addPayment(payment: Partial<Payment>): Promise<Payment> {
     // Initiate some fields
     payment.createdBy = this.currentUser?.name;
     payment.createdAt = Date.now();
@@ -58,7 +58,7 @@ export class PaymentService implements IPaymentService {
     });
   }
 
-  async addPayments(payments: Payment[]): Promise<Payment[]> {
+  async addPayments(payments: Partial<Payment>[]): Promise<Payment[]> {
     // Initiate some fields for each code
     payments.forEach(payment => {
       payment.createdBy = this.currentUser?.name;

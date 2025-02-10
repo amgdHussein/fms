@@ -6,5 +6,5 @@ import { Payment } from '../entities';
 export interface IPaymentRepository extends Repository<Payment> {
   getAll(): Promise<Payment[]>;
   query(page: number, limit: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Payment>>;
-  addBatch(payments: Payment[]): Promise<Payment[]>;
+  addBatch(payments: Partial<Payment>[]): Promise<Payment[]>;
 }

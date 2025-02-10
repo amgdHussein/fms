@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from '../../core/auth';
 import { PaytabsService } from '../../core/providers/payments/paytabs/infrastructure';
 import { DynamicConfigService, StripeService } from '../../core/providers/payments/stripe/infrastructure';
+import { INVOICE_ITEM_REPOSITORY_PROVIDER, INVOICE_REPOSITORY_PROVIDER, INVOICE_SERVICE_PROVIDER } from '../invoice/domain';
+import { InvoiceFirestoreRepository, InvoiceItemFirestoreRepository, InvoiceService } from '../invoice/infrastructure';
 import {
   AddPayment,
   AddPayments,
@@ -91,6 +93,18 @@ const paymentUsecases = [
     {
       provide: PAYMENT_SERVICE_PROVIDER,
       useClass: PaymentService,
+    },
+    {
+      provide: INVOICE_ITEM_REPOSITORY_PROVIDER,
+      useClass: InvoiceItemFirestoreRepository,
+    },
+    {
+      provide: INVOICE_REPOSITORY_PROVIDER,
+      useClass: InvoiceFirestoreRepository,
+    },
+    {
+      provide: INVOICE_SERVICE_PROVIDER,
+      useClass: InvoiceService,
     },
     // {
     //   provide: INVOICE_SERVICE_PROVIDER,

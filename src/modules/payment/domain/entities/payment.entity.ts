@@ -18,7 +18,7 @@ export interface Payment {
   amount: number;
   currency: Currency;
 
-  transactionId: string; // External ID from the payment gateway
+  transactionId: string; // Internal id for the transactions table
 
   method: PaymentMethod;
   referenceId: string; // Reference ID from the payment gateway
@@ -46,7 +46,7 @@ export enum PaymentType {
 }
 
 export enum PaymentStatus {
-  PENDING = 0,
+  PROCESSING = 0,
   COMPLETED = 1,
   FAILED = 2,
   PARTIALLY_PAID = 3,

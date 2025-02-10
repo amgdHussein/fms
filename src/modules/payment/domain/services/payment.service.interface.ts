@@ -7,8 +7,8 @@ export interface IPaymentService {
   getPayments(): Promise<Payment[]>;
   queryPayments(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Payment>>;
   getPayment(id: string): Promise<Payment>;
-  addPayment(payment: Payment): Promise<Payment>;
-  addPayments(payments: Payment[]): Promise<Payment[]>;
+  addPayment(payment: Partial<Payment>): Promise<Payment>;
+  addPayments(payments: Partial<Payment>[]): Promise<Payment[]>;
   updatePayment(payment: Partial<Payment> & { id: string }): Promise<Payment>;
   deletePayment(id: string): Promise<Payment>;
   createStripeInvoice(invoice: Invoice): Promise<string>;
