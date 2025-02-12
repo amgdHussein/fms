@@ -152,7 +152,7 @@ function getMappedEtaInvoice(
     name: organization.name,
     type: IssuerType.BUSINESS, // IssuerType
     address: {
-      branchID: branch.branchId,
+      branchID: branch.branchCode,
       country: branch.country,
       governate: branch.governorate,
       regionCity: branch.city,
@@ -208,7 +208,7 @@ function getMappedEtaCreditOrDebit(
     name: organization.name,
     type: IssuerType.BUSINESS, // IssuerType
     address: {
-      branchID: branch.branchId,
+      branchID: branch.branchCode,
       country: branch.country,
       governate: branch.governorate,
       regionCity: branch.city,
@@ -265,7 +265,7 @@ function getMappedEtaExportInvoice(
     name: organization.name,
     type: IssuerType.BUSINESS, // IssuerType
     address: {
-      branchID: branch.branchId,
+      branchID: branch.branchCode,
       country: branch.country,
       governate: branch.governorate,
       regionCity: branch.city,
@@ -322,12 +322,12 @@ function getMappedEtaExportCreditOrDebitInvoice(
     name: organization.name,
     type: IssuerType.BUSINESS, // IssuerType
     address: {
-      branchID: branch.branchId,
+      branchID: branch.branchCode,
       country: branch.country,
       governate: branch.governorate,
       regionCity: branch.city,
       street: branch.street,
-      buildingNumber: branch.buildingNumber || '0',
+      buildingNumber: branch.buildingNumber,
     },
   };
 

@@ -5,9 +5,16 @@ export interface OrganizationBranch extends Address {
   id: string;
   organizationId: string;
 
-  branchId: string; // Generate by Tax authority
+  branchCode: string; // Generate by Tax authority
   name: string; // Name of the branch
   posDevices?: PosDevice[]; // List of POS devices
+
+  buildingNumber: string;
+
+  floor?: string;
+  room?: string;
+  landmark?: string;
+  additionalInformation?: string; //TODO: ADD TO ALL FORMS
 
   createdBy: string; // User ID who created the branch
   createdAt: number; // Date when the branch was created
@@ -20,6 +27,6 @@ export interface PosDevice {
   serialNo: string;
   osVersion: string;
   isActive: boolean;
-  production: EtaCredentials;
-  test?: EtaCredentials;
+  credentials: EtaCredentials;
+  // test?: EtaCredentials;
 }

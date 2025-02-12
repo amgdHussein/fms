@@ -234,7 +234,7 @@ export function getMappedEtaReceipt(receipt: Receipt, codes: Code[], branch: Org
     seller: {
       rin: receipt.issuer.taxId,
       companyTradeName: receipt.issuer.name,
-      branchCode: branch.branchId,
+      branchCode: branch.branchCode,
       branchAddress: {
         country: branch.country,
         street: branch.street,

@@ -80,8 +80,8 @@ export class ReceiptService implements IReceiptService {
     const selectedPos = branch.posDevices.find(pos => pos.serialNo === receipt.posId);
 
     const credentials: EReceiptCredentials = {
-      clientId: selectedPos.production.clientId,
-      clientSecret: selectedPos.production.clientSecret,
+      clientId: selectedPos.credentials.clientId,
+      clientSecret: selectedPos.credentials.clientSecret,
       pos: selectedPos,
     };
 

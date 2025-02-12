@@ -8,8 +8,7 @@ export interface Payment {
   clientId: string;
   clientName: string;
 
-  category: PaymentCategory;
-
+  entityType: PaymentEntityType;
   entityId: string;
   entityNumber: string;
 
@@ -34,7 +33,7 @@ export interface Payment {
   updatedAt?: number;
 }
 
-export enum PaymentCategory {
+export enum PaymentEntityType {
   INVOICE,
   RECEIPT,
   SUBSCRIPTION,

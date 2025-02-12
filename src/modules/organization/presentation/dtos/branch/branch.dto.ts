@@ -5,7 +5,7 @@ import { PosDevice } from '../../../domain/entities/branch.entity';
 export class OrganizationBranchDto implements OrganizationBranch {
   id: string;
   organizationId: string;
-  branchId: string;
+  branchCode: string;
   name: string;
   posDevices?: PosDevice[];
   street: string;
@@ -13,7 +13,13 @@ export class OrganizationBranchDto implements OrganizationBranch {
   country: string;
   governorate: string;
   postalCode?: string;
-  buildingNumber?: string;
+
+  buildingNumber: string;
+  floor?: string;
+  room?: string;
+  landmark?: string;
+  additionalInformation?: string; //TODO: ADD TO ALL FORMS
+
   createdBy: string;
   createdAt: number;
   updatedBy: string;

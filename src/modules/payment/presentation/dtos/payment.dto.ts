@@ -3,7 +3,7 @@ import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-valida
 
 import { CurrencyDto } from '../../../../core/dtos/currency.dto';
 import { Payment, PaymentMethod, PaymentType } from '../../domain/entities';
-import { PaymentCategory, PaymentStatus } from '../../domain/entities/payment.entity';
+import { PaymentEntityType, PaymentStatus } from '../../domain/entities/payment.entity';
 
 export class PaymentDto implements Payment {
   @IsNotEmpty()
@@ -51,15 +51,15 @@ export class PaymentDto implements Payment {
   clientName: string;
 
   @IsNotEmpty()
-  @IsEnum(PaymentCategory)
+  @IsEnum(PaymentEntityType)
   @ApiProperty({
-    name: 'category',
-    enum: PaymentCategory,
+    name: 'entityType',
+    enum: PaymentEntityType,
     required: true,
-    example: PaymentCategory.INVOICE,
-    description: 'The category of payment',
+    example: PaymentEntityType.INVOICE,
+    description: 'The entityType of payment',
   })
-  category: PaymentCategory;
+  entityType: PaymentEntityType;
 
   @IsNotEmpty()
   @IsString()
