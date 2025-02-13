@@ -1,3 +1,4 @@
+export { Action } from './action.enum';
 export { Address } from './address.model';
 export { Authority } from './authority.enum';
 export { CountryCode } from './country-code.enum';

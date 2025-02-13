@@ -9,19 +9,19 @@ import { Client, CLIENT_REPOSITORY_PROVIDER, IClientRepository, IClientService }
 export class ClientService implements IClientService {
   constructor(
     @Inject(CLIENT_REPOSITORY_PROVIDER)
-    private readonly repo: IClientRepository,
+    private readonly clientRepo: IClientRepository,
   ) {}
 
   async getClient(id: string): Promise<Client> {
-    return this.repo.get(id);
+    return this.clientRepo.get(id);
   }
 
   async getClients(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Client[]> {
-    return this.repo.getMany(filters, page, limit, order);
+    return this.clientRepo.getMany(filters, page, limit, order);
   }
 
   async getClientByTaxNumber(taxIdNo: string, organizationId: string): Promise<Client> {
-    return this.repo
+    return this.clientRepo
       .getMany([
         { key: 'identificationId', operator: 'eq', value: taxIdNo },
         { key: 'organizationId', operator: 'eq', value: organizationId },
@@ -36,18 +36,18 @@ export class ClientService implements IClientService {
   }
 
   async addClient(client: Partial<Client>): Promise<Client> {
-    return this.repo.add(client);
+    return this.clientRepo.add(client);
   }
 
   async addClients(clients: Partial<Client>[]): Promise<Client[]> {
-    return this.repo.addMany(clients);
+    return this.clientRepo.addMany(clients);
   }
 
   async updateClient(clients: Partial<Client> & { id: string }): Promise<Client> {
-    return this.repo.update(clients);
+    return this.clientRepo.update(clients);
   }
 
   async deleteClient(id: string): Promise<Client> {
-    return this.repo.delete(id);
+    return this.clientRepo.delete(id);
   }
 }

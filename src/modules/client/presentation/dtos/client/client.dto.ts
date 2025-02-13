@@ -16,6 +16,7 @@ export class ClientDto implements Client {
   currency: CurrencyCode;
 
   openingBalance: number; // Array of opening balances
+  totalInvoiceAmount: number;
 
   createdBy: string;
   createdAt: number;

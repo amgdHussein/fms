@@ -101,6 +101,10 @@ const preferencesUsecases = [
       provide: CLIENT_SERVICE_PROVIDER,
       useClass: ClientService,
     },
+    {
+      provide: CLIENT_REPOSITORY_PROVIDER,
+      useClass: ClientFirestoreRepository,
+    },
   ],
 })
 export class ClientModule {}

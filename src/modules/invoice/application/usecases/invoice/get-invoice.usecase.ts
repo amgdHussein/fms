@@ -13,7 +13,7 @@ export class GetInvoice implements Usecase<Invoice> {
 
   async execute(id: string): Promise<Invoice> {
     return this.invoiceService.getInvoice(id).then(async invoice => {
-      invoice.items = await this.invoiceService.getItems(id);
+      invoice.items = await this.invoiceService.getInvoiceItems(id);
       return invoice;
     });
   }

@@ -12,13 +12,6 @@ export class UpdateInvoice implements Usecase<Invoice> {
   ) {}
 
   async execute(invoice: Partial<Invoice> & { id: string }): Promise<Invoice> {
-    const { items, ...invoiceData } = invoice;
-    return this.invoiceService.updateInvoice(invoiceData).then(async invoice => {
-      if (items && items.length) {
-        invoice.items = await this.invoiceService.updateItems(items, invoice.id);
-      }
-
-      return invoice;
-    });
+    return this.invoiceService.updateInvoice(invoice);
   }
 }

@@ -18,10 +18,7 @@ export class DeleteInvoice implements Usecase<Invoice> {
         throw new BadRequestException('Invoice cannot be deleted due payment applied!');
       }
 
-      return this.invoiceService.deleteInvoice(id).then(async invoice => {
-        await this.invoiceService.deleteItems(id);
-        return invoice;
-      });
+      return this.invoiceService.deleteInvoice(id);
     });
   }
 }

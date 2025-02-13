@@ -12,6 +12,6 @@ export class GetInvoiceItems implements Usecase<Item> {
   ) {}
 
   async execute(invoiceId: string): Promise<Item[]> {
-    return this.invoiceService.getItems(invoiceId);
+    return this.invoiceService.getInvoiceItems(invoiceId);
   }
 }

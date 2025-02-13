@@ -17,6 +17,7 @@ export interface Client {
   type: IssuerType;
 
   openingBalance: number; // Array of opening balances
+  totalInvoiceAmount: number; // NEW FIELD TO TRACK TOTAL INVOICES
 
   createdBy: string; // User who created the client
   createdAt: number; // Timestamp when the client was created
