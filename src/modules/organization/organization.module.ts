@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 
 import {
-  AddBranch,
+  AddBranches,
   AddOrganization,
   AddProduct,
   AssignOrganizationTax,
@@ -101,8 +101,8 @@ const branchesUsecases = [
     useClass: GetBranch,
   },
   {
-    provide: BRANCH_USECASE_PROVIDERS.ADD_BRANCH,
-    useClass: AddBranch,
+    provide: BRANCH_USECASE_PROVIDERS.ADD_BRANCHES,
+    useClass: AddBranches,
   },
   {
     provide: BRANCH_USECASE_PROVIDERS.UPDATE_BRANCH,

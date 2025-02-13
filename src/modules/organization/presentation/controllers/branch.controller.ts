@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AddBranch, DeleteBranch, GetBranch, GetBranches, UpdateBranch } from '../../application';
+import { AddBranches, DeleteBranch, GetBranch, GetBranches, UpdateBranch } from '../../application';
 import { BRANCH_USECASE_PROVIDERS } from '../../domain';
 
-import { AddOrganizationBranchDto, OrganizationBranchDto, UpdateOrganizationBranchDto } from '../dtos';
+import { AddOrganizationBranchesDto, OrganizationBranchDto, UpdateOrganizationBranchDto } from '../dtos';
 
 @ApiTags('Branches')
 @Controller()
@@ -13,8 +13,8 @@ export class OrganizationBranchController {
     @Inject(BRANCH_USECASE_PROVIDERS.GET_BRANCH)
     private readonly getBranchUsecase: GetBranch,
 
-    @Inject(BRANCH_USECASE_PROVIDERS.ADD_BRANCH)
-    private readonly addBranchUsecase: AddBranch,
+    @Inject(BRANCH_USECASE_PROVIDERS.ADD_BRANCHES)
+    private readonly addBranchesUsecase: AddBranches,
 
     @Inject(BRANCH_USECASE_PROVIDERS.UPDATE_BRANCH)
     private readonly updateBranchUsecase: UpdateBranch,
@@ -43,20 +43,19 @@ export class OrganizationBranchController {
     return this.getBranchUsecase.execute(id);
   }
 
-  //TODO: MAKE THIS ACCEPT BULK NOT SINGLE
   @Post('branches')
-  @ApiOperation({ summary: 'Create a new branch for an organization.' })
+  @ApiOperation({ summary: 'Create new organization branches.' })
   @ApiBody({
-    type: AddOrganizationBranchDto,
+    type: AddOrganizationBranchesDto,
     required: true,
-    description: 'Details required to create a new branch for the organization.',
+    description: 'Details required to create a list of branches.',
   })
   @ApiResponse({
-    type: OrganizationBranchDto,
-    description: 'The newly created branch.',
+    type: [OrganizationBranchDto],
+    description: 'The newly created branches.',
   })
-  async addBranch(@Body() dto: AddOrganizationBranchDto): Promise<OrganizationBranchDto> {
-    return this.addBranchUsecase.execute(dto);
+  async addBranch(@Body() dto: AddOrganizationBranchesDto): Promise<OrganizationBranchDto[]> {
+    return this.addBranchesUsecase.execute(dto.branches);
   }
 
   @Put('branches/:id')

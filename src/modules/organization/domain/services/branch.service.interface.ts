@@ -6,4 +6,5 @@ export interface IOrganizationBranchService {
   addBranch(branch: Partial<OrganizationBranch> & { organizationId: string }): Promise<OrganizationBranch>;
   updateBranch(branch: Partial<OrganizationBranch> & { id: string }): Promise<OrganizationBranch>;
   deleteBranch(id: string): Promise<OrganizationBranch>;
+  addBranches(branches: (Partial<OrganizationBranch> & { organizationId: string })[]): Promise<OrganizationBranch[]>;
 }

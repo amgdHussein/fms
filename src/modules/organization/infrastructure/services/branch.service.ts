@@ -22,6 +22,10 @@ export class OrganizationBranchService implements IOrganizationBranchService {
     return this.repo.add(branch);
   }
 
+  async addBranches(branches: (Partial<OrganizationBranch> & { organizationId: string })[]): Promise<OrganizationBranch[]> {
+    return this.repo.addMany(branches);
+  }
+
   async updateBranch(branch: Partial<OrganizationBranch> & { id: string }): Promise<OrganizationBranch> {
     return this.repo.update(branch);
   }

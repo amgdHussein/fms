@@ -35,6 +35,18 @@ export class OrganizationBranchFirestoreRepository implements IOrganizationBranc
     return this.db.addDoc(branch);
   }
 
+  async addMany(branches: (Partial<OrganizationBranch> & { organizationId: string })[]): Promise<OrganizationBranch[]> {
+    branches.forEach(branch => {
+      // Initiate some fields
+      branch.createdBy = this.authService.currentUser.uid;
+      branch.createdAt = Date.now();
+      branch.updatedBy = this.authService.currentUser.uid;
+      branch.updatedAt = Date.now();
+    });
+
+    return this.db.addDocs(branches);
+  }
+
   async update(branch: Partial<OrganizationBranch> & { id: string }): Promise<OrganizationBranch> {
     // Update some fields
     branch.updatedBy = this.authService.currentUser.uid;
