@@ -1,3 +1,4 @@
+export { BillingAccountFirestoreRepository } from './billing-account.firestore.repository';
 export { BranchFirestoreRepository } from './branch.firestore.repository';
 export { OrganizationPreferencesFirestoreRepository } from './organization-preferences.firestore.repository';
 export { OrganizationTaxFirestoreRepository } from './organization-tax.firestore.repository';

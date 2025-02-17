@@ -1,3 +1,4 @@
+export { BillingAccountController } from './billing-account.controller';
 export { BranchController } from './branch.controller';
 export { OrganizationPreferencesController } from './organization-preferences.controller';
 export { OrganizationTaxController } from './organization-tax.controller';

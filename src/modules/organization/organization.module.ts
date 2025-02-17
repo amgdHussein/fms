@@ -1,13 +1,17 @@
 import { Global, Module } from '@nestjs/common';
 
 import {
+  AddBillingAccount,
   AddBranches,
   AddOrganization,
   AddProduct,
   AssignOrganizationTax,
+  DeleteBillingAccount,
   DeleteBranch,
   DeleteOrganization,
   DeleteProduct,
+  GetBillingAccount,
+  GetBillingAccounts,
   GetBranch,
   GetBranches,
   GetOrganization,
@@ -17,6 +21,7 @@ import {
   GetProduct,
   GetProducts,
   IsOrganizationExistConstraint,
+  UpdateBillingAccount,
   UpdateBranch,
   UpdateOrganization,
   UpdateOrganizationPreferences,
@@ -26,6 +31,9 @@ import {
 } from './application';
 import { DraftProduct } from './application/usecases/product/draft-product.usecase';
 import {
+  BILLING_ACCOUNT_REPOSITORY_PROVIDER,
+  BILLING_ACCOUNT_SERVICE_PROVIDER,
+  BILLING_ACCOUNT_USECASE_PROVIDERS,
   BRANCH_REPOSITORY_PROVIDER,
   BRANCH_SERVICE_PROVIDER,
   BRANCH_USECASE_PROVIDERS,
@@ -43,6 +51,8 @@ import {
   PRODUCT_USECASE_PROVIDERS,
 } from './domain';
 import {
+  BillingAccountFirestoreRepository,
+  BillingAccountService,
   BranchFirestoreRepository,
   BranchService,
   OrganizationFirestoreRepository,
@@ -55,6 +65,7 @@ import {
   OrganizationTaxService,
 } from './infrastructure';
 import {
+  BillingAccountController,
   BranchController,
   OrganizationController,
   OrganizationPreferencesController,
@@ -161,10 +172,39 @@ const organizationTaxUsecases = [
     useClass: UpdateOrganizationTax,
   },
 ];
+const organizationBillingAccountUsecases = [
+  {
+    provide: BILLING_ACCOUNT_USECASE_PROVIDERS.ADD_BILLING_ACCOUNT,
+    useClass: AddBillingAccount,
+  },
+  {
+    provide: BILLING_ACCOUNT_USECASE_PROVIDERS.GET_BILLING_ACCOUNT,
+    useClass: GetBillingAccount,
+  },
+  {
+    provide: BILLING_ACCOUNT_USECASE_PROVIDERS.GET_BILLING_ACCOUNTS,
+    useClass: GetBillingAccounts,
+  },
+  {
+    provide: BILLING_ACCOUNT_USECASE_PROVIDERS.UPDATE_BILLING_ACCOUNT,
+    useClass: UpdateBillingAccount,
+  },
+  {
+    provide: BILLING_ACCOUNT_USECASE_PROVIDERS.DELETE_BILLING_ACCOUNT,
+    useClass: DeleteBillingAccount,
+  },
+];
 
 @Global()
 @Module({
-  controllers: [OrganizationController, OrganizationPreferencesController, OrganizationTaxController, BranchController, OrganizationProductController],
+  controllers: [
+    OrganizationController,
+    OrganizationPreferencesController,
+    OrganizationTaxController,
+    BillingAccountController,
+    BranchController,
+    OrganizationProductController,
+  ],
   providers: [
     ...validators,
 
@@ -208,12 +248,20 @@ const organizationTaxUsecases = [
       provide: PRODUCT_SERVICE_PROVIDER,
       useClass: OrganizationProductService,
     },
-
+    {
+      provide: BILLING_ACCOUNT_REPOSITORY_PROVIDER,
+      useClass: BillingAccountFirestoreRepository,
+    },
+    {
+      provide: BILLING_ACCOUNT_SERVICE_PROVIDER,
+      useClass: BillingAccountService,
+    },
     ...organizationUsecases,
     ...preferencesUsecases,
     ...branchesUsecases,
     ...productsUsecases,
     ...organizationTaxUsecases,
+    ...organizationBillingAccountUsecases,
   ],
   exports: [
     {

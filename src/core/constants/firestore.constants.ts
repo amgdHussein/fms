@@ -13,6 +13,7 @@ export enum FIRESTORE_COLLECTION_PROVIDERS {
   ORGANIZATIONS = 'organizations',
   BRANCHES = 'branches',
   ORGANIZATIONS_PREFERENCES = 'organizations-preferences',
+  BILLING_ACCOUNTS = 'billing-accounts',
 
   // ? Organization Related
   ORGANIZATIONS_TAXES = 'organizations-taxes',

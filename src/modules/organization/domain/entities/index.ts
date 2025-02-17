@@ -1,3 +1,4 @@
+export { BillingAccount } from './billing-account.entity';
 export { Branch } from './branch.entity';
 export { OrganizationIndustry } from './industry.enum';
 export { LegalStructure } from './legal-structure.enum';

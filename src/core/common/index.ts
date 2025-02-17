@@ -11,5 +11,6 @@ export { Discount } from './discount.model';
 export { Gender } from './gender.enum';
 export { Identification } from './identification.model';
 export { Language } from './language.enum';
+export { PaymentGateway } from './payment-gateway.enum';
 export { Phone } from './phone.model';
 export { Photo } from './photo.model';
