@@ -1,36 +1,36 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { QueryFilter, QueryOrder } from '../../../../core/models';
-import { BRANCH_REPOSITORY_PROVIDER, IOrganizationBranchRepository, IOrganizationBranchService, OrganizationBranch } from '../../domain';
+import { Branch, BRANCH_REPOSITORY_PROVIDER, IBranchRepository, IBranchService } from '../../domain';
 
 @Injectable()
-export class OrganizationBranchService implements IOrganizationBranchService {
+export class BranchService implements IBranchService {
   constructor(
     @Inject(BRANCH_REPOSITORY_PROVIDER)
-    private readonly repo: IOrganizationBranchRepository,
+    private readonly repo: IBranchRepository,
   ) {}
 
-  async getBranch(id: string): Promise<OrganizationBranch> {
+  async getBranch(id: string): Promise<Branch> {
     return this.repo.get(id);
   }
 
-  async getBranches(organizationId: string, filters: QueryFilter[] = [], page?: number, limit?: number, order?: QueryOrder): Promise<OrganizationBranch[]> {
+  async getBranches(organizationId: string, filters: QueryFilter[] = [], page?: number, limit?: number, order?: QueryOrder): Promise<Branch[]> {
     return this.repo.getMany([{ key: 'organizationId', operator: 'eq', value: organizationId }, ...filters], page, limit, order);
   }
 
-  async addBranch(branch: Partial<OrganizationBranch> & { organizationId: string }): Promise<OrganizationBranch> {
+  async addBranch(branch: Partial<Branch> & { organizationId: string }): Promise<Branch> {
     return this.repo.add(branch);
   }
 
-  async addBranches(branches: (Partial<OrganizationBranch> & { organizationId: string })[]): Promise<OrganizationBranch[]> {
+  async addBranches(branches: (Partial<Branch> & { organizationId: string })[]): Promise<Branch[]> {
     return this.repo.addMany(branches);
   }
 
-  async updateBranch(branch: Partial<OrganizationBranch> & { id: string }): Promise<OrganizationBranch> {
+  async updateBranch(branch: Partial<Branch> & { id: string }): Promise<Branch> {
     return this.repo.update(branch);
   }
 
-  async deleteBranch(id: string): Promise<OrganizationBranch> {
+  async deleteBranch(id: string): Promise<Branch> {
     return this.repo.delete(id);
   }
 }

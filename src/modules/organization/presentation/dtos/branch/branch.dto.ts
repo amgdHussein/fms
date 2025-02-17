@@ -1,8 +1,8 @@
-import { OrganizationBranch } from '../../../domain';
+import { Branch } from '../../../domain';
 import { PosDevice } from '../../../domain/entities/branch.entity';
 
 // TODO: FILL THE DTO
-export class OrganizationBranchDto implements OrganizationBranch {
+export class BranchDto implements Branch {
   id: string;
   organizationId: string;
   branchCode: string;

@@ -1,4 +1,4 @@
-export { OrganizationBranch } from './branch.entity';
+export { Branch } from './branch.entity';
 export { OrganizationIndustry } from './industry.enum';
 export { LegalStructure } from './legal-structure.enum';
 export { FinancialDate, OrganizationPreferences } from './organization-preferences.entity';

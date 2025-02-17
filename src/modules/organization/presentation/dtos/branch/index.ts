@@ -1,3 +1,3 @@
-export { AddOrganizationBranchesDto } from './add-branches.dto';
-export { OrganizationBranchDto } from './branch.dto';
-export { UpdateOrganizationBranchDto } from './update-branch.dto';
+export { AddBranchesDto } from './add-branches.dto';
+export { BranchDto } from './branch.dto';
+export { UpdateBranchDto } from './update-branch.dto';

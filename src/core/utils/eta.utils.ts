@@ -8,7 +8,7 @@ import { AddEtaInvoice, EtaInvoiceLine, GetInvoices, Issuer, IssuerType, QueryCo
 import { Client } from '../../modules/client/domain';
 import { Code } from '../../modules/code/domain';
 import { InvoiceForm, Item, TaxInvoice } from '../../modules/invoice/domain';
-import { Organization, OrganizationBranch, OrganizationTax, ProductTax } from '../../modules/organization/domain';
+import { Branch, Organization, OrganizationTax, ProductTax } from '../../modules/organization/domain';
 
 import { roundToFive, roundToTwo } from './math.utils';
 
@@ -143,7 +143,7 @@ function getMappedEtaInvoice(
   client: Client,
   organization: Organization,
   organizationTax: OrganizationTax,
-  branch: OrganizationBranch,
+  branch: Branch,
   codes: Code[],
 ): AddEtaInvoice {
   // Setup organization address
@@ -199,7 +199,7 @@ function getMappedEtaCreditOrDebit(
   client: Client,
   organization: Organization,
   organizationTax: OrganizationTax,
-  branch: OrganizationBranch,
+  branch: Branch,
   codes: Code[],
 ): AddEtaInvoice {
   // Setup organization address
@@ -256,7 +256,7 @@ function getMappedEtaExportInvoice(
   client: Client,
   organization: Organization,
   organizationTax: OrganizationTax,
-  branch: OrganizationBranch,
+  branch: Branch,
   codes: Code[],
 ): AddEtaInvoice {
   // Setup organization address
@@ -313,7 +313,7 @@ function getMappedEtaExportCreditOrDebitInvoice(
   client: Client,
   organization: Organization,
   organizationTax: OrganizationTax,
-  branch: OrganizationBranch,
+  branch: Branch,
   codes: Code[],
 ): AddEtaInvoice {
   // Setup organization address
@@ -371,7 +371,7 @@ export function mapInvoiceToEtaInvoice(
   client: Client,
   organization: Organization,
   organizationTax: OrganizationTax,
-  branch: OrganizationBranch,
+  branch: Branch,
   codes: Code[],
 ): AddEtaInvoice {
   switch (invoice.form) {

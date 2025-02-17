@@ -2,16 +2,16 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { Usecase } from '../../../../../core/interfaces';
 
-import { BRANCH_SERVICE_PROVIDER, IOrganizationBranchService, OrganizationBranch } from '../../../domain';
+import { Branch, BRANCH_SERVICE_PROVIDER, IBranchService } from '../../../domain';
 
 @Injectable()
-export class AddBranches implements Usecase<OrganizationBranch> {
+export class AddBranches implements Usecase<Branch> {
   constructor(
     @Inject(BRANCH_SERVICE_PROVIDER)
-    private readonly branchService: IOrganizationBranchService,
+    private readonly branchService: IBranchService,
   ) {}
 
-  async execute(branches: (Partial<OrganizationBranch> & { organizationId: string })[]): Promise<OrganizationBranch[]> {
+  async execute(branches: (Partial<Branch> & { organizationId: string })[]): Promise<Branch[]> {
     return this.branchService.addBranches(branches);
   }
 }

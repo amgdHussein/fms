@@ -14,7 +14,7 @@ import { EReceiptCredentials } from '../../../../core/providers/eta/temp-entity/
 import { Code, CODE_SERVICE_PROVIDER } from '../../../code/domain';
 import { CodeService } from '../../../code/infrastructure';
 import { BRANCH_SERVICE_PROVIDER } from '../../../organization/domain';
-import { OrganizationBranchService } from '../../../organization/infrastructure';
+import { BranchService } from '../../../organization/infrastructure';
 import {
   ETA_RECEIPT_QUEUE_PROVIDER,
   ETA_RECEIPT_SERVICE_PROVIDER,
@@ -33,7 +33,7 @@ export class ReceiptService implements IReceiptService {
     private readonly codeService: CodeService,
 
     @Inject(BRANCH_SERVICE_PROVIDER)
-    private organizationBranchService: OrganizationBranchService,
+    private organizationBranchService: BranchService,
 
     @Inject(ETA_RECEIPT_SERVICE_PROVIDER)
     private etaEReceiptService: EtaEReceiptService,

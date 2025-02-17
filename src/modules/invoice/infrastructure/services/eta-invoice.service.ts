@@ -13,7 +13,7 @@ import { CLIENT_SERVICE_PROVIDER, IClientService } from '../../../client/domain'
 import { CODE_SERVICE_PROVIDER, ICodeService } from '../../../code/domain';
 import {
   BRANCH_SERVICE_PROVIDER,
-  IOrganizationBranchService,
+  IBranchService,
   IOrganizationService,
   IOrganizationTaxService,
   Organization,
@@ -62,7 +62,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
     private readonly organizationService: IOrganizationService,
 
     @Inject(BRANCH_SERVICE_PROVIDER)
-    private readonly branchService: IOrganizationBranchService,
+    private readonly branchService: IBranchService,
 
     @Inject(ORGANIZATION_TAX_SERVICE_PROVIDER)
     private readonly organizationTaxService: IOrganizationTaxService,

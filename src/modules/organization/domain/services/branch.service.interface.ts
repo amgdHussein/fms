@@ -1,10 +1,10 @@
-import { OrganizationBranch } from '../entities';
+import { Branch } from '../entities';
 
-export interface IOrganizationBranchService {
-  getBranches(organizationId: string): Promise<OrganizationBranch[]>;
-  getBranch(id: string): Promise<OrganizationBranch>;
-  addBranch(branch: Partial<OrganizationBranch> & { organizationId: string }): Promise<OrganizationBranch>;
-  updateBranch(branch: Partial<OrganizationBranch> & { id: string }): Promise<OrganizationBranch>;
-  deleteBranch(id: string): Promise<OrganizationBranch>;
-  addBranches(branches: (Partial<OrganizationBranch> & { organizationId: string })[]): Promise<OrganizationBranch[]>;
+export interface IBranchService {
+  getBranches(organizationId: string): Promise<Branch[]>;
+  getBranch(id: string): Promise<Branch>;
+  addBranch(branch: Partial<Branch> & { organizationId: string }): Promise<Branch>;
+  updateBranch(branch: Partial<Branch> & { id: string }): Promise<Branch>;
+  deleteBranch(id: string): Promise<Branch>;
+  addBranches(branches: (Partial<Branch> & { organizationId: string })[]): Promise<Branch[]>;
 }

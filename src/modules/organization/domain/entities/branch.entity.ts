@@ -1,7 +1,7 @@
 import { Address } from '../../../../core/common';
 import { EtaCredentials } from '../../../../core/providers';
 
-export interface OrganizationBranch extends Address {
+export interface Branch extends Address {
   id: string;
   organizationId: string;
 

@@ -43,8 +43,8 @@ import {
   PRODUCT_USECASE_PROVIDERS,
 } from './domain';
 import {
-  OrganizationBranchFirestoreRepository,
-  OrganizationBranchService,
+  BranchFirestoreRepository,
+  BranchService,
   OrganizationFirestoreRepository,
   OrganizationPreferencesFirestoreRepository,
   OrganizationPreferencesService,
@@ -55,7 +55,7 @@ import {
   OrganizationTaxService,
 } from './infrastructure';
 import {
-  OrganizationBranchController,
+  BranchController,
   OrganizationController,
   OrganizationPreferencesController,
   OrganizationProductController,
@@ -164,13 +164,7 @@ const organizationTaxUsecases = [
 
 @Global()
 @Module({
-  controllers: [
-    OrganizationController,
-    OrganizationPreferencesController,
-    OrganizationTaxController,
-    OrganizationBranchController,
-    OrganizationProductController,
-  ],
+  controllers: [OrganizationController, OrganizationPreferencesController, OrganizationTaxController, BranchController, OrganizationProductController],
   providers: [
     ...validators,
 
@@ -200,11 +194,11 @@ const organizationTaxUsecases = [
     },
     {
       provide: BRANCH_REPOSITORY_PROVIDER,
-      useClass: OrganizationBranchFirestoreRepository,
+      useClass: BranchFirestoreRepository,
     },
     {
       provide: BRANCH_SERVICE_PROVIDER,
-      useClass: OrganizationBranchService,
+      useClass: BranchService,
     },
     {
       provide: PRODUCT_REPOSITORY_PROVIDER,
@@ -232,7 +226,7 @@ const organizationTaxUsecases = [
     },
     {
       provide: BRANCH_SERVICE_PROVIDER,
-      useClass: OrganizationBranchService,
+      useClass: BranchService,
     },
     {
       provide: ORGANIZATION_TAX_SERVICE_PROVIDER,

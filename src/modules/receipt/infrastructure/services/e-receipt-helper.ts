@@ -10,7 +10,7 @@ import {
 } from '../../../../core/providers/eta/temp-entity/receipt.entity';
 import { roundToTwo } from '../../../../core/utils/math.utils';
 import { Code } from '../../../code/domain';
-import { OrganizationBranch, ProductTax } from '../../../organization/domain';
+import { Branch, ProductTax } from '../../../organization/domain';
 import { Receipt, ReceiptItem, ReceiptType } from '../../domain/entities/receipt.entity';
 
 export function getEReceiptMappedTaxTotals(invoiceLines: ReceiptItem[]): { taxType: string; amount: number }[] {
@@ -215,7 +215,7 @@ function generateReceiptUUID(receiptObject: any): string {
   return receiptUUID;
 }
 
-export function getMappedEtaReceipt(receipt: Receipt, codes: Code[], branch: OrganizationBranch, credentials: EReceiptCredentials): EtaReceipt {
+export function getMappedEtaReceipt(receipt: Receipt, codes: Code[], branch: Branch, credentials: EReceiptCredentials): EtaReceipt {
   // map invoice to eta invoice
   const mappedEReceipt: EtaReceipt = {
     header: {

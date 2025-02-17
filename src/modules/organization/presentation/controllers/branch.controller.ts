@@ -4,11 +4,11 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/s
 import { AddBranches, DeleteBranch, GetBranch, GetBranches, UpdateBranch } from '../../application';
 import { BRANCH_USECASE_PROVIDERS } from '../../domain';
 
-import { AddOrganizationBranchesDto, OrganizationBranchDto, UpdateOrganizationBranchDto } from '../dtos';
+import { AddBranchesDto, BranchDto, UpdateBranchDto } from '../dtos';
 
 @ApiTags('Branches')
 @Controller()
-export class OrganizationBranchController {
+export class BranchController {
   constructor(
     @Inject(BRANCH_USECASE_PROVIDERS.GET_BRANCH)
     private readonly getBranchUsecase: GetBranch,
@@ -23,7 +23,7 @@ export class OrganizationBranchController {
     private readonly deleteBranchUsecase: DeleteBranch,
 
     @Inject(BRANCH_USECASE_PROVIDERS.GET_BRANCHES)
-    private readonly getOrganizationBranchesUsecase: GetBranches,
+    private readonly getBranchesUsecase: GetBranches,
   ) {}
 
   @Get('branches/:id')
@@ -36,40 +36,40 @@ export class OrganizationBranchController {
     description: 'The unique identifier of the branch.',
   })
   @ApiResponse({
-    type: OrganizationBranchDto,
+    type: BranchDto,
     description: 'Details of the branch with the specified ID.',
   })
-  async getBranch(@Param('id') id: string): Promise<OrganizationBranchDto> {
+  async getBranch(@Param('id') id: string): Promise<BranchDto> {
     return this.getBranchUsecase.execute(id);
   }
 
   @Post('branches')
   @ApiOperation({ summary: 'Create new organization branches.' })
   @ApiBody({
-    type: AddOrganizationBranchesDto,
+    type: AddBranchesDto,
     required: true,
     description: 'Details required to create a list of branches.',
   })
   @ApiResponse({
-    type: [OrganizationBranchDto],
+    type: [BranchDto],
     description: 'The newly created branches.',
   })
-  async addBranch(@Body() dto: AddOrganizationBranchesDto): Promise<OrganizationBranchDto[]> {
+  async addBranch(@Body() dto: AddBranchesDto): Promise<BranchDto[]> {
     return this.addBranchesUsecase.execute(dto.branches);
   }
 
   @Put('branches/:id')
   @ApiOperation({ summary: 'Update the details of an existing branch.' })
   @ApiBody({
-    type: UpdateOrganizationBranchDto,
+    type: UpdateBranchDto,
     required: true,
     description: 'Details of the branch to be updated.',
   })
   @ApiResponse({
-    type: OrganizationBranchDto,
+    type: BranchDto,
     description: 'The updated branch details.',
   })
-  async updateBranch(@Param('id') id: string, @Body() entity: UpdateOrganizationBranchDto): Promise<OrganizationBranchDto> {
+  async updateBranch(@Param('id') id: string, @Body() entity: UpdateBranchDto): Promise<BranchDto> {
     return this.updateBranchUsecase.execute({ ...entity, id });
   }
 
@@ -83,10 +83,10 @@ export class OrganizationBranchController {
     description: 'The unique identifier of the branch to be deleted.',
   })
   @ApiResponse({
-    type: OrganizationBranchDto,
+    type: BranchDto,
     description: 'Details of the branch that was deleted.',
   })
-  async deleteBranch(@Param('id') id: string): Promise<OrganizationBranchDto> {
+  async deleteBranch(@Param('id') id: string): Promise<BranchDto> {
     return this.deleteBranchUsecase.execute(id);
   }
 
@@ -100,10 +100,10 @@ export class OrganizationBranchController {
     description: 'The unique identifier of the organization.',
   })
   @ApiResponse({
-    type: [OrganizationBranchDto],
+    type: [BranchDto],
     description: 'List of branches belonging to the organization.',
   })
-  async getOrganizationBranches(@Param('organizationId') organizationId: string): Promise<OrganizationBranchDto[]> {
-    return this.getOrganizationBranchesUsecase.execute(organizationId);
+  async getBranches(@Param('organizationId') organizationId: string): Promise<BranchDto[]> {
+    return this.getBranchesUsecase.execute(organizationId);
   }
 }

@@ -1,9 +1,9 @@
 import { OmitType } from '@nestjs/swagger';
 
-import { OrganizationBranchDto } from './branch.dto';
+import { BranchDto } from './branch.dto';
 
-class AddOrganizationBranchDto extends OmitType(OrganizationBranchDto, ['id', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy']) {}
+class AddBranchDto extends OmitType(BranchDto, ['id', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy']) {}
 
-export class AddOrganizationBranchesDto {
-  branches: AddOrganizationBranchDto[];
+export class AddBranchesDto {
+  branches: AddBranchDto[];
 }
