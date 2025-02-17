@@ -2,9 +2,14 @@ import { Address, CurrencyCode, Phone, Photo } from '../../../../core/common';
 
 import { OrganizationIndustry } from './industry.enum';
 import { LegalStructure } from './legal-structure.enum';
-import { OrganizationStatus } from './status.enum';
 
 // TODO: REMOVE ALL PREFERENCES IDS AND MAKE THEM AS PARENT ID
+
+export enum OrganizationStatus {
+  ACTIVE = 0,
+  INACTIVE = 1,
+  SUSPENDED = 2,
+}
 
 export interface Organization {
   id: string;
