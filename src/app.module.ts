@@ -27,6 +27,7 @@ import { ClsModule } from 'nestjs-cls';
 import { Environment } from './core/constants';
 import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, OrganizationModule, UserModule } from './modules';
 import { PaymentModule } from './modules/payment/payment.module';
+import { ReceiptModule } from './modules/receipt';
 
 @Module({
   imports: [
@@ -156,6 +157,7 @@ import { PaymentModule } from './modules/payment/payment.module';
     CodeModule,
     InvoiceModule,
     PaymentModule,
+    ReceiptModule,
   ],
 
   providers: [

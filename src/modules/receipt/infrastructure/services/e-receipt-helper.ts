@@ -1,5 +1,4 @@
 import * as crypto from 'crypto';
-import moment from 'moment';
 import { ETA_TAX_SUB_TYPES_WITH_TYPE, TAXABLE_FEES_LIST } from '../../../../core/providers';
 import {
   EReceiptCredentials,
@@ -10,8 +9,11 @@ import {
 } from '../../../../core/providers/eta/temp-entity/receipt.entity';
 import { roundToTwo } from '../../../../core/utils/math.utils';
 import { Code } from '../../../code/domain';
-import { Branch, ProductTax } from '../../../organization/domain';
-import { Receipt, ReceiptItem, ReceiptType } from '../../domain/entities/receipt.entity';
+import { Receipt } from '../../domain';
+import { ItemTax, ReceiptItem, ReceiptType } from '../../domain/entities/receipt.entity';
+
+import * as moment from 'moment-timezone';
+import { Branch } from '../../../organization/domain';
 
 export function getEReceiptMappedTaxTotals(invoiceLines: ReceiptItem[]): { taxType: string; amount: number }[] {
   const filteredTaxes = new Map<string, number>();
@@ -48,7 +50,7 @@ function getTaxType(subType: string): 'fixed' | 'percentage' {
 function getItemTaxableFees(item: ReceiptItem): number {
   let totalTaxableFees = 0;
 
-  item.taxes.forEach((tax: ProductTax) => {
+  item.taxes.forEach((tax: ItemTax) => {
     if (TAXABLE_FEES_LIST.includes(tax.taxType)) {
       totalTaxableFees += tax.value;
     }
@@ -58,7 +60,7 @@ function getItemTaxableFees(item: ReceiptItem): number {
 }
 
 function getTaxRate(
-  tax: ProductTax,
+  tax: ItemTax,
   netAmount: number,
   profitOrLoss: number,
   totalTaxableFees: number,
@@ -247,7 +249,7 @@ export function getMappedEtaReceipt(receipt: Receipt, codes: Code[], branch: Bra
       activityCode: receipt.activityCode,
     },
     buyer: {
-      type: receipt.receiver.type,
+      type: receipt.receiver.type, // TODO: Change to dynamic IssuerTypeAsString
       id: receipt.receiver.taxId,
       name: receipt.receiver.name,
     },

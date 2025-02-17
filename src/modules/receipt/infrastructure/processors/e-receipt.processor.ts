@@ -1,9 +1,10 @@
 import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
-import { forwardRef, HttpException, HttpStatus, Inject, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import moment from 'moment';
+import { ETA_E_RECEIPT_PROVIDER } from '../../../../core/constants';
 import { EtaEReceiptService } from '../../../../core/providers';
-import { ETA_RECEIPT_QUEUE_PROVIDER, ETA_RECEIPT_SERVICE_PROVIDER, RECEIPT_SERVICE_PROVIDER } from '../../domain';
+import { ETA_RECEIPT_QUEUE_PROVIDER, RECEIPT_SERVICE_PROVIDER } from '../../domain';
 import { ReceiptStatus, TaxInvoiceStatus } from '../../domain/entities/receipt.entity';
 import { ReceiptService } from '../services';
 
@@ -12,8 +13,7 @@ export class EtaEReceiptProcessor {
   private readonly logger: Logger = new Logger(EtaEReceiptProcessor.name);
 
   constructor(
-    // @Inject(ETA_ERECEIPT_SERVICE_PROVIDER)
-    @Inject(forwardRef(() => ETA_RECEIPT_SERVICE_PROVIDER))
+    @Inject(ETA_E_RECEIPT_PROVIDER)
     private etaEReceiptService: EtaEReceiptService,
 
     @Inject(RECEIPT_SERVICE_PROVIDER)

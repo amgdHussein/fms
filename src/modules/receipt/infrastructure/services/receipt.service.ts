@@ -8,6 +8,8 @@ import { Queue } from 'bull';
 //   EtaEReceiptService,
 // } from '../../../../core/providers';
 // import { getMappedEtaReceipt } from '../../../../core/providers/tax-authority/eta/services/e-receipt-helper';
+import { AuthService } from '../../../../core/auth';
+import { AUTH_PROVIDER, ETA_E_RECEIPT_PROVIDER } from '../../../../core/constants';
 import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
 import { EtaEReceiptService } from '../../../../core/providers';
 import { EReceiptCredentials } from '../../../../core/providers/eta/temp-entity/receipt.entity';
@@ -15,27 +17,23 @@ import { Code, CODE_SERVICE_PROVIDER } from '../../../code/domain';
 import { CodeService } from '../../../code/infrastructure';
 import { BRANCH_SERVICE_PROVIDER } from '../../../organization/domain';
 import { BranchService } from '../../../organization/infrastructure';
-import {
-  ETA_RECEIPT_QUEUE_PROVIDER,
-  ETA_RECEIPT_SERVICE_PROVIDER,
-  IReceiptRepository,
-  IReceiptService,
-  Receipt,
-  RECEIPT_REPOSITORY_PROVIDER,
-} from '../../domain';
+import { ETA_RECEIPT_QUEUE_PROVIDER, IReceiptRepository, IReceiptService, Receipt, RECEIPT_REPOSITORY_PROVIDER } from '../../domain';
 import { ReceiptStatus, TaxInvoiceStatus } from '../../domain/entities/receipt.entity';
 import { getMappedEtaReceipt } from './e-receipt-helper';
 
 @Injectable()
 export class ReceiptService implements IReceiptService {
   constructor(
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
+
     @Inject(CODE_SERVICE_PROVIDER)
     private readonly codeService: CodeService,
 
     @Inject(BRANCH_SERVICE_PROVIDER)
     private organizationBranchService: BranchService,
 
-    @Inject(ETA_RECEIPT_SERVICE_PROVIDER)
+    @Inject(ETA_E_RECEIPT_PROVIDER)
     private etaEReceiptService: EtaEReceiptService,
 
     @Inject(RECEIPT_REPOSITORY_PROVIDER)
@@ -107,7 +105,9 @@ export class ReceiptService implements IReceiptService {
 
     // console.log('submitReceiptDocuments response', response);
 
-    await this.updateReceipt({ ...receipt });
+    console.log('receipt', receipt);
+
+    await this.updateReceipt(JSON.parse(JSON.stringify(receipt)));
 
     if (response.acceptedDocuments?.length) {
       this.etaEReceiptQueue
@@ -119,6 +119,7 @@ export class ReceiptService implements IReceiptService {
             receiptId: receipt.id,
             credentials: credentials,
             organizationId: receipt.organizationId,
+            updatedBy: this.authService.currentUser.uid,
           },
           {
             attempts: 4,
