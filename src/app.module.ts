@@ -8,7 +8,20 @@ import * as Joi from 'joi';
 import { AuthModule } from './core/auth';
 import { ExceptionFilter } from './core/filters';
 import { LoggingInterceptor } from './core/interceptors';
-import { CloudTasksModule, EtaModule, EventEmitterModule, FireAuthModule, FirestoreModule, GmailModule, HttpModule, RedisModule } from './core/providers';
+import {
+  CloudTasksModule,
+  EasyKashModule,
+  EtaModule,
+  EventEmitterModule,
+  FireAuthModule,
+  FirestoreModule,
+  GmailModule,
+  HttpModule,
+  PaypalModule,
+  PayTabsModule,
+  RedisModule,
+  StripeModule,
+} from './core/providers';
 
 import { ClsModule } from 'nestjs-cls';
 import { Environment } from './core/constants';
@@ -113,6 +126,24 @@ import { PaymentModule } from './modules/payment/payment.module';
       identityUrl: process.env.ETA_IDENTITY_URL,
       apiVersionUrl: process.env.ETA_API_VERSION_URL,
       apiTokenUrl: process.env.ETA_API_TOKEN_URL,
+    }),
+
+    StripeModule.forRoot({
+      apiKey: process.env.STRIPE_API_KEY,
+    }),
+
+    PayTabsModule.forRoot({
+      serverKey: '',
+    }),
+
+    PaypalModule.forRoot({
+      clientId: process.env.PAYPAL_CLIENT_ID,
+      clientSecret: process.env.PAYPAL_CLIENT_SECRET,
+      port: +process.env.PAYPAL_PORT,
+    }),
+
+    EasyKashModule.forRoot({
+      secretKey: process.env.EASY_KASH_SECRET_KEY,
     }),
 
     // ? App Modules

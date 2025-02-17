@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
+import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
 
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
 import { IPaymentRepository, Payment } from '../../domain';
 
 @Injectable()
@@ -13,31 +13,27 @@ export class PaymentFirestoreRepository implements IPaymentRepository {
     private readonly db: FirestoreService<Payment>,
   ) {}
 
-  async getAll(): Promise<Payment[]> {
-    return await this.db.getDocs();
-  }
-
-  async query(page?: number, limit?: number, filters?: QueryFilter[], order?: QueryOrder): Promise<QueryResult<Payment>> {
-    return await this.db.query(filters, page, limit, order);
+  async getMany(filters?: QueryFilter[], page?: number, limit?: number, order?: QueryOrder): Promise<Payment[]> {
+    return this.db.getDocs(filters, page, limit, order);
   }
 
   async get(id: string): Promise<Payment> {
-    return await this.db.getDoc(id);
+    return this.db.getDoc(id);
   }
 
   async add(payment: Partial<Payment>): Promise<Payment> {
-    return await this.db.addDoc(payment);
+    return this.db.addDoc(payment);
   }
 
-  async addBatch(payments: Partial<Payment>[]): Promise<Payment[]> {
-    return await this.db.addDocs(payments);
+  async addMany(payments: Partial<Payment>[]): Promise<Payment[]> {
+    return this.db.addDocs(payments);
   }
 
   async update(payment: Partial<Payment> & { id: string }): Promise<Payment> {
-    return await this.db.updateDoc(payment);
+    return this.db.updateDoc(payment);
   }
 
   async delete(id: string): Promise<Payment> {
-    return await this.db.deleteDoc(id);
+    return this.db.deleteDoc(id);
   }
 }
