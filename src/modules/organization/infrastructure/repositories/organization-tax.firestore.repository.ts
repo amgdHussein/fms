@@ -25,14 +25,14 @@ export class OrganizationTaxFirestoreRepository implements IOrganizationTaxRepos
     return this.db.getDocs(filters, page, limit, order);
   }
 
-  async add(tax: Partial<OrganizationTax> & { userId: string }): Promise<OrganizationTax> {
+  async add(tax: OrganizationTax & { userId: string; id: string }): Promise<OrganizationTax> {
     // Initiate some fields
     tax.createdBy = this.authService.currentUser.uid;
     tax.createdAt = Date.now();
     tax.updatedBy = this.authService.currentUser.uid;
     tax.updatedAt = Date.now();
 
-    return this.db.addDoc(tax);
+    return this.db.setDoc(tax); //TODO: I MAKE THIS SET
   }
 
   async update(tax: Partial<OrganizationTax> & { id: string }): Promise<OrganizationTax> {

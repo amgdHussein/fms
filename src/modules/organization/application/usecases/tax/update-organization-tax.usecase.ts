@@ -16,7 +16,8 @@ export class UpdateOrganizationTax implements Usecase<OrganizationTax> {
   async execute(tax: Partial<OrganizationTax> & { id: string; authority: Authority }): Promise<OrganizationTax> {
     const existingTax = await this.orgTaxService.getTaxByTaxIdNumber(tax.taxIdNo, tax.authority);
 
-    if (existingTax) {
+    //TODO: Check if this is the correct way to check for existing tax
+    if (existingTax && existingTax.id !== tax.id) {
       throw new BadRequestException(`Organization with tax id ${tax.taxIdNo} already exists!`);
     }
 

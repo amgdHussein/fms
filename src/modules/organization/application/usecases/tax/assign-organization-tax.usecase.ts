@@ -14,7 +14,11 @@ export class AssignOrganizationTax implements Usecase<OrganizationTax> {
   ) {}
 
   async execute(tax: Partial<OrganizationTax> & { organizationId: string; authority: Authority }): Promise<OrganizationTax> {
-    const existingTax = await this.orgTaxService.getTaxByTaxIdNumber(tax.taxIdNo, tax.authority);
+    const existingTax = await this.orgTaxService.getTaxByTaxIdNumber(tax.taxIdNo, tax.authority).catch(() => {
+      console.log('loggggggg catch');
+
+      return null; // TODO: BECAUSE IT'S BLOCK THE FRONT
+    });
 
     if (existingTax) {
       throw new BadRequestException(`Organization with tax id ${tax.taxIdNo} already exists!`);

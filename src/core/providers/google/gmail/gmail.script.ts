@@ -1,10 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
-import { DateTime } from 'luxon';
-
 import { GMAIL_PROVIDER, REDIS_PROVIDER, SUPPORT_EMAIL } from '../../../constants';
 import { RedisService } from '../../redis';
 
+import * as moment from 'moment-timezone';
 import { GmailService } from './gmail.service';
 import { Mail, SenderType } from './mail.entity';
 
@@ -28,7 +27,7 @@ export class GmailScripts {
     const failedMailsCount = (await this.redis.get<number>('mail-fails-count')) || 0;
 
     // Get the current date
-    const now = DateTime.now().toFormat('dd MMMM yyyy');
+    const now = moment().format('dd MMMM yyyy');
 
     const data: Mail = {
       recipient: SUPPORT_EMAIL,
