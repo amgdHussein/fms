@@ -5,6 +5,7 @@ export enum ProductStatus {
   ACTIVE = 0,
   DRAFT = 1,
   DELETE = 2,
+  INACTIVE = 3,
 }
 
 // TODO: EACH ORGANIZATION TEAM-MEMBERS CAN ADD SPECIFIC CATEGORIES INTO DATABASE AS ORGANIZATION PREFERENCES TO SELECTED ITEMS IN THE UI
@@ -28,7 +29,7 @@ export interface Product {
 
   authority?: Authority; // Tax authority data for that organization
   codeId?: string; // code id in the db
-  // code: string;
+  code?: string;
   taxes?: ProductTax[]; // To apply each kind of tax-type on the invoice items
   taxDiscount?: Discount; // Value not rate (value that discounted from item before calc line amount)
   profitOrLoss?: number; // The difference in value when selling goods already taxed, indicating profit or loss, e.g., +200 EGP if sold for more, -100 EGP if sold for less

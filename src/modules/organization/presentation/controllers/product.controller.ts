@@ -1,11 +1,17 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AddProduct, DeleteProduct, GetProduct, GetProducts, UpdateProduct } from '../../application';
+import { AddProduct, AddProducts, DeleteProduct, GetProduct, GetProducts, UpdateProduct, UpdateProducts } from '../../application';
 import { PRODUCT_USECASE_PROVIDERS } from '../../domain';
 
 import { DraftProduct } from '../../application/usecases/product/draft-product.usecase';
-import { AddOrganizationProductDto, OrganizationProductDto, UpdateOrganizationProductDto } from '../dtos';
+import {
+  AddOrganizationProductDto,
+  AddOrganizationProductsDto,
+  OrganizationProductDto,
+  UpdateOrganizationProductDto,
+  UpdateOrganizationProductsDto,
+} from '../dtos';
 
 @ApiTags('Products')
 @Controller()
@@ -17,11 +23,17 @@ export class OrganizationProductController {
     @Inject(PRODUCT_USECASE_PROVIDERS.ADD_PRODUCT)
     private readonly addProductUsecase: AddProduct,
 
+    @Inject(PRODUCT_USECASE_PROVIDERS.ADD_PRODUCTS)
+    private readonly addProductsUsecase: AddProducts,
+
     @Inject(PRODUCT_USECASE_PROVIDERS.DRAFT_PRODUCT)
     private readonly draftProductUsecase: DraftProduct,
 
     @Inject(PRODUCT_USECASE_PROVIDERS.UPDATE_PRODUCT)
     private readonly updateProductUsecase: UpdateProduct,
+
+    @Inject(PRODUCT_USECASE_PROVIDERS.UPDATE_PRODUCTS)
+    private readonly updateProductsUsecase: UpdateProducts,
 
     @Inject(PRODUCT_USECASE_PROVIDERS.DELETE_PRODUCT)
     private readonly deleteProductUsecase: DeleteProduct,
@@ -54,7 +66,7 @@ export class OrganizationProductController {
     return this.getProductUsecase.execute(productId, organizationId);
   }
 
-  //TODO: ADD FILTERS
+  //TODO: ADD FILTERS AND PAGINATION
   @Get('organizations/:organizationId/products')
   @ApiOperation({ summary: 'Retrieve all products for a specific organization.' })
   @ApiParam({
@@ -92,22 +104,6 @@ export class OrganizationProductController {
   })
   async addProduct(@Param('organizationId') organizationId: string, @Body() dto: AddOrganizationProductDto): Promise<OrganizationProductDto> {
     return this.addProductUsecase.execute({ ...dto, organizationId });
-  }
-
-  //TODO: IMPLEMENT
-  @Post('organizations/:organizationId/products')
-  @ApiOperation({ summary: 'Add multiple Products in a batch.' })
-  @ApiBody({
-    // type: AddClientsDto,
-    // required: true,
-    // description: 'Array of Clients to be added to the database.',
-  })
-  @ApiResponse({
-    // type: [ClientDto],
-    // description: 'Returns a list of Clients that were recently added.',
-  })
-  addProducts(@Body() dto: any): any {
-    // return this.addClientsUsecase.execute(dto.clients);
   }
 
   @Post('organizations/:organizationId/products/draft')
@@ -187,5 +183,19 @@ export class OrganizationProductController {
   })
   async deleteProduct(@Param('organizationId') organizationId: string, @Param('productId') productId: string): Promise<OrganizationProductDto> {
     return this.deleteProductUsecase.execute(productId, organizationId);
+  }
+
+  //TODO: REVISE
+  @Post('organizations/:organizationId/products/add/bulk')
+  @ApiOperation({ summary: 'Add multiple Products in a batch.' })
+  async addProducts(@Param('organizationId') organizationId: string, @Body() dto: AddOrganizationProductsDto): Promise<OrganizationProductDto[]> {
+    return this.addProductsUsecase.execute(dto.products, organizationId);
+  }
+
+  //TODO: REVISE
+  @Put('organizations/:organizationId/products/add/bulk')
+  @ApiOperation({ summary: 'Add multiple Products in a batch.' })
+  async updateProducts(@Param('organizationId') organizationId: string, @Body() dto: UpdateOrganizationProductsDto): Promise<OrganizationProductDto[]> {
+    return this.updateProductsUsecase.execute(dto.products, organizationId);
   }
 }

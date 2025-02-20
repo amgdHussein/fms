@@ -5,6 +5,7 @@ import {
   AddBranches,
   AddOrganization,
   AddProduct,
+  AddProducts,
   AssignOrganizationTax,
   DeleteBillingAccount,
   DeleteBranch,
@@ -27,6 +28,7 @@ import {
   UpdateOrganizationPreferences,
   UpdateOrganizationTax,
   UpdateProduct,
+  UpdateProducts,
   ValidateAuthorityTaxNumber,
 } from './application';
 import { DraftProduct } from './application/usecases/product/draft-product.usecase';
@@ -138,6 +140,10 @@ const productsUsecases = [
     useClass: AddProduct,
   },
   {
+    provide: PRODUCT_USECASE_PROVIDERS.ADD_PRODUCTS,
+    useClass: AddProducts,
+  },
+  {
     provide: PRODUCT_USECASE_PROVIDERS.DRAFT_PRODUCT,
     useClass: DraftProduct,
   },
@@ -148,6 +154,10 @@ const productsUsecases = [
   {
     provide: PRODUCT_USECASE_PROVIDERS.GET_PRODUCTS,
     useClass: GetProducts,
+  },
+  {
+    provide: PRODUCT_USECASE_PROVIDERS.UPDATE_PRODUCTS,
+    useClass: UpdateProducts,
   },
   {
     provide: PRODUCT_USECASE_PROVIDERS.DELETE_PRODUCT,
