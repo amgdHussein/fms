@@ -39,4 +39,5 @@ export interface Code {
   linkedCode?: string; // EGS Related Linked Code
   internationalCode?: string; // Global Product Classification (GPC) code
   authorityCodeType?: EtaCodeType; // EGS, GS1
+  requestId?: number; // (codeUsageRequestId) EGS Code Usage Request ID
 }

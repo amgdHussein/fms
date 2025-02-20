@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 
-import { AddCodes, DraftCode, GetCode, GetCodes, ImportCodes, IsCodeExistConstraint, ReuseCodes, UpdateCode } from './application';
+import { AddCodes, DraftCode, GetCode, GetCodes, ImportCodes, IsCodeExistConstraint, ReuseCodes, UpdateCode, UpdateRequestedCode } from './application';
 import { CODE_REPOSITORY_PROVIDER, CODE_SERVICE_PROVIDER, CODE_USECASE_PROVIDERS, ETA_CODE_USECASE_PROVIDERS } from './domain';
 import { CodeFirestoreRepository, CodeService } from './infrastructure';
 import { CodeController, EtaCodeController } from './presentation';
@@ -38,6 +38,10 @@ const etaCodeUsecases = [
   {
     provide: ETA_CODE_USECASE_PROVIDERS.REUSE_CODES,
     useClass: ReuseCodes,
+  },
+  {
+    provide: ETA_CODE_USECASE_PROVIDERS.UPDATE_REQUESTED_CODE,
+    useClass: UpdateRequestedCode,
   },
 ];
 

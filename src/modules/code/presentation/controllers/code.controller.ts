@@ -43,6 +43,7 @@ export class CodeController {
     return this.getCodeUsecase.execute(codeId, organizationId);
   }
 
+  //TODO: ADD FILTER AND PAGINATION
   @Get('organizations/:organizationId/codes')
   @ApiOperation({ summary: 'Retrieve all active Codes for a specific organization.' })
   @ApiParam({

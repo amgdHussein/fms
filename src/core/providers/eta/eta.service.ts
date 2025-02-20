@@ -43,7 +43,7 @@ export class EtaService {
       };
 
       const body = {
-        grant_type: 'client_credential',
+        grant_type: 'client_credentials',
         client_id: credential.clientId,
         client_secret: credential.clientSecret,
       };
@@ -90,7 +90,7 @@ export class EtaService {
       };
 
       const body = {
-        grant_type: 'client_credential',
+        grant_type: 'client_credentials',
         client_id: credential.clientId,
         client_secret: credential.clientSecret,
       };

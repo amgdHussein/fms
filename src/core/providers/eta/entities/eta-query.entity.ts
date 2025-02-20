@@ -4,8 +4,9 @@ import { IssuerType } from './issuer.entity';
 export class QueryCodes {
   PageSize: number;
   PageNumber: number;
-  TaxpayerRIN?: string;
+  TaxpayerRIN: string;
   CodeLookupValue?: string;
+  ItemCode?: string;
   ParentCodeLookupValue?: string;
   CodeID?: number;
   CodeName?: string;
@@ -16,7 +17,6 @@ export class QueryCodes {
   ActiveFrom?: string;
   ActiveTo?: string;
   CodeTypeLevelNumber?: number;
-  ItemCode?: string;
   ParentItemCode?: string;
   Active?: boolean;
   Status?: 'Submitted' | 'Approved' | 'Rejected';
