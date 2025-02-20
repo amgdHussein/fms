@@ -7,3 +7,4 @@ export { UpdateCode } from './update-code.usecase';
 
 // ? ETA use cases
 export { ReuseCodes } from './reuse-code.usecase';
+export { UpdateRequestedCode } from './update-requested-code.usecase';

@@ -12,4 +12,5 @@ export interface ICodeService {
   addCodes(codes: Partial<Code>[], authority: Authority, organizationId: string): Promise<Code[]>;
   updateCode(code: Partial<Code> & { id: string; authority: Authority; organizationId: string }): Promise<Code>;
   reuseCodes(codes: Partial<Code>[], authority: Authority, organizationId: string): Promise<Code[]>;
+  updateRequestedCode(code: Partial<Code> & { id: string; authority: Authority; organizationId: string; requestId: number }): Promise<Code>;
 }

@@ -1,3 +1,13 @@
+export interface CodeUsageQuery {
+  result: CodeUsage[];
+  metadata: MetaData; // Information about the results retrieved or results matching the query
+}
+
+export interface MetaData {
+  totalPages: number; // Total count of pages based on the supplied (or default) page size
+  totalCount: number; // Total count of matching objects
+}
+
 export interface CodeUsage {
   codeUsageRequestId: number; // Internal ID of the request submitted
   codeTypeName: string; // Catalog name that the code was registered in
@@ -36,13 +46,15 @@ export interface CodeUsage {
   codeNameSecondaryLang: string; // Code name in Arabic that was provided by the taxpayer
   codeDescriptionPrimaryLang: string; // Code description in english that was provided by the taxpayer
   codeDescriptionSecondaryLang: string; // Code description in Arabic that was provided by the taxpayer
+  descriptionPrimaryLang: string; // Code description in english that was provided by the taxpayer
+  descriptionSecondaryLang: string; // Code description in Arabic that was provided by the taxpayer
 
   codeTypeID: number; // Refer to code type ID either GS1 or EGS
   codeTypeLevelID: number; // Refer to code type level ID
   codeTypeLevelNamePrimaryLang: string; // Refer to code level name in English
   codeTypeLevelNameSecondaryLang: string; // Refer to code level name in Arabic
 
-  codeTypeNamePrimaryLang: string; // Refer to code type name in English
+  codeTypeNamePrimaryLang: 'EGS' | 'GS1'; // Refer to code type name in English
   codeTypeNameSecondaryLang: string; // Refer to code type name in Arabic
   linkedCode: string; // refer to the linked code
   requestReason: string; // Textual reason why the code is requested
