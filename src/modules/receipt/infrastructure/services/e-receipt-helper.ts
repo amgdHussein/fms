@@ -217,11 +217,18 @@ function generateReceiptUUID(receiptObject: any): string {
   return receiptUUID;
 }
 
+export function convertMillisToUTC(time: number): string {
+  const isoString = moment(time).utc().toISOString();
+
+  // Remove the last 4 characters (including the dot before milliseconds)
+  return isoString.slice(0, -5) + 'Z';
+}
+
 export function getMappedEtaReceipt(receipt: Receipt, codes: Code[], branch: Branch, credentials: EReceiptCredentials): EtaReceipt {
   // map invoice to eta invoice
   const mappedEReceipt: EtaReceipt = {
     header: {
-      dateTimeIssued: moment(receipt.issuedAt).utc().toISOString(),
+      dateTimeIssued: convertMillisToUTC(receipt.issuedAt),
       receiptNumber: receipt.receiptNumber,
       uuid: '',
       previousUUID: '',

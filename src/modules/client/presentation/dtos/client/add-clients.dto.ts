@@ -13,5 +13,5 @@ export class AddClientsDto {
     required: true,
     description: 'Array of clients to set.',
   })
-  clients: ClientDto[];
+  clients: ClientDto[]; //TODO: REVISE THIS, WHY DON'T USE ADD CLIENT DTO
 }

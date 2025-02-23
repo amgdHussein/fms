@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMaxSize, IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator';
 
 import { Type } from 'class-transformer';
 import { Receipt } from '../../domain/entities';
@@ -60,7 +60,7 @@ export class ReceiptDto implements Receipt {
   @Type(() => ReceiptIssuerDto)
   @ApiProperty({
     name: 'issuer',
-    type: () => ReceiptIssuerDto,
+    type: ReceiptIssuerDto,
     required: true,
     description: 'The receipt issuer details',
   })
@@ -71,7 +71,7 @@ export class ReceiptDto implements Receipt {
   @Type(() => ReceiptReceiverDto)
   @ApiProperty({
     name: 'receiver',
-    type: () => ReceiptReceiverDto,
+    type: ReceiptReceiverDto,
     required: true,
     description: 'The receipt receiver details',
   })
@@ -272,17 +272,6 @@ export class ReceiptDto implements Receipt {
     description: 'The timestamp of when the receipt was issued',
   })
   issuedAt: number;
-
-  @IsNotEmpty()
-  @IsBoolean()
-  @ApiProperty({
-    name: 'isProductionMode',
-    type: Boolean,
-    required: true,
-    example: true,
-    description: 'The database mode',
-  })
-  isProductionMode: boolean;
 
   @IsNotEmpty()
   @IsEnum(Authority)

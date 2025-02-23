@@ -96,7 +96,7 @@ export class ReceiptService implements IReceiptService {
 
     receipt.status = ReceiptStatus.ISSUED;
     receipt.taxStatus = response.acceptedDocuments?.length ? TaxInvoiceStatus.SUBMITTED : TaxInvoiceStatus.REJECTED;
-    receipt.uuid = response.acceptedDocuments[0]?.uuid ?? '';
+    receipt.uuid = response.acceptedDocuments[0]?.uuid ?? ''; // TODO: HANDLE THIS IN BETTER WAY WHEN NO ACCEPT DOCUMENTS RETURNED => TRY MAKE BUG IN ISSUEDATE AND TEST IT
     receipt.submissionUuid = response.submissionId ?? '';
     receipt.rejectedSubmission = response.rejectedDocuments?.length ? response.rejectedDocuments : {};
     receipt.errorReasons = response.rejectedDocuments?.length

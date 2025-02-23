@@ -83,7 +83,7 @@ export class ReceiptController {
     type: ReceiptDto,
     description: 'Receipt recently added.',
   })
-  async addReceipt(@Body() entity: AddReceiptDto): Promise<ReceiptDto> {
+  async addReceipt(@Body() entity: any): Promise<ReceiptDto> {
     return this.addReceiptUsecase.execute({
       id: '',
       ...entity,
