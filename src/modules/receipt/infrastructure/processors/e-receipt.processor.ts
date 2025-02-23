@@ -1,12 +1,12 @@
 import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { HttpException, HttpStatus, Inject, Logger } from '@nestjs/common';
 import { Job } from 'bull';
-import moment from 'moment';
 import { ETA_E_RECEIPT_PROVIDER } from '../../../../core/constants';
 import { EtaEReceiptService } from '../../../../core/providers';
 import { ETA_RECEIPT_QUEUE_PROVIDER, RECEIPT_SERVICE_PROVIDER } from '../../domain';
 import { ReceiptStatus, TaxInvoiceStatus } from '../../domain/entities/receipt.entity';
 import { ReceiptService } from '../services';
+import { convertMillisToUTC } from '../services/e-receipt-helper';
 
 @Processor(ETA_RECEIPT_QUEUE_PROVIDER)
 export class EtaEReceiptProcessor {
@@ -67,9 +67,12 @@ export class EtaEReceiptProcessor {
       await this.receiptService
         .updateReceipt({
           ...receipt,
+
+          updatedBy: job.data.updatedBy,
+
           status: etaInvoiceDetails.status === 'Valid' ? ReceiptStatus.SENT : ReceiptStatus.ISSUED,
           taxStatus: etaInvoiceDetails.status === 'Valid' ? TaxInvoiceStatus.ACCEPTED : TaxInvoiceStatus.REJECTED,
-          url: `${process.env.ETA_PORTAL_URL}/receipts/search/${etaInvoiceDetails.receipts[0].uuid}/share/${moment(receipt.issuedAt).utc().toISOString()}`, //TODO: TEST THIS DATE IN MOMENT
+          url: `${process.env.ETA_PORTAL_URL}/receipts/search/${etaInvoiceDetails.receipts[0].uuid}/share/${convertMillisToUTC(receipt.issuedAt)}`, //TODO: TEST THIS DATE IN MOMENT
 
           //TODO: UNCOMMENT WHEN YOU HAVE INVALID CASE in eta
           errorReasons: etaInvoiceDetails.receipts[0].errors?.length

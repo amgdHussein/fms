@@ -59,6 +59,10 @@ const providers = [
     provide: CODE_SERVICE_PROVIDER,
     useClass: CodeService,
   },
+  // {
+  //   provide: ETA_E_RECEIPT_PROVIDER,
+  //   useClass: EtaEReceiptService,
+  // },
   {
     provide: ETA_RECEIPT_PROCESSOR_PROVIDER,
     useClass: EtaEReceiptProcessor,

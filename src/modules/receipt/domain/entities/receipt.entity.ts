@@ -34,7 +34,6 @@ export interface Receipt {
   reference?: string; // A reference id list associated with the old receipts incase debit or credit (team-member manually select them)
 
   issuedAt: number; // Timestamp when the receipt was issued
-  isProductionMode: boolean;
 
   createdBy?: string; // User who created the receipt
   createdAt?: number; // Timestamp when the receipt was created
