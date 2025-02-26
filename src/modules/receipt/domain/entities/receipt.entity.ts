@@ -1,5 +1,7 @@
-import { Phone } from '../../../../core/models';
-import { IssuerType } from '../../../../core/providers';
+import { Authority } from '../../../../core/enums';
+import { Currency, Discount, Issuer, Receiver } from '../../../../core/models';
+
+import { ProductTax } from '../../../organization/domain';
 
 export interface Receipt {
   id: string;
@@ -7,8 +9,8 @@ export interface Receipt {
   branchId: string; // Organization branch ID
   clientId: string; // ID of the client
 
-  issuer: ReceiptIssuer; // The user who issued the receipt
-  receiver: ReceiptReceiver; // The user who issued the receipt
+  issuer: Issuer; // The user who issued the receipt
+  receiver: Receiver; // The user who issued the receipt
 
   receiptNumber: string; // Next incrementing number for the receipt (organization specific)
 
@@ -16,7 +18,7 @@ export interface Receipt {
   // form: InvoiceForm; // Form/type of the receipt (e.g., credit, debit)
   direction: ReceiptDirection;
 
-  currency: ReceiptCurrency; // Currency of the receipt
+  currency: Currency; // Currency of the receipt
   status: ReceiptStatus; // Status of the receipt
   // paymentStatus: PaymentStatus; // Payment status of the receipt
 
@@ -52,35 +54,6 @@ export interface Receipt {
   uuidReference?: string; // uuid references for the receipt
 }
 
-export enum Authority {
-  ETA = 'eta',
-}
-
-export interface ReceiptIssuer {
-  name: string;
-  taxId: string;
-  address: ReceiverAddress;
-  email?: string;
-  phone?: Phone;
-}
-
-export interface ReceiverAddress {
-  country: string; // Country name
-  street: string; // Primary street address
-  city?: string; // City name
-  governorate?: string; // State or province or governorate name
-  postalCode?: string; // Postal or ZIP code
-}
-
-export interface ReceiptReceiver {
-  name: string;
-  taxId: string;
-  address: ReceiverAddress;
-  type: IssuerType;
-  email?: string;
-  phone?: Phone;
-}
-
 export interface ReceiptItem {
   id: string;
   organizationId: string; // Unique ID for the organization
@@ -98,27 +71,20 @@ export interface ReceiptItem {
   unitPrice: number; // Price per unit of the product
   unitType: string; // Type of the unit (car, kilogram, man, ...)
   quantity: number; // Quantity of the item
-  discount?: NewDiscount; // Discount applied to the product
+  discount?: Discount; // Discount applied to the product
 
   grossAmount: number; // ? amount // The total cost of all products before taxes and discounts
   netAmount: number; // ? netTotal // The total cost after discounts but before taxes
   totalAmount: number; // The total cost after discounts and taxes
 
-  taxes?: ItemTax[]; // To apply each kind of tax-type on the receipt items
-  taxDiscount?: NewDiscount; // Value not rate (value that discounted from item before calc line amount)
+  taxes?: ProductTax[]; // To apply each kind of tax-type on the receipt items
+  taxDiscount?: Discount; // Value not rate (value that discounted from item before calc line amount)
   profitOrLoss?: number; // The difference in value when selling goods already taxed, indicating profit or loss, e.g., +200 EGP if sold for more, -100 EGP if sold for less
 
   createdBy: string; // User who created the product
   createdAt: number; // Timestamp when the product was created
   updatedBy: string; // User who last updated the product
   updatedAt: number; // Timestamp when the product was last updated
-}
-
-export interface ItemTax {
-  taxType: string;
-  subType?: string;
-  type: 'fixed' | 'percentage';
-  value: number;
 }
 
 export enum ReceiptType {
@@ -162,11 +128,6 @@ export enum ReceiptDirection {
   SUBMITTED = 'submitted',
 }
 
-export interface ReceiptCurrency {
-  code: string;
-  rate: number;
-}
-
 export enum ReceiptStatus {
   DRAFT = 0,
   ISSUED = 1,
@@ -189,9 +150,4 @@ export enum TaxInvoiceStatus {
   REJECTED = 6,
   ACCEPTED = 7,
   CANCELLED = 8,
-}
-
-export interface NewDiscount {
-  type: 'fixed' | 'percentage';
-  value: number;
 }

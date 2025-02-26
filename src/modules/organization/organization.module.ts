@@ -290,6 +290,10 @@ const organizationBillingAccountUsecases = [
       provide: ORGANIZATION_TAX_SERVICE_PROVIDER,
       useClass: OrganizationTaxService,
     },
+    {
+      provide: BILLING_ACCOUNT_SERVICE_PROVIDER,
+      useClass: BillingAccountService,
+    },
   ],
 })
 export class OrganizationModule {}

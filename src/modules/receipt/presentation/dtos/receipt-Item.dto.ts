@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { NewDiscount, ReceiptItem } from '../../domain/entities/receipt.entity';
-import { ItemTaxDto } from './item-tax.dto';
-import { NewDiscountDto } from './new-discount.dto';
+
+import { DiscountDto } from '../../../../core/dtos';
+import { Discount } from '../../../../core/models';
+import { ProductTax } from '../../../organization/domain';
+import { ReceiptItem } from '../../domain/entities';
 
 export class ReceiptItemDto implements ReceiptItem {
   @IsString()
@@ -166,10 +168,10 @@ export class ReceiptItemDto implements ReceiptItem {
   @IsOptional()
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => NewDiscountDto)
+  @Type(() => DiscountDto)
   @ApiProperty({
     name: 'discount',
-    type: () => NewDiscountDto,
+    type: () => DiscountDto,
     required: false,
     // example: {
     //   type: 'percentage',
@@ -177,7 +179,7 @@ export class ReceiptItemDto implements ReceiptItem {
     // },
     description: 'Receipt discount',
   })
-  discount?: NewDiscountDto;
+  discount?: DiscountDto;
 
   @IsNotEmpty()
   @IsNumber()
@@ -214,21 +216,21 @@ export class ReceiptItemDto implements ReceiptItem {
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ItemTaxDto)
-  taxes?: ItemTaxDto[];
+  // @ValidateNested({ each: true })
+  // @Type(() => ItemTaxDto)
+  taxes?: ProductTax[];
 
   @IsOptional()
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => NewDiscountDto)
+  @Type(() => DiscountDto)
   @ApiProperty({
     name: 'discount',
-    type: () => NewDiscountDto,
+    type: () => DiscountDto,
     required: false,
     description: 'Receipt discount',
   })
-  taxDiscount?: NewDiscount;
+  taxDiscount?: Discount;
 
   @IsOptional()
   @IsNotEmpty()

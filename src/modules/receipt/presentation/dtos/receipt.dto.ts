@@ -1,36 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { ArrayMaxSize, IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator';
 
-import { Type } from 'class-transformer';
-import { Receipt } from '../../domain/entities';
-import { Authority, ReceiptCurrency, ReceiptDirection, ReceiptStatus, ReceiptType, TaxInvoiceStatus } from '../../domain/entities/receipt.entity';
+import { CurrencyDto, IssuerDto, ReceiverDto } from '../../../../core/dtos';
+import { Authority } from '../../../../core/enums';
+
+import { Receipt, ReceiptDirection, ReceiptStatus, ReceiptType, TaxInvoiceStatus } from '../../domain/entities';
 import { ReceiptItemDto } from './receipt-Item.dto';
-import { ReceiptIssuerDto } from './receipt-issuer.dto';
-import { ReceiptReceiverDto } from './receipt-receiver.dto';
-
-export class ReceiptCurrencyDto implements ReceiptCurrency {
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'code',
-    type: String,
-    required: true,
-    example: 'USD',
-    description: 'Currency code used from ISO 4217.',
-  })
-  code: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'rate',
-    type: Number,
-    required: true,
-    example: '50',
-    description: 'Exchange rate of the Egyptian bank on the day of invoicing used to convert currency sold to the value of organization primary currency',
-  })
-  rate: number;
-}
 
 export class ReceiptDto implements Receipt {
   @IsNotEmpty()
@@ -57,25 +33,25 @@ export class ReceiptDto implements Receipt {
 
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => ReceiptIssuerDto)
+  @Type(() => IssuerDto)
   @ApiProperty({
     name: 'issuer',
-    type: ReceiptIssuerDto,
+    type: IssuerDto,
     required: true,
     description: 'The receipt issuer details',
   })
-  issuer: ReceiptIssuerDto;
+  issuer: IssuerDto;
 
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => ReceiptReceiverDto)
+  @Type(() => ReceiverDto)
   @ApiProperty({
     name: 'receiver',
-    type: ReceiptReceiverDto,
+    type: ReceiverDto,
     required: true,
     description: 'The receipt receiver details',
   })
-  receiver: ReceiptReceiverDto;
+  receiver: ReceiverDto;
 
   @IsString()
   @IsNotEmpty()
@@ -134,10 +110,10 @@ export class ReceiptDto implements Receipt {
 
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => ReceiptCurrencyDto)
+  @Type(() => CurrencyDto)
   @ApiProperty({
     name: 'currency',
-    type: () => ReceiptCurrencyDto,
+    type: () => CurrencyDto,
     required: true,
     example: {
       code: 'USD',
@@ -145,7 +121,7 @@ export class ReceiptDto implements Receipt {
     },
     description: 'The invoice currency details',
   })
-  currency: ReceiptCurrencyDto;
+  currency: CurrencyDto;
 
   @IsNotEmpty()
   @IsEnum(ReceiptStatus)

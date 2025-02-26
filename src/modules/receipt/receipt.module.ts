@@ -1,5 +1,5 @@
 import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ReceiptController } from '.';
 import { AddReceipt, AddReceipts, DeleteReceipt, GetReceipt, QueryReceipts, UpdateReceipt } from './application';
 import {
@@ -69,6 +69,7 @@ const providers = [
   },
 ];
 
+@Global()
 @Module({
   imports: [
     BullModule.registerQueue({

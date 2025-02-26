@@ -6,7 +6,7 @@ export class BillingAccountDto implements BillingAccount {
   id: string;
   organizationId: string;
   gateway: PaymentGateway;
-  credentials: Record<string, string>;
+  credentials: string;
   createdBy: string;
   createdAt: number;
   updatedBy: string;

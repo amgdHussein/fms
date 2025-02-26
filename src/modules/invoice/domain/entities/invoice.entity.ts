@@ -1,6 +1,5 @@
 import { Authority } from '../../../../core/enums';
-import { Address, Currency, Phone, Photo } from '../../../../core/models';
-import { IssuerType } from '../../../../core/providers';
+import { Currency, Issuer, Photo, Receiver } from '../../../../core/models';
 
 import { PaymentStatus } from '../../../payment/domain';
 
@@ -18,7 +17,7 @@ export interface Invoice {
   profileId?: string; // ID of the client profile
   branchId?: string; // Organization branch ID
 
-  sender: Sender; // The user who issued the receipt
+  issuer: Issuer; // The user who issued the receipt
   receiver: Receiver; // The user who issued the receipt
 
   invoiceNumber: string; // Next incrementing number for the invoice (organization specific)
@@ -67,22 +66,4 @@ export interface TaxInvoice extends Invoice {
   deliveryAt?: number; // ? serviceDeliveryDate // Tax invoice delivery date with only export invoices
   uuidReferences: string[]; // List of uuid references for the invoice
   reason?: string;
-}
-
-export interface Sender {
-  name: string;
-  address: Address;
-  taxId?: string;
-  commercialRegistryNo?: string;
-  email?: string;
-  phone?: Phone;
-}
-
-export interface Receiver {
-  name: string;
-  address: Address;
-  taxId?: string;
-  type?: IssuerType;
-  email?: string;
-  phone?: Phone;
 }

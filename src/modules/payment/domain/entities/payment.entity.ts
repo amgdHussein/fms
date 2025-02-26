@@ -1,4 +1,9 @@
+import { PaymentGateway } from '../../../../core/enums';
 import { Currency } from '../../../../core/models';
+
+import { Invoice } from '../../../invoice/domain';
+
+import { Receipt } from '../../../receipt';
 import { PaymentMethod } from './payment-method.enum';
 
 export interface Payment {
@@ -9,8 +14,8 @@ export interface Payment {
   clientName: string;
 
   entityType: PaymentEntityType;
-  entityId: string;
-  entityNumber: string;
+  entityIds: string[]; // List of invoices/receipts/subscriptions IDs in the db
+  entityNumbers: string[]; // List of invoices/receipts/subscriptions numbers in the db
 
   type: PaymentType;
   status: PaymentStatus;
@@ -20,7 +25,8 @@ export interface Payment {
   transactionId: string; // Internal id for the transactions table
 
   method: PaymentMethod;
-  referenceId: string; // Reference ID from the payment gateway
+  gateway?: PaymentGateway;
+  referenceId?: string; // Reference ID from the payment gateway
 
   processedAt: number; // Timestamp when the payment was processed
   paidAt: number; // Timestamp when the payment was paid.
@@ -32,6 +38,8 @@ export interface Payment {
   updatedBy?: string;
   updatedAt?: number;
 }
+
+export type PaymentEntity = Invoice | Receipt;
 
 export enum PaymentEntityType {
   INVOICE,

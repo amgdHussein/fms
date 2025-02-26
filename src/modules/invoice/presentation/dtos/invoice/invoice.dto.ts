@@ -1,8 +1,8 @@
-import { Address, Currency } from '../../../../../core/models';
+import { Address, Currency, Issuer, Receiver } from '../../../../../core/models';
+
 import { PaymentStatus } from '../../../../payment/domain';
 
 import { Invoice, InvoiceDirection, InvoiceForm, InvoiceStatus, InvoiceType, Item } from '../../../domain';
-import { Receiver, Sender } from '../../../domain/entities/invoice.entity';
 
 // TODO: FILL THE DTO
 export class InvoiceDto implements Invoice {
@@ -13,7 +13,7 @@ export class InvoiceDto implements Invoice {
   branchId?: string;
   profileId?: string;
 
-  sender: Sender; // The user who issued the receipt
+  issuer: Issuer; // The user who issued the receipt
   receiver: Receiver; // The user who issued the receipt
 
   invoiceNumber: string;

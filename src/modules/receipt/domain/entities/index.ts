@@ -1,1 +1,1 @@
-export { Receipt } from './receipt.entity';
+export { Receipt, ReceiptDirection, ReceiptItem, ReceiptStatus, ReceiptType, TaxInvoiceStatus } from './receipt.entity';

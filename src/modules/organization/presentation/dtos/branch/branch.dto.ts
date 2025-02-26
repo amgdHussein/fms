@@ -11,7 +11,7 @@ export class BranchDto implements Branch {
   street: string;
   city: string;
   country: string;
-  governorate: string;
+  governorate?: string;
   postalCode?: string;
 
   buildingNumber: string;

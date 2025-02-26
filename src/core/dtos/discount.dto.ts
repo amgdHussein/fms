@@ -1,30 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { ItemTax } from '../../domain/entities/receipt.entity';
+import { Discount } from '../models';
 
-export class ItemTaxDto implements ItemTax {
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({
-    name: 'taxType',
-    type: String,
-    required: true,
-    example: 'T2',
-    description: 'Tax type listed in the tax authority',
-  })
-  taxType: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({
-    name: 'subType',
-    type: String,
-    required: true,
-    example: 'V002',
-    description: 'Tax sub type listed in the tax authority',
-  })
-  subType?: string;
-
+export class DiscountDto implements Discount {
   @ApiProperty({
     name: 'type',
     type: Number,
