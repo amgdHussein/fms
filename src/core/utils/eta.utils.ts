@@ -1,6 +1,6 @@
 import * as moment from 'moment-timezone';
 
-import { CurrencyCode } from '../common';
+import { CurrencyCode } from '../enums';
 
 import { ETA_TAX_SUB_TYPES_WITH_TYPE } from '../providers/eta/constants';
 import { AddEtaInvoice, EtaInvoiceLine, GetInvoices, Issuer, IssuerType, QueryCodes, TaxableItems } from '../providers/eta/entities';

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Usecase } from '../../../../core/interfaces/usecase.interface';
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/queries';
 import { IPaymentService, Payment, PAYMENT_SERVICE_PROVIDER } from '../../domain';
 
 @Injectable()

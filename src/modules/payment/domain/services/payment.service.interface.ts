@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/queries';
 import { Invoice } from '../../../invoice/domain';
 import { Payment } from '../entities';
 

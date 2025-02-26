@@ -1,4 +1,5 @@
-import { Authority, Discount } from '../../../../../core/common';
+import { Authority } from '../../../../../core/enums';
+import { Discount } from '../../../../../core/models';
 
 import { Product, ProductStatus, ProductTax } from '../../../domain';
 

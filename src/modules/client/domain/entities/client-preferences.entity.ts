@@ -1,4 +1,4 @@
-import { CurrencyCode } from '../../../../core/common';
+import { CurrencyCode } from '../../../../core/enums';
 
 export interface ClientPreferences {
   id: string;

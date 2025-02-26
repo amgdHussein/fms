@@ -1,4 +1,5 @@
-import { CountryCode, Identification, Phone, Photo } from '../../../../core/common';
+import { CountryCode } from '../../../../core/enums';
+import { Identification, Phone, Photo } from '../../../../core/models';
 
 import { UserRole } from './user-role.enum';
 import { UserStatus } from './user-status.enum';

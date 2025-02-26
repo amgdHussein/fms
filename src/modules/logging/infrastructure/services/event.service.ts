@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { QueryFilter, QueryOrder } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
 import { Event, EVENT_REPOSITORY_PROVIDER, EventDetails, EventStatus, EventTask, IEventRepository, IEventService } from '../../domain';
 

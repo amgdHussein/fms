@@ -1,4 +1,4 @@
-import { Address } from '../../../../core/common';
+import { Address } from '../../../../core/models';
 import { EtaCredentials } from '../../../../core/providers';
 
 export interface Branch extends Address {

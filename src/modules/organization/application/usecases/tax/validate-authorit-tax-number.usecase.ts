@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { Usecase } from '../../../../../core/interfaces';
 
-import { Authority } from '../../../../../core/common';
+import { Authority } from '../../../../../core/enums';
 import { IOrganizationTaxService, ORGANIZATION_TAX_SERVICE_PROVIDER, OrganizationTax } from '../../../domain';
 
 @Injectable()

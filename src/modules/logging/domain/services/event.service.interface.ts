@@ -1,4 +1,4 @@
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter } from '../../../../core/queries';
 import { Event, EventStatus, EventTask } from '../entities';
 
 export type EventDetails = Record<string, string | number | object>;

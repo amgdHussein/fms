@@ -1,7 +1,8 @@
-import { Address, Authority, Currency, Phone } from '../../../../core/common';
+import { Authority } from '../../../../core/enums';
+import { Address, Currency, Phone } from '../../../../core/models';
 import { IssuerType } from '../../../../core/providers';
 
-import { PaymentStatus } from '../../../payment/domain/entities';
+import { PaymentStatus } from '../../../payment/domain';
 
 import { InvoiceDirection } from './invoice-direction.enum';
 import { InvoiceForm } from './invoice-form.enum';

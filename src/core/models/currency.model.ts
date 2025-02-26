@@ -1,4 +1,4 @@
-import { CurrencyCode } from './currency.enum';
+import { CurrencyCode } from '../enums';
 
 export interface Currency {
   code: CurrencyCode;

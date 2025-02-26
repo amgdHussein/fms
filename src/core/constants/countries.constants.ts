@@ -1,4 +1,5 @@
-import { Country, CountryCode, CountryTimezone } from '../common';
+import { CountryCode, CountryTimezone } from '../enums';
+import { Country } from '../models';
 
 // TODO: FINSH THE US AND CA
 export const Countries: Country[] = [

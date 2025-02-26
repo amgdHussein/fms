@@ -1,4 +1,4 @@
-import { QueryResult } from '../models';
+import { QueryResult } from '../queries';
 
 export interface Usecase<T> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

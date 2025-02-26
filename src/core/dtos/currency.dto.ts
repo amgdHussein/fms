@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
-import { Currency, CurrencyCode } from '../common';
+
+import { CurrencyCode } from '../enums';
+import { Currency } from '../models';
 
 export class CurrencyDto implements Currency {
   @IsNotEmpty()

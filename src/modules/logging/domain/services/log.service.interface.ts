@@ -1,4 +1,4 @@
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter } from '../../../../core/queries';
 import { Log, LogStatus, LogTask } from '../entities';
 
 export type LogDetails = Record<string, string | number | object>;

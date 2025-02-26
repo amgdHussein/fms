@@ -1,4 +1,4 @@
-import { CountryTimezone, CurrencyCode } from '../../../../../core/common';
+import { CountryTimezone, CurrencyCode } from '../../../../../core/enums';
 import { OrganizationPreferences } from '../../../domain/entities';
 
 // TODO: FILL THE DTO

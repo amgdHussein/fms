@@ -1,4 +1,4 @@
-import { CurrencyCode } from '../../../../../core/common';
+import { CurrencyCode } from '../../../../../core/enums';
 import { ClientPreferences } from '../../../domain/entities';
 
 // TODO: FILL THE DTO

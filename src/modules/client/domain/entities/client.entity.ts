@@ -1,5 +1,7 @@
-import { Address, CurrencyCode, Phone } from '../../../../core/common';
+import { CurrencyCode } from '../../../../core/enums';
+import { Address, Phone } from '../../../../core/models';
 import { IssuerType } from '../../../../core/providers';
+
 import { ClientStatus } from './client-status.enum';
 
 export interface Client {

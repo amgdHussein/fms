@@ -1,5 +1,5 @@
 import { Repository } from '../../../../core/interfaces';
-import { QueryFilter, QueryOrder } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/queries';
 import { Submission } from '../entities';
 
 export interface IInvoiceSubmissionRepository extends Repository<Submission> {

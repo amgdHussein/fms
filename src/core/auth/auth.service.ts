@@ -4,8 +4,8 @@ import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import { UserRecord } from 'firebase-admin/lib/auth/user-record';
 import { ClsService } from 'nestjs-cls';
 
-import { Phone } from '../common';
 import { FIRE_AUTH_PROVIDER, GMAIL_PROVIDER, SUPPORT_EMAIL } from '../constants';
+import { Phone } from '../models';
 import { FireAuthService, GmailService, SenderType } from '../providers';
 
 @Injectable()

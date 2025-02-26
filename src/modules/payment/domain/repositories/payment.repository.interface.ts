@@ -1,6 +1,6 @@
 import { Repository } from '../../../../core/interfaces/repository.interface';
-import { QueryOrder } from '../../../../core/models';
-import { QueryFilter } from '../../../../core/models/query-param.model';
+import { QueryOrder } from '../../../../core/queries';
+import { QueryFilter } from '../../../../core/queries/query-param.model';
 import { Payment } from '../entities';
 
 export interface IPaymentRepository extends Repository<Payment> {

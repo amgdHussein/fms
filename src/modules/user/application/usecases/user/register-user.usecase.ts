@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { Usecase } from '../../../../../core/interfaces';
 
-import { Language } from '../../../../../core/common';
+import { Language } from '../../../../../core/enums';
 import { IUserPreferencesService, IUserService, User, USER_PREFERENCES_SERVICE_PROVIDER, USER_SERVICE_PROVIDER, UserRole } from '../../../domain';
 
 @Injectable()

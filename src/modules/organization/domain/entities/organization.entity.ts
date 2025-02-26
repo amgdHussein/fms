@@ -1,4 +1,5 @@
-import { Address, CurrencyCode, Phone, Photo } from '../../../../core/common';
+import { CurrencyCode } from '../../../../core/enums';
+import { Address, Phone, Photo } from '../../../../core/models';
 
 import { OrganizationIndustry } from './industry.enum';
 import { LegalStructure } from './legal-structure.enum';

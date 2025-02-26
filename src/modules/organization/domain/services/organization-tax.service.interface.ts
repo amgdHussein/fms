@@ -1,4 +1,4 @@
-import { Authority } from '../../../../core/common';
+import { Authority } from '../../../../core/enums';
 
 import { OrganizationTax } from '../entities';
 

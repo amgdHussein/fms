@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { QueryFilter, QueryOrder } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
 import { ILogRepository, ILogService, Log, LOG_REPOSITORY_PROVIDER, LogDetails, LogStatus, LogTask } from '../../domain';
 

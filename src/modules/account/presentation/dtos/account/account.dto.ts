@@ -1,4 +1,4 @@
-import { Phone } from '../../../../../core/common';
+import { Phone } from '../../../../../core/models';
 import { Account, AccountRole, AccountStatus, AccountType } from '../../../domain/entities';
 
 // TODO: FILL THE DTO

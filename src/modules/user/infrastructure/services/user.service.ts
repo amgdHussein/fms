@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { QueryFilter, QueryOrder } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
 import { IUserRepository, IUserService, User, USER_REPOSITORY_PROVIDER, UserRole, UserStatus } from '../../domain';
 

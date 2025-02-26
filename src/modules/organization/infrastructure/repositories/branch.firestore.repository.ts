@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { AuthService } from '../../../../core/auth';
 import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
-import { QueryFilter } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
+import { QueryFilter } from '../../../../core/queries';
 
 import { Branch, IBranchRepository } from '../../domain';
 

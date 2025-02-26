@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { Authority } from '../../../../../core/common';
+import { Authority } from '../../../../../core/enums';
 import { BadRequestException } from '../../../../../core/exceptions';
 import { Usecase } from '../../../../../core/interfaces';
 

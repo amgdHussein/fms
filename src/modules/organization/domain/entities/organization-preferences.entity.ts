@@ -1,4 +1,4 @@
-import { CountryTimezone, CurrencyCode } from '../../../../core/common';
+import { CountryTimezone, CurrencyCode } from '../../../../core/enums';
 
 export interface OrganizationPreferences {
   id: string; // Same as organization ID

@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { CLOUD_TASKS_PROVIDER } from '../../../../core/constants';
-import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { CloudTasksService } from '../../../../core/providers';
+import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
 import { IOrganizationRepository, IOrganizationService, Organization, ORGANIZATION_REPOSITORY_PROVIDER } from '../../domain';
 

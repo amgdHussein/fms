@@ -1,4 +1,4 @@
-import { QueryFilter, QueryOrder } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/queries';
 import { BillingAccount } from '../entities';
 
 export interface IBillingAccountService {

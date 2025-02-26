@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { Usecase } from '../../../../../core/interfaces';
 
-import { QueryFilter } from '../../../../../core/models';
+import { QueryFilter } from '../../../../../core/queries';
 import { ILogService, Log, LOG_SERVICE_PROVIDER } from '../../../domain';
 
 @Injectable()

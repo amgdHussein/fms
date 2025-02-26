@@ -1,4 +1,6 @@
-import { Authority, Discount } from '../../../../core/common';
+import { Authority } from '../../../../core/enums';
+import { Discount } from '../../../../core/models';
+
 import { ProductTax } from './product-tax.entity';
 
 export enum ProductStatus {

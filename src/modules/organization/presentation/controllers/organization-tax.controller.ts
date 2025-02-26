@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, Param, Post, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { Authority } from '../../../../core/common';
+import { Authority } from '../../../../core/enums';
 import { AssignOrganizationTax, GetOrganizationTax, UpdateOrganizationTax, ValidateAuthorityTaxNumber } from '../../application';
 import { ORGANIZATION_TAX_USECASE_PROVIDERS } from '../../domain';
 import { AssignOrganizationTaxDto, OrganizationTaxDto, UpdateOrganizationTaxDto } from '../dtos';

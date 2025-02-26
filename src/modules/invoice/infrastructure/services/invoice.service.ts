@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { QueryFilter, QueryOrder } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
-import { Action } from '../../../../core/common';
+import { Action } from '../../../../core/enums';
 import { CLIENT_REPOSITORY_PROVIDER, IClientRepository } from '../../../client/domain';
 import {
   IInvoiceItemRepository,

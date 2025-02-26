@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter } from '../../../../core/queries';
 import { IUserNotificationRepository, IUserNotificationService, Notification, NotificationStatus, USER_NOTIFICATION_REPOSITORY_PROVIDER } from '../../domain';
 
 @Injectable()

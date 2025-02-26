@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { Authority } from '../../../../core/common';
+import { Authority } from '../../../../core/enums';
 import { NotFoundException } from '../../../../core/exceptions';
 import { IOrganizationTaxRepository, IOrganizationTaxService, ORGANIZATION_TAX_REPOSITORY_PROVIDER, OrganizationTax } from '../../domain';
 

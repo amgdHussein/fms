@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
-import { QueryFilter } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
+import { QueryFilter } from '../../../../core/queries';
 
 import { Event, IEventRepository } from '../../domain';
 

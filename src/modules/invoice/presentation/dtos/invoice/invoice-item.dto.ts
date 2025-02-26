@@ -1,4 +1,4 @@
-import { Discount } from '../../../../../core/common';
+import { Discount } from '../../../../../core/models';
 import { ProductTax } from '../../../../organization/domain';
 import { Item } from '../../../domain';
 

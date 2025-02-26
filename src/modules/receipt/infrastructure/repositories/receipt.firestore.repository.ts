@@ -4,7 +4,7 @@ import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/
 import { FirestoreService } from '../../../../core/providers';
 
 import { AuthService } from '../../../../core/auth';
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/queries';
 import { IReceiptRepository, Receipt } from '../../domain';
 
 @Injectable()

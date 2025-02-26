@@ -1,4 +1,4 @@
-import { Authority } from '../../../../../core/common';
+import { Authority } from '../../../../../core/enums';
 import { AuthorityCodeStatus, Code, CodeStatus, CodeType } from '../../../domain';
 
 // TODO: FILL THE DTO

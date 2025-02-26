@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { QueryFilter, QueryOrder } from '../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../core/queries';
 import { BillingAccount, BRANCH_REPOSITORY_PROVIDER, IBillingAccountRepository, IBillingAccountService } from '../../domain';
 
 @Injectable()

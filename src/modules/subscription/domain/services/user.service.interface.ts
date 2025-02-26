@@ -1,4 +1,4 @@
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter } from '../../../../core/queries';
 
 import { Subscription } from '../entities';
 

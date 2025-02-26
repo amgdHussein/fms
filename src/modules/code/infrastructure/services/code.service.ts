@@ -2,10 +2,10 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import * as moment from 'moment-timezone';
 
-import { Authority } from '../../../../core/common';
 import { ETA_COMMON_PROVIDER } from '../../../../core/constants';
-import { QueryFilter } from '../../../../core/models';
+import { Authority } from '../../../../core/enums';
 import { EgsCodeUsage, EtaCodeType, EtaCommonService } from '../../../../core/providers/eta';
+import { QueryFilter } from '../../../../core/queries';
 import { Utils } from '../../../../core/utils';
 
 import { IOrganizationTaxService, ORGANIZATION_TAX_SERVICE_PROVIDER, OrganizationTax } from '../../../organization/domain';

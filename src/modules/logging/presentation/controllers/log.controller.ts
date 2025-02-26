@@ -1,7 +1,7 @@
 import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter } from '../../../../core/queries';
 import { GetLogs } from '../../application';
 import { LOG_USECASE_PROVIDERS } from '../../domain';
 import { LogDto } from '../dtos';

@@ -1,4 +1,4 @@
-import { Currency } from '../../../../core/common';
+import { Currency } from '../../../../core/models';
 
 import { InvoiceStatus } from '../../../invoice/domain';
 import { PaymentStatus } from '../../../payment/domain';

@@ -1,4 +1,5 @@
-import { Authority, Photo } from '../../../../../core/common';
+import { Authority } from '../../../../../core/enums';
+import { Photo } from '../../../../../core/models';
 import { EtaCredentials } from '../../../../../core/providers';
 
 import { ActivityCode, EtaFlag, OrganizationTax } from '../../../domain';

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { Usecase } from '../../../../../core/interfaces';
-import { QueryFilter, QueryOrder } from '../../../../../core/models';
+import { QueryFilter, QueryOrder } from '../../../../../core/queries';
 
 import { Client, CLIENT_SERVICE_PROVIDER, ClientStatus, IClientService } from '../../../domain';
 

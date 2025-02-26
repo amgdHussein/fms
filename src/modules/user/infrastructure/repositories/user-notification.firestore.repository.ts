@@ -4,7 +4,7 @@ import { AuthService } from '../../../../core/auth';
 import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
 import { FirestoreService } from '../../../../core/providers';
 
-import { QueryFilter } from '../../../../core/models';
+import { QueryFilter } from '../../../../core/queries';
 import { IUserNotificationRepository, Notification, User } from '../../domain';
 
 @Injectable()

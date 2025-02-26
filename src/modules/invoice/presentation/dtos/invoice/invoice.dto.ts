@@ -1,4 +1,4 @@
-import { Address, Currency } from '../../../../../core/common';
+import { Address, Currency } from '../../../../../core/models';
 import { PaymentStatus } from '../../../../payment/domain';
 
 import { Invoice, InvoiceDirection, InvoiceForm, InvoiceStatus, InvoiceType, Item } from '../../../domain';

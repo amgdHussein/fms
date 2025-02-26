@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
-import { QueryFilter, QueryOrder } from '../../../../core/models';
 import { FirestoreService } from '../../../../core/providers';
+import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
 import { IPaymentRepository, Payment } from '../../domain';
 

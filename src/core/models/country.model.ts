@@ -1,5 +1,4 @@
-import { CountryCode } from './country-code.enum';
-import { CountryTimezone } from './country-timezone.enum';
+import { CountryCode, CountryTimezone } from '../enums';
 
 export interface Country {
   id: number;

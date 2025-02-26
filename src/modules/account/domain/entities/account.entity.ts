@@ -1,4 +1,5 @@
-import { Phone } from '../../../../core/common';
+import { Phone } from '../../../../core/models';
+
 import { AccountRole } from './account-role.enum';
 import { AccountStatus } from './account-status.enum';
 import { AccountType } from './account-type.enum';

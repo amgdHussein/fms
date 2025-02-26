@@ -1,4 +1,4 @@
-import { Phone } from '../../../../core/common';
+import { Phone } from '../../../../core/models';
 import { IssuerType } from '../../../../core/providers';
 
 export interface Receipt {

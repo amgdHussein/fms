@@ -1,3 +1,7 @@
-export { QueryOrder, SortDirection } from './query-order.model';
-export { ParamType, QueryFilter, QueryOp } from './query-param.model';
-export { QueryResult } from './query-result.model';
+export { Address } from './address.model';
+export { Country } from './country.model';
+export { Currency } from './currency.model';
+export { Discount } from './discount.model';
+export { Identification } from './identification.model';
+export { Phone } from './phone.model';
+export { Photo } from './photo.model';

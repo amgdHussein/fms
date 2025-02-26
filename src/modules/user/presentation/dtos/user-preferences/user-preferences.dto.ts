@@ -1,4 +1,5 @@
-import { Language, Phone } from '../../../../../core/common';
+import { Language } from '../../../../../core/enums';
+import { Phone } from '../../../../../core/models';
 
 import { NotificationKey, NotificationMethod, UserPreferences } from '../../../domain';
 

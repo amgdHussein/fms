@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { google as GoogleProtos } from '@google-cloud/tasks/build/protos/protos';
 
-import { Authority } from '../../../../core/common';
 import { CLOUD_TASKS_PROVIDER, ETA_E_INVOICING_PROVIDER } from '../../../../core/constants';
+import { Authority } from '../../../../core/enums';
 import { AddEtaInvoice, CloudTasksService, EtaEInvoicingService } from '../../../../core/providers';
 import { Utils } from '../../../../core/utils';
 

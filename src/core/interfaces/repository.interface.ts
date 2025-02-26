@@ -1,4 +1,4 @@
-import { ParamType } from '../models';
+import { ParamType } from '../queries';
 
 export interface Repository<T> {
   get(id: string, ...args: ParamType[]): Promise<T>;

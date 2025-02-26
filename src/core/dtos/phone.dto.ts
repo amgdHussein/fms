@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
-import { Phone } from '../common';
+
+import { Phone } from '../models';
 
 export class PhoneDto implements Phone {
   @IsString()

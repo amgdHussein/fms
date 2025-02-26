@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { GetClientPreferences, UpdateClientPreferences } from '../../application';
@@ -16,17 +16,6 @@ export class ClientPreferencesController {
     @Inject(CLIENT_PREFERENCES_USECASE_PROVIDERS.UPDATE_CLIENT_PREFERENCES)
     private readonly updatePreferencesUsecase: UpdateClientPreferences,
   ) {}
-
-  //TODO: ADD CLIENT PREFERENCES FROM THE FRONTEND NOT FROM USECASE
-  @Post('preferences')
-  @ApiOperation({ summary: 'ADD client preferences by ID.' })
-  @ApiResponse({
-    // type: ClientPreferencesDto,
-    // description: 'Details of the client preferences with the specified ID.',
-  })
-  async addClientPreferences(): Promise<any> {
-    // return this.getPreferencesUsecase.execute(id);
-  }
 
   @Get(':id/preferences')
   @ApiOperation({ summary: 'Retrieve client preferences by ID.' })

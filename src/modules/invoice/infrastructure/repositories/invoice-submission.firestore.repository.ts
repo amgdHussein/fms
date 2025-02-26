@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { AuthService } from '../../../../core/auth';
-import { Authority } from '../../../../core/common';
 import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
-import { QueryFilter, QueryOrder } from '../../../../core/models';
+import { Authority } from '../../../../core/enums';
 import { FirestoreService } from '../../../../core/providers';
+import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
 import { IInvoiceSubmissionRepository, Invoice, Submission } from '../../domain';
 

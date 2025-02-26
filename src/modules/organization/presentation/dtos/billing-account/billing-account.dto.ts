@@ -1,4 +1,4 @@
-import { PaymentGateway } from '../../../../../core/common';
+import { PaymentGateway } from '../../../../../core/enums';
 import { BillingAccount } from '../../../domain';
 
 // TODO: FILL THE DTO

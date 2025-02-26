@@ -1,5 +1,5 @@
-import { Authority } from '../../../../core/common';
-import { QueryFilter } from '../../../../core/models';
+import { Authority } from '../../../../core/enums';
+import { QueryFilter } from '../../../../core/queries';
 
 import { Code } from '../entities';
 

@@ -1,4 +1,4 @@
-import { Authority } from '../../../../core/common';
+import { Authority } from '../../../../core/enums';
 import { EtaCodeType } from '../../../../core/providers';
 
 import { AuthorityCodeStatus } from './authority-code-status.enum';

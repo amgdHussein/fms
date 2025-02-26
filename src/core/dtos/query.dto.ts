@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
-import { ParamType, QueryFilter, QueryOp, QueryOrder, SortDirection } from '../models';
+import { ParamType, QueryFilter, QueryOp, QueryOrder, SortDirection } from '../queries';
 
 export class QueryOrderDto implements QueryOrder {
   @IsString()

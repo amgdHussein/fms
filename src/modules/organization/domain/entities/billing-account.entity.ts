@@ -1,4 +1,4 @@
-import { PaymentGateway } from '../../../../core/common';
+import { PaymentGateway } from '../../../../core/enums';
 
 export interface BillingAccount {
   id: string;

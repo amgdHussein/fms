@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, Param, Post, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Authority } from '../../../../core/common';
+import { Authority } from '../../../../core/enums';
 
 import { AddCodes, ImportCodes, ReuseCodes, UpdateCode } from '../../application';
 import { ETA_CODE_USECASE_PROVIDERS } from '../../domain';

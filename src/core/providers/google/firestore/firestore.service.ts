@@ -12,7 +12,7 @@ import {
 } from '@google-cloud/firestore';
 
 import { BadRequestException, InternalServerErrorException, NotFoundException } from '../../../exceptions';
-import { QueryFilter, QueryOp, QueryOrder, QueryResult } from '../../../models';
+import { QueryFilter, QueryOp, QueryOrder, QueryResult } from '../../../queries';
 import { Utils } from '../../../utils';
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { Currency } from '../../../../core/common';
+import { Currency } from '../../../../core/models';
 import { PaymentMethod } from './payment-method.enum';
 
 export interface Payment {

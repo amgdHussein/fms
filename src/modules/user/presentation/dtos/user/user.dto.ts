@@ -1,4 +1,5 @@
-import { CountryCode, Identification, Phone, Photo } from '../../../../../core/common';
+import { CountryCode } from '../../../../../core/enums';
+import { Identification, Phone, Photo } from '../../../../../core/models';
 import { User, UserRole, UserStatus } from '../../../domain/entities';
 
 // TODO: FILL THE DTO

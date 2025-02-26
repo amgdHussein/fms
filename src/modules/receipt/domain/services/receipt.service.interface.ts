@@ -1,4 +1,4 @@
-import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/models';
+import { QueryFilter, QueryOrder, QueryResult } from '../../../../core/queries';
 import { Receipt } from '../entities';
 
 export interface IReceiptService {
