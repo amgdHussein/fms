@@ -1,5 +1,5 @@
 import { Authority } from '../../../../core/enums';
-import { Address, Currency, Phone } from '../../../../core/models';
+import { Address, Currency, Phone, Photo } from '../../../../core/models';
 import { IssuerType } from '../../../../core/providers';
 
 import { PaymentStatus } from '../../../payment/domain';
@@ -49,6 +49,8 @@ export interface Invoice {
 
   issuedAt: number; // Timestamp when the invoice was issued
   dueAt?: number; // Timestamp when the invoice is due
+
+  logo?: Photo; // Logo of the organization
 
   createdBy: string; // User who created the invoice
   createdAt: number; // Timestamp when the invoice was created

@@ -37,7 +37,7 @@ export class InvoiceFirestoreRepository implements IInvoiceRepository<Invoice> {
 
   async update(invoice: Partial<Invoice> & { id: string }): Promise<Invoice> {
     // Update some fields
-    invoice.updatedBy = this.authService.currentUser.uid;
+    invoice.updatedBy = this.authService.currentUser?.uid ?? invoice.updatedBy;
     invoice.updatedAt = Date.now();
 
     return this.db.updateDoc(invoice);
