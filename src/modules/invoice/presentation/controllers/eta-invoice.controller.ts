@@ -32,8 +32,18 @@ export class EtaInvoiceController {
   @Post('invoices/eta/submit')
   // TODO: ADD AUTHORIZATION GUARD TO VERIFY THE TOKEN TO EMIT THE HANDLER
   async submitInvoices(@Body() dto: SubmitEtaInvoicesDto): Promise<void> {
-    const { invoices, organizationId } = dto;
-    return this.submitInvoicesUsecase.execute(invoices, organizationId);
+    console.log('dto', dto);
+
+    //TODO: CHECK FOR ENHANCEMENTS
+    const { invoices, organizationId, invoiceId } = dto;
+
+    const newInvoices = invoices.map(invoice => {
+      return {
+        ...invoice,
+        invoiceId,
+      };
+    });
+    return this.submitInvoicesUsecase.execute(newInvoices, organizationId);
   }
 
   @Post('invoices/eta/process')

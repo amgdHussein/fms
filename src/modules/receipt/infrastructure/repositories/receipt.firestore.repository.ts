@@ -50,7 +50,7 @@ export class ReceiptFirestoreRepository implements IReceiptRepository {
 
   async update(receipt: Partial<Receipt> & { id: string }): Promise<Receipt> {
     // Update some fields
-    console.log('this.authService.currentUser', this.authService.currentUser);
+    // console.log('this.authService.currentUser', this.authService.currentUser);
 
     receipt.updatedBy = this.authService.currentUser?.uid ?? receipt.updatedBy;
     receipt.updatedAt = Date.now();

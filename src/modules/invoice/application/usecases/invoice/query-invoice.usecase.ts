@@ -16,7 +16,7 @@ export class GetInvoices implements Usecase<Invoice> {
     order = { key: 'updatedAt', dir: 'desc' }; //TODO: WHAT IF THERE IS ALREADY AN ORDER IN THE FILTERS?
     return this.invoiceService.getInvoices(filters, page, limit, order).then(async invoices => {
       for (const invoice of invoices) {
-        invoice.items = await this.invoiceService.getInvoiceItems(invoice.id);
+        invoice.items = await this.invoiceService.getInvoiceItems(invoice.id); //TODO: CHECK FOR ENHANCEMENTS THIS AS ITS TOO SLOW +5000ms
       }
 
       return invoices;

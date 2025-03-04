@@ -51,6 +51,8 @@ export class EtaInvoicingProcessor {
       await this.invoiceRepo.update({
         id: invoiceId,
         taxStatus: etaInvoiceDetails.status === DocumentFullStatus.VALID ? TaxInvoiceStatus.ACCEPTED : TaxInvoiceStatus.REJECTED,
+        url: etaInvoiceDetails.publicUrl,
+        updatedBy: job.data.updatedBy,
         // TODO: UPDATE INVOICE WITH ETA DETAILS BY PICKING NEEDED FIELDS (etaInvoiceDetails)
       });
 

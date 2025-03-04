@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { QueryDto } from '../../../../core/dtos';
@@ -14,6 +14,7 @@ import {
 } from '../../application';
 import { INVOICE_USECASE_PROVIDERS } from '../../domain';
 import { AddInvoiceDto, InvoiceDto, InvoiceItemDto, UpdateInvoiceDto } from '../dtos';
+import { AuthenticationGuard } from '../../../../core/guards';
 
 @ApiTags('Invoices')
 @Controller()
@@ -75,6 +76,7 @@ export class InvoiceController {
   //   return await this.invoiceService.getInvoices(page, limit, filters, order);
   // }
 
+  @UseGuards(AuthenticationGuard)
   @Get('invoices/:id')
   @ApiOperation({ summary: 'Get invoice by id.' })
   @ApiParam({

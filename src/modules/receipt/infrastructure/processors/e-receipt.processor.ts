@@ -72,7 +72,7 @@ export class EtaEReceiptProcessor {
 
           status: etaInvoiceDetails.status === 'Valid' ? ReceiptStatus.SENT : ReceiptStatus.ISSUED,
           taxStatus: etaInvoiceDetails.status === 'Valid' ? TaxInvoiceStatus.ACCEPTED : TaxInvoiceStatus.REJECTED,
-          url: `${process.env.ETA_PORTAL_URL}/receipts/search/${etaInvoiceDetails.receipts[0].uuid}/share/${convertMillisToUTC(receipt.issuedAt)}`, //TODO: TEST THIS DATE IN MOMENT
+          url: `${process.env.ETA_PORTAL_URL}/receipts/search/${etaInvoiceDetails.receipts[0].uuid}/share/${convertMillisToUTC(receipt.issuedAt)}`,
 
           //TODO: UNCOMMENT WHEN YOU HAVE INVALID CASE in eta
           errorReasons: etaInvoiceDetails.receipts[0].errors?.length

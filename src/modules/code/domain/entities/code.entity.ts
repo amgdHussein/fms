@@ -10,7 +10,7 @@ export interface Code {
   organizationId: string; // Unique ID for the organization
 
   status: CodeStatus; // Status of the code
-  type: CodeType; // Type of the code
+  type: CodeType | null; // Type of the code
 
   authority: Authority; // Tax authority data for that code
   code: string; // Unique code (id) for the organization

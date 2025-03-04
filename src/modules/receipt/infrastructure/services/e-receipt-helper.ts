@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import { DateTime } from 'luxon';
 import { ETA_TAX_SUB_TYPES_WITH_TYPE, TAXABLE_FEES_LIST } from '../../../../core/providers';
 import {
   EReceiptCredentials,
@@ -9,11 +10,9 @@ import {
 } from '../../../../core/providers/eta/temp-entity/receipt.entity';
 import { roundToTwo } from '../../../../core/utils/math.utils';
 import { Code } from '../../../code/domain';
+import { Branch } from '../../../organization/domain';
 import { Receipt } from '../../domain';
 import { ItemTax, ReceiptItem, ReceiptType } from '../../domain/entities/receipt.entity';
-
-import * as moment from 'moment-timezone';
-import { Branch } from '../../../organization/domain';
 
 export function getEReceiptMappedTaxTotals(invoiceLines: ReceiptItem[]): { taxType: string; amount: number }[] {
   const filteredTaxes = new Map<string, number>();
@@ -218,10 +217,12 @@ function generateReceiptUUID(receiptObject: any): string {
 }
 
 export function convertMillisToUTC(time: number): string {
-  const isoString = moment(time).utc().toISOString();
+  let isoString = DateTime.fromMillis(time).toUTC().toISO();
 
   // Remove the last 4 characters (including the dot before milliseconds)
-  return isoString.slice(0, -5) + 'Z';
+  isoString = isoString.slice(0, -5) + 'Z';
+
+  return isoString;
 }
 
 export function getMappedEtaReceipt(receipt: Receipt, codes: Code[], branch: Branch, credentials: EReceiptCredentials): EtaReceipt {

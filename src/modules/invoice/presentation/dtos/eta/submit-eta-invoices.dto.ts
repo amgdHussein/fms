@@ -35,5 +35,6 @@ class SubmitEtaInvoiceDto implements AddEtaInvoice {
 
 export class SubmitEtaInvoicesDto {
   organizationId: string;
+  invoiceId: string; //TODO: THINK OF THIS
   invoices: SubmitEtaInvoiceDto[];
 }

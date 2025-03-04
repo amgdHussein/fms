@@ -1,7 +1,3 @@
-import * as moment from 'moment-timezone';
-
-import { CurrencyCode } from '../enums';
-
 import { ETA_TAX_SUB_TYPES_WITH_TYPE } from '../providers/eta/constants';
 import { AddEtaInvoice, EtaInvoiceLine, GetInvoices, Issuer, IssuerType, QueryCodes, TaxableItems } from '../providers/eta/entities';
 
@@ -10,7 +6,18 @@ import { Code } from '../../modules/code/domain';
 import { InvoiceForm, Item, TaxInvoice } from '../../modules/invoice/domain';
 import { Branch, Organization, OrganizationTax, ProductTax } from '../../modules/organization/domain';
 
-import { roundToFive, roundToTwo } from './math.utils';
+import { DateTime } from 'luxon';
+import { CurrencyCode } from '../enums';
+import { roundToTwo } from './math.utils';
+
+function convertMillisToUTC(time: number): string {
+  let isoString = DateTime.fromMillis(time).toUTC().toISO();
+
+  // Remove the last 4 characters (including the dot before milliseconds)
+  isoString = isoString.slice(0, -5) + 'Z';
+
+  return isoString;
+}
 
 export function buildEtaQuery(obj: Partial<QueryCodes> | Partial<GetInvoices>): string {
   return Object.entries(obj)
@@ -19,12 +26,12 @@ export function buildEtaQuery(obj: Partial<QueryCodes> | Partial<GetInvoices>): 
     .join('&');
 }
 
-function getTotalItemsDiscount(items: Item[]): number {
+function getTotalItemsDiscount(items: Item[], rate: number): number {
   const total = items.reduce((acc, item) => acc + (item.taxDiscount?.value || 0), 0);
-  return roundToTwo(total);
+  return roundToTwo(total * rate);
 }
 
-function getItemTaxableFees(item: Item): number {
+function getItemTaxableFees(item: Item, rate: number): number {
   const TAXABLE_FEES_LIST = ['T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
   const totalTaxableFees = item.taxes.reduce((acc: number, tax: ProductTax) => {
     if (TAXABLE_FEES_LIST.includes(tax?.taxType)) {
@@ -34,7 +41,7 @@ function getItemTaxableFees(item: Item): number {
     return acc;
   }, 0);
 
-  return roundToTwo(totalTaxableFees);
+  return roundToTwo(totalTaxableFees * rate);
 }
 
 function getTaxType(subType: string): 'fixed' | 'percentage' {
@@ -68,31 +75,31 @@ function getTaxRate(
   }
 }
 
-function setTaxableItems(item: Item): TaxableItems[] {
+function setTaxableItems(item: Item, rate: number): TaxableItems[] {
   const taxTypeT3Amount = item.taxes.find(tax => tax.taxType === 'T3')?.value ?? 0;
   const taxTypeT2Amount = item.taxes.find(tax => tax.taxType === 'T2')?.value ?? 0;
   const itemsDiscount = item.taxDiscount?.value ?? 0;
-  const totalTaxableFees = getItemTaxableFees(item);
+  const totalTaxableFees = getItemTaxableFees(item, rate);
   return item.taxes.map(tax => {
     return {
       taxType: tax.taxType,
       subType: tax.subType,
       rate: getTaxRate(tax, item.netAmount, item.profitOrLoss, totalTaxableFees, taxTypeT3Amount, taxTypeT2Amount, itemsDiscount),
-      amount: tax.value,
+      amount: roundToTwo(tax.value * rate),
     };
   });
 }
 
 // ? Mapping functions
 
-function mappedTaxTotals(invoiceLines: Item[]): { taxType: string; amount: number }[] {
+function mappedTaxTotals(invoiceLines: Item[], rate: number): { taxType: string; amount: number }[] {
   const filteredTaxes = new Map<string, number>();
 
   invoiceLines.forEach((line: Item) => {
     line.taxes?.forEach(tax => {
       const existingAmount = filteredTaxes.get(tax.taxType) || 0;
       const updatedAmount = roundToTwo(existingAmount + tax.value);
-      filteredTaxes.set(tax.taxType, updatedAmount);
+      filteredTaxes.set(tax.taxType, roundToTwo(updatedAmount * rate));
     });
   });
 
@@ -104,26 +111,29 @@ function mapEtaInvoiceItems(invoice: TaxInvoice, codes: Code[]): EtaInvoiceLine[
     const code = codes.find(code => code.id === item.codeId);
 
     return {
-      description: code.description ?? 'description',
+      description: code.description?.length ? code.description : 'description',
       itemType: code.authorityCodeType,
       itemCode: code.code,
       unitType: item.unitType,
       quantity: item.quantity,
       internalCode: item.id,
-      salesTotal: item.grossAmount,
-      total: item.totalAmount,
-      valueDifference: item.profitOrLoss ?? 0,
-      totalTaxableFees: getItemTaxableFees(item),
-      netTotal: item.netAmount,
-      itemsDiscount: item.taxDiscount.value,
+      salesTotal: roundToTwo(item.grossAmount * invoice.currency.rate),
+      total: roundToTwo(item.totalAmount * invoice.currency.rate),
+      valueDifference: item.profitOrLoss ? roundToTwo(item.profitOrLoss * invoice.currency.rate) : 0,
+      totalTaxableFees: getItemTaxableFees(item, invoice.currency.rate),
+      netTotal: roundToTwo(item.netAmount * invoice.currency.rate),
+      itemsDiscount: roundToTwo(item.taxDiscount.value * invoice.currency.rate),
       unitValue: {
         currencySold: invoice.currency.code,
-        amountEGP: invoice.currency.code === CurrencyCode.EGP ? item.unitPrice : roundToFive(item.unitPrice * invoice.currency.rate),
+        amountEGP: invoice.currency.code === CurrencyCode.EGP ? item.unitPrice : roundToTwo(item.unitPrice * invoice.currency.rate),
         amountSold: invoice.currency.code === CurrencyCode.EGP ? 0 : item.unitPrice,
         currencyExchangeRate: invoice.currency.code === CurrencyCode.EGP ? null : invoice.currency.rate,
       },
-      discount: item.discount.value,
-      taxableItems: setTaxableItems(item),
+      discount: {
+        rate: 0,
+        amount: item.discount.value ? roundToTwo(item.discount.value * invoice.currency.rate) : 0,
+      },
+      taxableItems: setTaxableItems(item, invoice.currency.rate),
     };
   });
 }
@@ -180,17 +190,17 @@ function getMappedEtaInvoice(
     receiver,
     documentType: invoice.form,
     documentTypeVersion: '1.0', // TODO: CREATE APP SETTINGS WITH ETA/TAX VERSION
-    dateTimeIssued: moment(invoice.issuedAt).toISOString(),
+    dateTimeIssued: convertMillisToUTC(invoice.issuedAt),
     taxpayerActivityCode: invoice.activityCode,
     internalID: invoice.invoiceNumber,
-    totalSalesAmount: invoice.grossAmount,
-    totalDiscountAmount: invoice.discount,
-    netAmount: invoice.netAmount,
-    totalAmount: invoice.totalAmount,
-    extraDiscountAmount: invoice.additionalDiscount,
-    totalItemsDiscountAmount: getTotalItemsDiscount(invoice.items),
+    totalSalesAmount: roundToTwo(invoice.grossAmount * invoice.currency.rate),
+    totalDiscountAmount: roundToTwo(invoice.discount * invoice.currency.rate),
+    netAmount: roundToTwo(invoice.netAmount * invoice.currency.rate),
+    totalAmount: roundToTwo(invoice.totalAmount * invoice.currency.rate),
+    extraDiscountAmount: roundToTwo(invoice.additionalDiscount * invoice.currency.rate),
+    totalItemsDiscountAmount: getTotalItemsDiscount(invoice.items, invoice.currency.rate),
     invoiceLines: mapEtaInvoiceItems(invoice, codes),
-    taxTotals: mappedTaxTotals(invoice.items),
+    taxTotals: mappedTaxTotals(invoice.items, invoice.currency.rate),
   };
 }
 
@@ -237,17 +247,17 @@ function getMappedEtaCreditOrDebit(
     references: invoice.uuidReferences,
     documentType: invoice.form,
     documentTypeVersion: '1.0',
-    dateTimeIssued: moment(invoice.issuedAt).toISOString(),
+    dateTimeIssued: convertMillisToUTC(invoice.issuedAt),
     taxpayerActivityCode: invoice.activityCode,
     internalID: invoice.invoiceNumber,
-    totalSalesAmount: invoice.grossAmount,
-    totalDiscountAmount: invoice.discount,
-    netAmount: invoice.netAmount,
-    totalAmount: invoice.totalAmount,
-    extraDiscountAmount: invoice.additionalDiscount,
-    totalItemsDiscountAmount: getTotalItemsDiscount(invoice.items),
+    totalSalesAmount: roundToTwo(invoice.grossAmount * invoice.currency.rate),
+    totalDiscountAmount: roundToTwo(invoice.discount * invoice.currency.rate),
+    netAmount: roundToTwo(invoice.netAmount * invoice.currency.rate),
+    totalAmount: roundToTwo(invoice.totalAmount * invoice.currency.rate),
+    extraDiscountAmount: roundToTwo(invoice.additionalDiscount * invoice.currency.rate),
+    totalItemsDiscountAmount: getTotalItemsDiscount(invoice.items, invoice.currency.rate),
     invoiceLines: mapEtaInvoiceItems(invoice, codes),
-    taxTotals: mappedTaxTotals(invoice.items),
+    taxTotals: mappedTaxTotals(invoice.items, invoice.currency.rate),
   };
 }
 
@@ -288,23 +298,25 @@ function getMappedEtaExportInvoice(
     },
   };
 
+  console.log('invoice.deliveryAt', invoice.deliveryAt);
+
   return {
     issuer,
     receiver,
     documentType: invoice.form,
     documentTypeVersion: '1.0',
-    dateTimeIssued: moment(invoice.issuedAt).toISOString(),
+    dateTimeIssued: convertMillisToUTC(invoice.issuedAt),
     taxpayerActivityCode: invoice.activityCode,
     internalID: invoice.invoiceNumber,
-    totalSalesAmount: invoice.grossAmount,
-    totalDiscountAmount: invoice.discount,
-    netAmount: invoice.netAmount,
-    totalAmount: invoice.totalAmount,
-    extraDiscountAmount: invoice.additionalDiscount,
-    totalItemsDiscountAmount: getTotalItemsDiscount(invoice.items),
+    totalSalesAmount: roundToTwo(invoice.grossAmount * invoice.currency.rate),
+    totalDiscountAmount: roundToTwo(invoice.discount * invoice.currency.rate),
+    netAmount: roundToTwo(invoice.netAmount * invoice.currency.rate),
+    totalAmount: roundToTwo(invoice.totalAmount * invoice.currency.rate),
+    extraDiscountAmount: roundToTwo(invoice.additionalDiscount * invoice.currency.rate),
+    totalItemsDiscountAmount: getTotalItemsDiscount(invoice.items, invoice.currency.rate),
     invoiceLines: mapEtaExportInvoiceItems(invoice, codes),
-    taxTotals: mappedTaxTotals(invoice.items),
-    serviceDeliveryDate: moment(invoice?.deliveryAt).format('yyyy-MM-dd'),
+    taxTotals: mappedTaxTotals(invoice.items, invoice.currency.rate),
+    serviceDeliveryDate: DateTime.fromMillis(invoice.deliveryAt).toFormat('yyyy-MM-dd'),
   };
 }
 
@@ -351,18 +363,18 @@ function getMappedEtaExportCreditOrDebitInvoice(
     references: invoice.uuidReferences,
     documentType: invoice.form,
     documentTypeVersion: '1.0',
-    dateTimeIssued: moment(invoice.issuedAt).toISOString(),
+    dateTimeIssued: convertMillisToUTC(invoice.issuedAt),
     taxpayerActivityCode: invoice.activityCode,
     internalID: invoice.invoiceNumber,
-    totalSalesAmount: invoice.grossAmount,
-    totalDiscountAmount: invoice.discount,
-    netAmount: invoice.netAmount,
-    totalAmount: invoice.totalAmount,
-    extraDiscountAmount: invoice.additionalDiscount,
-    totalItemsDiscountAmount: getTotalItemsDiscount(invoice.items),
+    totalSalesAmount: roundToTwo(invoice.grossAmount * invoice.currency.rate),
+    totalDiscountAmount: roundToTwo(invoice.discount * invoice.currency.rate),
+    netAmount: roundToTwo(invoice.netAmount * invoice.currency.rate),
+    totalAmount: roundToTwo(invoice.totalAmount * invoice.currency.rate),
+    extraDiscountAmount: roundToTwo(invoice.additionalDiscount * invoice.currency.rate),
+    totalItemsDiscountAmount: getTotalItemsDiscount(invoice.items, invoice.currency.rate),
     invoiceLines: mapEtaExportInvoiceItems(invoice, codes),
-    taxTotals: mappedTaxTotals(invoice.items),
-    serviceDeliveryDate: moment(invoice?.deliveryAt).format('yyyy-MM-dd'),
+    taxTotals: mappedTaxTotals(invoice.items, invoice.currency.rate),
+    serviceDeliveryDate: DateTime.fromMillis(invoice.deliveryAt).toFormat('yyyy-MM-dd'),
   };
 }
 
@@ -374,14 +386,18 @@ export function mapInvoiceToEtaInvoice(
   branch: Branch,
   codes: Code[],
 ): AddEtaInvoice {
+  console.log('invoice.form', invoice.form);
+
   switch (invoice.form) {
     case InvoiceForm.INVOICE:
       return getMappedEtaInvoice(invoice, client, organization, organizationTax, branch, codes);
-    case InvoiceForm.CREDIT || InvoiceForm.DEBIT:
+    case InvoiceForm.CREDIT:
+    case InvoiceForm.DEBIT:
       return getMappedEtaCreditOrDebit(invoice, client, organization, organizationTax, branch, codes);
     case InvoiceForm.EXPORT_INVOICE:
       return getMappedEtaExportInvoice(invoice, client, organization, organizationTax, branch, codes);
-    case InvoiceForm.EXPORT_CREDIT || InvoiceForm.EXPORT_DEBIT:
+    case InvoiceForm.EXPORT_CREDIT:
+    case InvoiceForm.EXPORT_DEBIT:
       return getMappedEtaExportCreditOrDebitInvoice(invoice, client, organization, organizationTax, branch, codes);
     default:
       throw new Error('Invoice type not supported');

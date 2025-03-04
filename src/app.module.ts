@@ -90,7 +90,7 @@ import { ReceiptModule } from './modules/receipt';
     AuthModule,
 
     FireAuthModule.forRoot({
-      dbURL: process.env.FIREBASE_DATABASE_URL,
+      dbURL: process.env.FIREBASE_DATABASE_URL, // TODO: THIS IS NOT EXIST IN ENV
       serviceAccount: {
         projectId: process.env.GCLOUD_PROJECT_ID,
         clientEmail: process.env.GCLOUD_CLIENT_EMAIL,

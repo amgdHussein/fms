@@ -2,13 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { google as GoogleProtos } from '@google-cloud/tasks/build/protos/protos';
 
-import { CLOUD_TASKS_PROVIDER, ETA_E_INVOICING_PROVIDER } from '../../../../core/constants';
+import { AUTH_PROVIDER, CLOUD_TASKS_PROVIDER, ETA_E_INVOICING_PROVIDER } from '../../../../core/constants';
 import { Authority } from '../../../../core/enums';
 import { AddEtaInvoice, CloudTasksService, EtaEInvoicingService } from '../../../../core/providers';
 import { Utils } from '../../../../core/utils';
 
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { AuthService } from '../../../../core/auth';
 import { CLIENT_SERVICE_PROVIDER, IClientService } from '../../../client/domain';
 import { CODE_SERVICE_PROVIDER, ICodeService } from '../../../code/domain';
 import {
@@ -69,6 +70,9 @@ export class EtaInvoiceService implements IEtaInvoiceService {
 
     @Inject(CLIENT_SERVICE_PROVIDER)
     private readonly clientService: IClientService,
+
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
   ) {}
 
   async processInvoices(ids: string[]): Promise<boolean> {
@@ -87,14 +91,15 @@ export class EtaInvoiceService implements IEtaInvoiceService {
 
     // Extract unique client IDs and fetch clients and their taxes
     const uniqueClientIds = Array.from(new Set(invoices.map(invoice => invoice.clientId)));
-    //TODO: REVIEW THIS AFTER DELETE CLIENT TAXES
     const clients = await Promise.all(uniqueClientIds.map(async clientId => this.clientService.getClient(clientId)));
     const clientMap = new Map(clients.map(client => [client.id, { client }]));
 
     // TODO: TEST THE QUERY WITH ARRAY-CONTAINS, AND REVISE FIRESTORE TO_FIRESTORE CONVERTER
     const allCodeIds = invoices.flatMap(invoice => invoice.items.map(item => item.codeId));
     const uniqueCodeIds = Array.from(new Set(allCodeIds));
-    const codes = await this.codeService.getCodes(organizationId, [{ key: 'id', operator: 'arco', value: uniqueCodeIds }]);
+    // const codes = await this.codeService.getCodes(organizationId, [{ key: 'id', operator: 'arco', value: uniqueCodeIds }]); //TODO: NOT WORKING
+    const allCodes = await this.codeService.getCodes(organizationId);
+    const codes = allCodes.filter(code => uniqueCodeIds.includes(code.id));
 
     const promises = invoices.map(async invoice => {
       const branch = await this.branchService.getBranch(invoice.branchId);
@@ -107,6 +112,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
         invoiceId: invoice.id,
         organizationId: invoice.organizationId,
         taxId: organizationTax.taxIdNo,
+        userId: this.authService.currentUser.uid, // 'HzaLsCcLdCevrJ9ARpNMpEWlWzZ2', //TODO: Make sure that user uid is exist in dev mode
         etaDocument: Utils.Object.dropUndefined(Utils.Eta.mapInvoiceToEtaInvoice(invoice, client, organization, organizationTax, branch, codes)),
         action: 'SentToSign',
       });
@@ -117,16 +123,21 @@ export class EtaInvoiceService implements IEtaInvoiceService {
           body: Buffer.from(payload).toString('base64'),
           headers: { 'Content-Type': 'application/json' },
           httpMethod: 'POST',
-          url: 'https://us-east1-mofawtar-backend.cloudfunctions.net/publishEinvoiceToSign',
+          // url: 'https://us-east1-mofawtar-backend.cloudfunctions.net/publishEinvoiceToSign', //PROD  //TODO: MAKE THIS DYNAMIC BASED ON ENV
+          url: 'https://publisheinvoicetosign-884544377423.us-east1.run.app', // DEV
         },
       };
 
       return await this.cloudTasksService.addTask(invoice.organizationId, task);
     });
 
-    return await Promise.all(promises)
+    return await Promise.all(promises) // TODO: I DON'T WANT TO FAIL WHEN ANY FAIL, EVERY INVOICE SHOULD BE PROCESSED INDEPENDENTLY AND UPDATE IT'S STATUS IF ANY ERROR
       .then(() => true)
-      .catch(() => false);
+      .catch((err: any) => {
+        console.log('err', err);
+
+        return false;
+      });
   }
 
   async submitInvoices(invoices: (AddEtaInvoice & { invoiceId: string })[], organizationId: string): Promise<void> {
@@ -217,6 +228,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
           organizationId,
           invoiceId,
           credential,
+          updatedBy: this.authService.currentUser.uid,
         },
         {
           attempts: 7,
