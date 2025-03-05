@@ -1,6 +1,6 @@
 import { BullModule } from '@nestjs/bull';
 import { Global, Module } from '@nestjs/common';
-import { ReceiptController } from '.';
+
 import { AddReceipt, AddReceipts, DeleteReceipt, GetReceipt, QueryReceipts, UpdateReceipt } from './application';
 import {
   ETA_RECEIPT_PROCESSOR_PROVIDER,
@@ -10,7 +10,8 @@ import {
   RECEIPT_USECASE_PROVIDERS,
 } from './domain';
 import { ReceiptFirestoreRepository, ReceiptService } from './infrastructure';
-import { EtaEReceiptProcessor } from './infrastructure/processors';
+import { EtaEReceiptProcessor } from './infrastructure';
+import { ReceiptController } from './presentation';
 
 import { CODE_REPOSITORY_PROVIDER, CODE_SERVICE_PROVIDER } from '../code/domain';
 import { CodeFirestoreRepository, CodeService } from '../code/infrastructure';

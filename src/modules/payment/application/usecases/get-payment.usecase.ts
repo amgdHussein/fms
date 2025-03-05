@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { Usecase } from '../../../../core/interfaces/usecase.interface';
+import { Usecase } from '../../../../core/interfaces';
+
 import { IPaymentService, Payment, PAYMENT_SERVICE_PROVIDER } from '../../domain';
 
 @Injectable()

@@ -1,0 +1,2 @@
+// TODO: IN TOKEN GUARD CREATE A CUSTOM USER INSIDE THE REQUEST OBJECT (uid: 'system')
+// TODO: Replace the http service with a custom service to handle post, get, put, delete requests

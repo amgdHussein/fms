@@ -1,2 +1,2 @@
 export { PaymentMethod } from './payment-method.enum';
-export { Payment, PaymentStatus, PaymentType } from './payment.entity';
+export { Payment, PaymentEntity, PaymentEntityType, PaymentStatus, PaymentType } from './payment.entity';

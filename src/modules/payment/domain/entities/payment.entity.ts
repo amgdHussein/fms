@@ -3,7 +3,7 @@ import { Currency } from '../../../../core/models';
 
 import { Invoice } from '../../../invoice/domain';
 
-import { Receipt } from '../../../receipt';
+import { Receipt } from '../../../receipt/domain';
 import { PaymentMethod } from './payment-method.enum';
 
 export interface Payment {

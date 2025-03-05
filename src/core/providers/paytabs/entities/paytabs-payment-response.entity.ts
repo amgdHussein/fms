@@ -1,4 +1,5 @@
-import { CartCurrency, TransactionClass, TransactionType } from './paytabs-invoice-request.entity';
+import { CurrencyCode } from '../../../enums';
+import { TransactionClass, TransactionType } from './paytabs-invoice-request.entity';
 
 export interface PayTabsPaymentResponse {
   tran_ref?: string;
@@ -6,9 +7,9 @@ export interface PayTabsPaymentResponse {
   profile_id?: number;
   cart_id?: string;
   cart_description?: string;
-  cart_currency?: CartCurrency;
+  cart_currency?: CurrencyCode;
   cart_amount?: string;
-  tran_currency?: CartCurrency;
+  tran_currency?: CurrencyCode;
   tran_total?: string;
   tran_type?: TransactionType;
   tran_class?: TransactionClass;
@@ -56,11 +57,11 @@ export interface PayTabsPaymentResponse {
 // For more information about the PayTabs Payment Response, visit: https://support.paytabs.com/en/support/solutions/articles/60000711358-what-is-response-code-vs-the-response-status-
 
 export enum PaymentResponseStatus {
-  A = 'A', //Authorized
-  H = 'H', //Hold (Authorized but on hold for further anti-fraud review)
-  P = 'P', //Pending (for refunds)
-  V = 'V', //Voided
-  E = 'E', //Error
-  D = 'D', //Declined
-  X = 'X', //Expired
+  AUTHORIZED = 'A', // Authorized
+  HOLD = 'H', // Hold (Authorized but on hold for further anti-fraud review)
+  PENDING = 'P', // Pending (for refunds)
+  VOIDED = 'V', // Voided
+  ERROR = 'E', // Error
+  DECLINED = 'D', // Declined
+  EXPIRED = 'X', // Expired
 }

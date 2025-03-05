@@ -29,7 +29,6 @@ export const ETA_E_RECEIPT_PROVIDER = 'ETA_E_RECEIPT_PROVIDER';
 export const STRIPE_PROVIDER = Symbol('STRIPE_PROVIDER');
 
 // ** PayTabs **
-export const PAY_TABS_CONFIGS_PROVIDER = 'PAY_TABS_CONFIGS_PROVIDER';
 export const PAY_TABS_PROVIDER = 'PAY_TABS_PROVIDER';
 
 // ** Paypal **

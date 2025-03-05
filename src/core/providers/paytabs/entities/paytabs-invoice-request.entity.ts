@@ -1,8 +1,14 @@
-export interface PaytabsInvoiceRequest {
+import { CurrencyCode } from '../../../enums';
+
+export interface PayTabsInvoice {
+  id: string;
+}
+
+export interface PaytabsInvoiceParams {
   profile_id?: string;
   tran_type?: TransactionType;
   tran_class?: TransactionClass;
-  cart_currency?: string; //TODO change to enum
+  cart_currency?: CurrencyCode;
   cart_amount?: number;
   cart_id?: string;
   cart_description?: string;
@@ -50,68 +56,47 @@ export interface PaytabsInvoiceRequest {
 }
 
 export enum TransactionType {
-  sale = 'sale',
-  auth = 'auth',
-  refund = 'refund',
-  register = 'register',
-  void = 'void',
-  release = 'release',
-  capture = 'capture',
+  SALE = 'sale',
+  AUTH = 'auth',
+  REFUND = 'refund',
+  REGISTER = 'register',
+  VOID = 'void',
+  RELEASE = 'release',
+  CAPTURE = 'capture',
 }
 
 export enum TransactionClass {
-  ecom = 'ecom',
-  recurring = 'recurring',
-  moto = 'moto',
-}
-
-export enum CartCurrency {
-  SAR = 'SAR',
-  AED = 'AED',
-  BHD = 'BHD',
-  EGP = 'EGP',
-  EUR = 'EUR',
-  GBP = 'GBP',
-  HKD = 'HKD',
-  IDR = 'IDR',
-  INR = 'INR',
-  IQD = 'IQD',
-  JOD = 'JOD',
-  JPY = 'JPY',
-  KWD = 'KWD',
-  MAD = 'MAD',
-  OMR = 'OMR',
-  PKR = 'PKR',
-  QAR = 'QAR',
-  USD = 'USD',
+  ECOM = 'ecom',
+  RECURRING = 'recurring',
+  MOTO = 'moto',
 }
 
 export enum PaymentMethod {
-  all = 'all',
-  creditcard = 'creditcard',
-  amex = 'amex',
-  mada = 'mada',
-  urpay = 'urpay',
-  unionpay = 'unionpay',
-  stcpay = 'stcpay',
-  stcpayqr = 'stcpayqr',
-  valu = 'valu',
-  aman = 'aman',
-  meezaqr = 'meezaqr',
-  omannet = 'omannet',
-  knet = 'knet',
-  knetdebit = 'knetdebit',
-  knetcredit = 'knetcredit',
-  applepay = 'applepay',
-  samsungpay = 'samsungpay',
-  installment = 'installment',
-  forsa = 'forsa',
-  halan = 'halan',
-  tamara = 'tamara',
-  amaninstallments = 'amaninstallments',
-  souhoola = 'souhoola',
-  tabby = 'tabby',
-  touchpoints = 'touchpoints',
-  paypal = 'paypal',
-  sadad = 'sadad',
+  ALL = 'all',
+  CREDIT_CARD = 'creditcard',
+  AMEX = 'amex',
+  MADA = 'mada',
+  URPAY = 'urpay',
+  UNION_PAY = 'unionpay',
+  STC_PAY = 'stcpay',
+  STC_PAY_QR = 'stcpayqr',
+  VALU = 'valu',
+  AMAN = 'aman',
+  MEEZAQR = 'meezaqr',
+  OMANNET = 'omannet',
+  KNET = 'knet',
+  KNET_DEBIT = 'knetdebit',
+  KNET_CREDIT = 'knetcredit',
+  APPLE_PAY = 'applepay',
+  SAMSUNG_PAY = 'samsungpay',
+  INSTALLMENT = 'installment',
+  FORSA = 'forsa',
+  HALAN = 'halan',
+  TAMARA = 'tamara',
+  AMAN_INSTALLMENTS = 'amaninstallments',
+  SOUHOOLA = 'souhoola',
+  TABBY = 'tabby',
+  TOUCH_POINTS = 'touchpoints',
+  PAYPAL = 'paypal',
+  SADAD = 'sadad',
 }

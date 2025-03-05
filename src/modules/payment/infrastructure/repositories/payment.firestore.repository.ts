@@ -1,14 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
+import { AuthService } from '../../../../core/auth';
+import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/constants';
 import { FirestoreService } from '../../../../core/providers';
 import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
-import { IPaymentRepository, Payment } from '../../domain';
+import { IPaymentRepository, Payment, PaymentStatus } from '../../domain';
 
 @Injectable()
 export class PaymentFirestoreRepository implements IPaymentRepository {
   constructor(
+    @Inject(AUTH_PROVIDER)
+    private readonly authService: AuthService,
+
     @Inject(FIRESTORE_COLLECTION_PROVIDERS.PAYMENTS)
     private readonly db: FirestoreService<Payment>,
   ) {}
@@ -22,6 +26,14 @@ export class PaymentFirestoreRepository implements IPaymentRepository {
   }
 
   async add(payment: Partial<Payment>): Promise<Payment> {
+    // Initiate some fields
+    payment.createdBy = this.authService.currentUser.uid;
+    payment.createdAt = Date.now();
+    payment.updatedBy = this.authService.currentUser.uid;
+    payment.updatedAt = Date.now();
+
+    payment.status = PaymentStatus.PROCESSING;
+
     return this.db.addDoc(payment);
   }
 
@@ -30,6 +42,10 @@ export class PaymentFirestoreRepository implements IPaymentRepository {
   }
 
   async update(payment: Partial<Payment> & { id: string }): Promise<Payment> {
+    // Update some fields
+    payment.updatedBy = this.authService.currentUser.uid;
+    payment.updatedAt = Date.now();
+
     return this.db.updateDoc(payment);
   }
 

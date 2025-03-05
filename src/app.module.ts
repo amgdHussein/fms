@@ -25,9 +25,7 @@ import {
 
 import { ClsModule } from 'nestjs-cls';
 import { Environment } from './core/constants';
-import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, OrganizationModule, UserModule } from './modules';
-import { PaymentModule } from './modules/payment/payment.module';
-import { ReceiptModule } from './modules/receipt';
+import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, OrganizationModule, PaymentModule, ReceiptModule, UserModule } from './modules';
 
 @Module({
   imports: [
@@ -134,6 +132,7 @@ import { ReceiptModule } from './modules/receipt';
     }),
 
     PayTabsModule.forRoot({
+      profileId: '',
       serverKey: '',
     }),
 

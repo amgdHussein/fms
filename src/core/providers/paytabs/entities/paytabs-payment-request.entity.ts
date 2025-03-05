@@ -1,4 +1,5 @@
-import { CartCurrency, TransactionClass, TransactionType } from './paytabs-invoice-request.entity';
+import { CurrencyCode } from '../../../enums';
+import { TransactionClass, TransactionType } from './paytabs-invoice-request.entity';
 
 export interface PayTabsPaymentRequest {
   profile_id: string;
@@ -7,7 +8,7 @@ export interface PayTabsPaymentRequest {
   payment_methods: string[];
   cart_id: string;
   cart_amount: number;
-  cart_currency: CartCurrency;
+  cart_currency: CurrencyCode;
   cart_description: string;
   paypage_lang: 'en' | 'ar';
   customer_details: {

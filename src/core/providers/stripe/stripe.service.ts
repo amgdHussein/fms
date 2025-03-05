@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import Stripe from 'stripe';
 
+import { CurrencyCode } from '../../enums';
 import { StripeConfigs } from './stripe.config';
 
 @Injectable()
@@ -16,6 +17,16 @@ export class StripeService {
     this.logger.log('StripeService initialized with API version 2024-11-20');
   }
 
+  // ? Products
+
+  async addProduct(name: string, type: 'good' | 'service', description?: string): Promise<Stripe.Product> {
+    return this.stripe.products.create({
+      name,
+      type,
+      description,
+    });
+  }
+
   async getProducts(): Promise<Stripe.Product[]> {
     try {
       const products = await this.stripe.products.list();
@@ -27,6 +38,16 @@ export class StripeService {
     }
   }
 
+  // ? Prices
+
+  async addPrice(productId: string, amount: number, currency: CurrencyCode): Promise<Stripe.Price> {
+    return this.stripe.prices.create({
+      product: productId,
+      unit_amount: Math.round(parseFloat(amount.toFixed(2)) * 100),
+      currency: currency.toLowerCase(),
+    });
+  }
+
   // ? Customers
 
   /**
@@ -36,7 +57,7 @@ export class StripeService {
    * @return {Promise<Stripe.Customer>} a Promise that resolves to the retrieved customer
    */
   async getCustomer(id: string): Promise<Stripe.Customer> {
-    return await this.stripe.customers
+    return this.stripe.customers
       .retrieve(id)
       .then(res => res as Stripe.Customer)
       .catch(error => {
@@ -51,7 +72,7 @@ export class StripeService {
    * @return {Promise<Stripe.Customer[]>} a promise that resolves to an array of Customer objects
    */
   async getCustomersByEmail(email: string): Promise<Stripe.Customer[]> {
-    return await this.stripe.customers
+    return this.stripe.customers
       .list({ email })
       .then(res => res.data)
       .catch(error => {
@@ -112,7 +133,7 @@ export class StripeService {
    * phone       phone:"+19999999999"         string
    */
   async queryCustomers(query: string, limit?: number, page?: string): Promise<Stripe.Customer[]> {
-    return await this.stripe.customers
+    return this.stripe.customers
       .search({ query, limit, page })
       .then(res => res.data)
       .catch(error => {
@@ -129,8 +150,8 @@ export class StripeService {
    * @param {Stripe.AddressParam} [address] - the address of the customer (optional)
    * @return {Promise<Stripe.Customer>} the newly created customer
    */
-  async addCustomer(name: string, email: string, phone?: string, address?: Stripe.AddressParam): Promise<Stripe.Customer> {
-    return await this.stripe.customers.create({ name, email, phone, address }).catch(error => {
+  async addCustomer(name: string, email: string, phone?: string, address?: Stripe.AddressParam, metadata?: Stripe.Metadata): Promise<Stripe.Customer> {
+    return this.stripe.customers.create({ name, email, phone, address, metadata }).catch(error => {
       throw new InternalServerErrorException('Can not create a new customer!');
     });
   }
@@ -143,7 +164,7 @@ export class StripeService {
    * @return {Promise<Stripe.Response<Stripe.DeletedCustomer>>} A promise that resolves to the deleted customer
    */
   async deleteCustomer(id: string): Promise<Stripe.DeletedCustomer> {
-    return await this.stripe.customers.del(id).catch(error => {
+    return this.stripe.customers.del(id).catch(error => {
       throw new InternalServerErrorException('Error while deleting the customer!');
     });
   }
@@ -159,9 +180,11 @@ export class StripeService {
     });
   }
 
-  // Checkout sessions
+  // ? Checkout sessions
 
   async addSession(): Promise<Stripe.Checkout.Session> {
+    // * TEST
+    return;
     return this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -191,7 +214,7 @@ export class StripeService {
    * @return {Promise<PaymentIntent>} The retrieved payment intent
    */
   async getPayment(id: string): Promise<Stripe.PaymentIntent> {
-    return await this.stripe.paymentIntents
+    return this.stripe.paymentIntents
       .retrieve(id)
       .then(res => res)
       .catch(error => {
@@ -237,7 +260,7 @@ export class StripeService {
    * @return {Promise<Stripe.PaymentIntent[]>} A Promise that resolves to an array of PaymentIntent objects
    */
   async getCustomerPayments(customerId: string): Promise<Stripe.PaymentIntent[]> {
-    return await this.stripe.paymentIntents
+    return this.stripe.paymentIntents
       .list({
         limit: 100,
         customer: customerId,
@@ -260,8 +283,7 @@ export class StripeService {
    * @return {Promise<Stripe.PaymentIntent>} The created payment intent
    */
   async addPayment(amount: number, customer: string, description: string, currency: string = 'usd', confirm: boolean = false): Promise<Stripe.PaymentIntent> {
-    this.logger.log('customer', customer);
-    return await this.stripe.paymentIntents
+    return this.stripe.paymentIntents
       .create({
         amount,
         currency,
@@ -282,7 +304,7 @@ export class StripeService {
    * @return {Promise<Stripe.PaymentIntent>} A Promise resolving to the canceled PaymentIntent
    */
   async cancelPayment(id: string): Promise<Stripe.PaymentIntent> {
-    return await this.stripe.paymentIntents.cancel(id).catch(error => {
+    return this.stripe.paymentIntents.cancel(id).catch(error => {
       throw new InternalServerErrorException('Error while cancelling the payment!');
     });
   }
@@ -296,7 +318,7 @@ export class StripeService {
    * @return {Promise<Stripe.Invoice>} the retrieved invoice
    */
   async getInvoice(id: string): Promise<Stripe.Invoice> {
-    return await this.stripe.invoices.retrieve(id).catch(error => {
+    return this.stripe.invoices.retrieve(id).catch(error => {
       throw new NotFoundException(`The invoice with specified id(${id}) does not exist!`);
     });
   }
@@ -355,7 +377,7 @@ export class StripeService {
    * total          total>1000                    numeric
    */
   async queryInvoices(query: string, limit?: number, page?: string): Promise<Stripe.Invoice[]> {
-    return await this.stripe.invoices
+    return this.stripe.invoices
       .search({ query, limit, page })
       .then(res => res.data)
       .catch(error => {
@@ -364,26 +386,38 @@ export class StripeService {
   }
 
   /**
-   * Creates an invoice for the given customer with the provided description and currency.
+   * Create a new invoice.
    *
-   * @param {string} customer - The customer for whom the invoice is created
-   * @param {string} description - The description of the invoice
-   * @param {string} currency - The currency for the invoice (default is 'usd')
-   * @param {Stripe.InvoiceCreateParams.CollectionMethod} collectionMethod - The collection method for the invoice (default is 'charge_automatically')
-   * @return {Promise<Stripe.Invoice>} The created invoice
+   * @param {string} customer - the customer identifier
+   * @param {string} description - the description of the invoice
+   * @param {CurrencyCode} [currency='usd'] - the currency of the invoice
+   * @param {Stripe.InvoiceCreateParams.CollectionMethod} [collectionMethod] - the collection method of the invoice
+   * @param {Stripe.InvoiceCreateParams.PaymentSettings} [paymentSettings] - the payment settings of the invoice
+   * @param {boolean} [autoAdvance] - Whether to automatically advance the invoice to paid status once the payment is successful.
+   * @param {number} [daysUntilDue=30] - Number of days until the invoice is due
+   * @param {Stripe.MetadataParam} [metadata] - The metadata associated with the invoice
+   * @return {Promise<Stripe.Invoice>} the created invoice
    */
   async addInvoice(
     customer: string,
     description: string,
-    currency: string = 'usd',
+    currency?: CurrencyCode,
     collectionMethod?: Stripe.InvoiceCreateParams.CollectionMethod,
+    paymentSettings?: Stripe.InvoiceCreateParams.PaymentSettings,
+    autoAdvance?: boolean,
+    daysUntilDue: number = 30,
+    metadata?: Stripe.MetadataParam,
   ): Promise<Stripe.Invoice> {
-    return await this.stripe.invoices
+    return this.stripe.invoices
       .create({
         customer,
         description,
-        currency,
+        currency: currency.toLowerCase() || 'usd',
         collection_method: collectionMethod,
+        payment_settings: paymentSettings,
+        auto_advance: autoAdvance,
+        days_until_due: daysUntilDue,
+        metadata,
       })
       .catch(error => {
         throw new InternalServerErrorException('Error while adding an invoice!');
@@ -397,7 +431,7 @@ export class StripeService {
    * @return {Promise<Stripe.DeletedInvoice>} A promise that resolves with the deleted invoice.
    */
   async deleteInvoice(id: string): Promise<Stripe.DeletedInvoice> {
-    return await this.stripe.invoices.del(id).catch(error => {
+    return this.stripe.invoices.del(id).catch(error => {
       throw new InternalServerErrorException('Error while deleting the invoice!');
     });
   }
@@ -419,9 +453,9 @@ export class StripeService {
     price: string,
     quantity: number,
     description?: string,
-    currency: string = 'usd',
+    currency?: CurrencyCode,
   ): Promise<Stripe.InvoiceItem> {
-    return this.stripe.invoiceItems.create({ customer, invoice, price, quantity, description, currency }).catch(error => {
+    return this.stripe.invoiceItems.create({ customer, invoice, price, quantity, description, currency: currency.toLowerCase() || 'usd' }).catch(error => {
       throw new InternalServerErrorException('Error while adding new invoice item!');
     });
   }
@@ -434,7 +468,7 @@ export class StripeService {
    * @return {Promise<Stripe.InvoiceItem>} The updated invoice item.
    */
   async updateInvoiceItem(id: string, params?: { price?: string; quantity?: number; description?: string }): Promise<Stripe.InvoiceItem> {
-    return await this.stripe.invoiceItems.update(id, params).catch(error => {
+    return this.stripe.invoiceItems.update(id, params).catch(error => {
       throw new InternalServerErrorException('Error while updating the invoice item!');
     });
   }
@@ -446,120 +480,40 @@ export class StripeService {
    * @return {Promise<Stripe.DeletedInvoiceItem>} a promise that resolves with the deleted invoice item
    */
   async deleteInvoiceItem(id: string): Promise<Stripe.DeletedInvoiceItem> {
-    return await this.stripe.invoiceItems.del(id).catch(error => {
+    return this.stripe.invoiceItems.del(id).catch(error => {
       throw new InternalServerErrorException('Error while deleting the invoice item!');
+    });
+  }
+
+  /**
+   * Finalizes an invoice by its ID.
+   *
+   * @param {string} invoiceId - The ID of the invoice to finalize.
+   * @return {Promise<Stripe.Invoice>} A promise that resolves to the finalized invoice.
+   */
+  async finalizeInvoice(invoiceId: string): Promise<Stripe.Invoice> {
+    return this.stripe.invoices.finalizeInvoice(invoiceId).catch(error => {
+      throw new InternalServerErrorException('Error while finalizing the invoice!');
     });
   }
 
   // ? Webhooks
 
   /**
-   * Handles a Stripe webhook event.
+   * Adds a new webhook endpoint to the Stripe API.
    *
-   * @param {Stripe.Event} event - The webhook event received from Stripe.
-   * @return {Promise<string>} A promise that resolves with a string indicating the type of event that was handled:
-   *    - 'payment_succeeded' if the event was an 'invoice.payment_succeeded' event
-   *    - 'payment_failed' if the event was an 'invoice.payment_failed' event
-   *    - null if the event was not handled
+   * @param {string} url - The URL of the webhook endpoint.
+   * @param {Stripe.WebhookEndpointCreateParams.EnabledEvent[]} events - An array of events to be enabled for the endpoint.
+   * @return {Promise<Stripe.WebhookEndpoint>} A promise that resolves to the newly created webhook endpoint.
    */
-  async handleWebhook(event: Stripe.Event): Promise<string> {
-    // Handle the event
-    switch (event.type) {
-      case 'invoice.payment_succeeded':
-        const invoice = event.data.object;
-        this.logger.log(`Invoice payment succeeded: ${invoice.id}`);
-        return 'payment_succeeded';
-
-      case 'invoice.payment_failed':
-        const failedInvoice = event.data.object;
-        this.logger.log(`Invoice payment failed: ${failedInvoice.id}`);
-        return 'payment_failed';
-
-      default:
-        this.logger.log(`Unhandled event type: ${event.type}`);
-        return null;
-    }
-  }
-
-  /**
-   * Adds a new webhook endpoint to Stripe to receive webhooks for successful and failed invoice payments.
-   *
-   * The webhook endpoint will be created with the following settings:
-   * - URL: `${process.env.PROD_URL}/payments/stripe/handle-webhook`
-   * - Enabled events: `invoice.payment_succeeded` and `invoice.payment_failed`
-   *
-   * If the webhook endpoint cannot be created, an `InternalServerErrorException` will be thrown.
-   *
-   * @return {Promise<Stripe.WebhookEndpoint>} A promise that resolves with the created webhook endpoint
-   */
-  async addWebhookEndpoint(): Promise<Stripe.WebhookEndpoint> {
+  async addWebhookEndpoint(url: string, events: Stripe.WebhookEndpointCreateParams.EnabledEvent[]): Promise<Stripe.WebhookEndpoint> {
     return this.stripe.webhookEndpoints
       .create({
-        url: `${process.env.PROD_URL}/payments/stripe/handle-webhook`,
-        enabled_events: ['invoice.payment_succeeded', 'invoice.payment_failed'],
+        url: `${process.env.PROD_URL}/${url}`,
+        enabled_events: events,
       })
       .catch(error => {
         throw new InternalServerErrorException(error);
       });
   }
-
-  // Payment Invoice
-  // async createStripeInvoice(mofawtarInvoice: Invoice): Promise<Stripe.Invoice> {
-  //   try {
-  //     const customerSearchResult = await this.stripe.customers.search({
-  //       query: `email:"${mofawtarInvoice.receiver.email}"`,
-  //     });
-  //     let customer: Stripe.Customer;
-  //     if (customerSearchResult.data.length > 0) {
-  //       this.logger.log('Customer already exists');
-  //       customer = customerSearchResult.data[0];
-  //     } else {
-  //       this.logger.log('Create new customer');
-  //       customer = await this.stripe.customers.create({
-  //         name: `Created By Mofawtar: Invoice for ${mofawtarInvoice.receiver.name}` || 'Mofawtar Client',
-  //         email: mofawtarInvoice.receiver.email || 'defaultemail@gmail.com',
-  //         phone:
-  //           mofawtarInvoice.receiver.phone && mofawtarInvoice.receiver.phone.value
-  //             ? `${mofawtarInvoice.receiver.phone.code}${mofawtarInvoice.receiver.phone.value}`
-  //             : '',
-  //         metadata: {
-  //           preferred_currency: mofawtarInvoice.currency.code.toString().toLowerCase(),
-  //         },
-  //       });
-  //     }
-  //     const product = await this.stripe.products.create({
-  //       name: `Created By Mofawtar: Invoice for ${customer.name}`,
-  //       type: 'service',
-  //     });
-  //     const price = await this.stripe.prices.create({
-  //       unit_amount: Math.round(parseFloat(mofawtarInvoice.totalAmount.toFixed(2)) * 100),
-  //       currency: mofawtarInvoice.currency.code.toString().toLowerCase(),
-  //       product: product.id,
-  //     });
-  //     const invoice = await this.stripe.invoices.create({
-  //       customer: customer.id,
-  //       collection_method: 'send_invoice',
-  //       description: `Created By Mofawtar: Invoice for ${customer.name}`,
-  //       days_until_due: 30, //TODO Can be changed
-  //       payment_settings: {
-  //         payment_method_types: ['card'], //TODO Can be changed
-  //       },
-  //       auto_advance: true,
-  //       pending_invoice_items_behavior: 'exclude',
-  //       currency: customer.metadata.preferred_currency,
-  //       metadata: {
-  //         mofawtarInvoice: mofawtarInvoice.id,
-  //       },
-  //     });
-  //     const invoiceItem = await this.stripe.invoiceItems.create({
-  //       customer: customer.id,
-  //       price: price.id,
-  //       invoice: invoice.id,
-  //       currency: customer.metadata.preferred_currency,
-  //     });
-  //     const finalizedInvoice = await this.stripe.invoices.finalizeInvoice(invoice.id);
-  //     return finalizedInvoice;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException(error);
-  //   }
 }

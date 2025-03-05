@@ -1,6 +1,6 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 
-import { PAY_TABS_CONFIGS_PROVIDER, PAY_TABS_PROVIDER } from '../../constants';
+import { PAY_TABS_PROVIDER } from '../../constants';
 import { PayTabsConfigs } from './paytabs.config';
 import { PayTabsService } from './paytabs.service';
 
@@ -13,19 +13,14 @@ export class PayTabsModule {
    * @return {DynamicModule} The created dynamic module for the PayTabs integration.
    */
   static forRoot(configs: PayTabsConfigs): DynamicModule {
-    const configsProvider: Provider = {
-      provide: PAY_TABS_CONFIGS_PROVIDER,
-      useFactory: () => configs,
-    };
-
     const payTabsProvider: Provider = {
       provide: PAY_TABS_PROVIDER,
-      useClass: PayTabsService,
+      useFactory: () => new PayTabsService(configs),
     };
 
     return {
       global: true,
-      providers: [configsProvider, payTabsProvider],
+      providers: [payTabsProvider],
       exports: [payTabsProvider],
       module: PayTabsModule,
     };

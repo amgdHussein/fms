@@ -1,7 +1,7 @@
 import { PaymentGateway } from '../../../../core/enums';
 import { Currency } from '../../../../core/models';
-import { Payment, PaymentMethod, PaymentType } from '../../domain/entities';
-import { PaymentEntityType, PaymentStatus } from '../../domain/entities/payment.entity';
+
+import { Payment, PaymentEntityType, PaymentMethod, PaymentStatus, PaymentType } from '../../domain/entities';
 
 export class PaymentDto implements Payment {
   id: string;

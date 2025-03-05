@@ -1,24 +1,24 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
-import { firstValueFrom } from 'rxjs';
+import * as moment from 'moment-timezone';
+import { catchError, firstValueFrom, map } from 'rxjs';
 
-import { HTTP_PROVIDER, PAY_TABS_CONFIGS_PROVIDER } from '../../constants';
+import { HTTP_PROVIDER } from '../../constants';
+import { CurrencyCode } from '../../enums';
 
-import { PayTabsPaymentRequest, PayTabsPaymentResponse } from './entities';
+import { PayTabsInvoice, PaytabsInvoiceParams, TransactionClass, TransactionType } from './entities';
 import { PayTabsConfigs } from './paytabs.config';
 
 @Injectable()
 export class PayTabsService {
   private readonly BASE_URL = 'https://secure-egypt.paytabs.com';
-  constructor(
-    @Inject(HTTP_PROVIDER)
-    private readonly http: HttpService,
 
-    @Inject(PAY_TABS_CONFIGS_PROVIDER)
-    private readonly configs: PayTabsConfigs,
-  ) {}
+  @Inject(HTTP_PROVIDER)
+  private readonly http: HttpService;
 
-  async createHostedPaymentPage(data: PayTabsPaymentRequest): Promise<any> {
+  constructor(private readonly configs: PayTabsConfigs) {}
+
+  async createHostedPaymentPage(data: PaytabsInvoiceParams): Promise<PayTabsInvoice> {
     const endpoint = `${this.BASE_URL}/payment/request`;
 
     try {
@@ -31,62 +31,62 @@ export class PayTabsService {
       const response = await firstValueFrom(request);
       return response.data;
     } catch (error) {
-      throw new Error(`PayTabs Error: ${error.response?.data?.message || error.message}`);
+      this.handlePayTabsError(error);
     }
   }
 
-  // Create Invoice
-  // async createInvoice(body: { invoice: Invoice; profileId: string;  }): Promise<any> {
-  //   const endpoint = `${this.BASE_URL}/payment/invoice/new`;
-  //   try {
-  //     const payTabsInvoice: PaytabsInvoiceRequest = {
-  //       profile_id: body.profileId,
-  //       tran_type: TransactionType.sale,
-  //       tran_class: TransactionClass.ecom,
-  //       cart_currency: body.invoice.currency.code,
-  //       cart_amount: body.invoice.totalAmount,
-  //       cart_id: body.invoice.id,
-  //       cart_description: 'Created By Mofawtar invoice for client ' + body.invoice.receiver.name,
-  //       hide_shipping: true,
-  //       customer_details: {
-  //         name: body.invoice.receiver.name,
-  //         // country: 'EGY',
-  //       },
-  //       invoice: {
-  //         lang: 'en',
-  //         total: body.invoice.totalAmount,
-  //         expiry_date: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30 days from now
-  //         // due_date: new Date(+new Date()).toISOString(), // now
-  //         disable_edit: true,
-  //         line_items: [
-  //           {
-  //             sku: body.invoice.id,
-  //             description: `Invoice for ${body.invoice.receiver.name} Created By Mofawtar`,
-  //             unit_cost: body.invoice.totalAmount,
-  //             quantity: 1,
-  //             net_total: body.invoice.totalAmount,
-  //             total: body.invoice.totalAmount,
-  //           },
-  //         ],
-  //       },
-  //       callback: `${process.env.PROD_URL}/payments/paytabs/callback`,
-  //       return: 'https://www.dashboard.mofawtar.com/',
-  //     };
-  //     const response = await this.http
-  //       .post(endpoint, payTabsInvoice, {
-  //         headers: {
-  //           Authorization: `${body.serverKey}`,
-  //         },
-  //       })
-  //       .toPromise();
-  //     return response.data;
-  //   } catch (error) {
-  //     Logger.error(error?.data?.message || error?.message || error);
-  //     throw new Error(`PayTabs Error: ${error?.data?.message || error?.message || error}`);
-  //   }
-  // }
+  // ? Invoices
 
-  async payTabsCallback(body: PayTabsPaymentResponse): Promise<any> {
-    return { invoiceId: body['cart_id'], paymentStatus: body['payment_result']['response_status'] };
+  async addInvoice(invoice: { id: string; currency: CurrencyCode; amount: number; clientName: string }): Promise<PayTabsInvoice> {
+    const endpoint = `${this.BASE_URL}/payment/invoice/new`;
+
+    const payTabsInvoice: PaytabsInvoiceParams = {
+      profile_id: this.configs.profileId,
+      tran_type: TransactionType.SALE,
+      tran_class: TransactionClass.ECOM,
+      cart_currency: invoice.currency,
+      cart_amount: invoice.amount,
+      cart_id: invoice.id,
+      cart_description: 'Created By Mofawtar invoice for client ' + invoice.clientName,
+      hide_shipping: true,
+      customer_details: {
+        name: invoice.clientName,
+        // country: 'EGY',
+      },
+      invoice: {
+        lang: 'en',
+        total: invoice.amount,
+        expiry_date: moment().add(30, 'days').toISOString(),
+        // due_date: new Date(+new Date()).toISOString(), // now
+        disable_edit: true,
+        line_items: [
+          {
+            sku: invoice.id,
+            description: `Invoice for ${invoice.clientName} Created By Mofawtar`,
+            unit_cost: invoice.amount,
+            quantity: 1,
+            net_total: invoice.amount,
+            total: invoice.amount,
+          },
+        ],
+      },
+      callback: `${process.env.PROD_URL}/payments/paytabs/callback`,
+      return: 'https://www.dashboard.mofawtar.com/',
+    };
+
+    const request = this.http
+      .post<PayTabsInvoice>(endpoint, payTabsInvoice, {
+        headers: { Authorization: `${this.configs.serverKey}` },
+      })
+      .pipe(
+        map(response => response.data),
+        catchError(this.handlePayTabsError),
+      );
+
+    return firstValueFrom(request);
   }
+
+  private readonly handlePayTabsError = (error: any) => {
+    throw new Error(`PayTabs Error: ${error.response?.data?.message || error.message}`);
+  };
 }

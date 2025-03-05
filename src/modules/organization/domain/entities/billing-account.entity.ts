@@ -11,3 +11,15 @@ export interface BillingAccount {
   updatedBy: string;
   updatedAt: number;
 }
+
+export namespace BillingAccount {
+  export function fromCredentials(credentials: object): string {
+    // TODO: Encrypt the credentials
+    return '';
+  }
+
+  export function toCredentials(key: string): Record<string, string> {
+    // TODO: Decrypt the key
+    return {};
+  }
+}

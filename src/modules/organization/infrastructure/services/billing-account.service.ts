@@ -19,6 +19,7 @@ export class BillingAccountService implements IBillingAccountService {
   }
 
   async addBillingAccount(account: Partial<BillingAccount> & { organizationId: string }): Promise<BillingAccount> {
+    // TODO: ENCRYPT THE CREDENTIALS
     return this.repo.add(account);
   }
 

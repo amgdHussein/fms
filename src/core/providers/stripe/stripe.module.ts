@@ -15,9 +15,7 @@ export class StripeModule {
   static forRoot(configs: StripeConfigs): DynamicModule {
     const stripeProvider: Provider = {
       provide: STRIPE_PROVIDER,
-      useFactory: () => {
-        return new StripeService(configs);
-      },
+      useFactory: () => new StripeService(configs),
     };
 
     return {
