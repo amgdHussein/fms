@@ -10,7 +10,7 @@ import { ETA_CONFIGS_PROVIDER, ETA_PROVIDER, HTTP_PROVIDER } from '../../constan
 import { Utils } from '../../utils';
 
 import { BadRequestException } from '../../exceptions';
-import { AddEtaInvoice, EtaCredentials, EtaInvoice, GetInvoices, InvoiceQueryResult } from './entities';
+import { AddEtaInvoice, EtaCredentials, EtaInvoice, GetInvoices, QueryDocumentsResponse } from './entities';
 import { EtaConfigs } from './eta.config';
 import { EtaService } from './eta.service';
 
@@ -50,6 +50,7 @@ export class EtaEInvoicingService {
     private readonly http: HttpService,
   ) {}
 
+  // getDocumentDetails
   async getInvoice(uuid: string, credential: EtaCredentials, organizationId: string): Promise<EtaInvoice> {
     const header = await this.eta.login(credential, organizationId);
 
@@ -74,6 +75,7 @@ export class EtaEInvoicingService {
     return firstValueFrom(response);
   }
 
+  // Submit Documents
   async addInvoices(invoices: AddEtaInvoice[], credential: EtaCredentials, organizationId: string): Promise<InvoiceResponse> {
     // Before further processing, validate the invoice type
     for (const invoice of invoices) await this.validateInvoiceType(invoice);
@@ -105,6 +107,7 @@ export class EtaEInvoicingService {
     return firstValueFrom(response);
   }
 
+  // Cancel Document and Reject Document
   async rejectOrCancelInvoice(uuid: string, status: DocumentStatus, reason: string, credential: EtaCredentials, organizationId: string): Promise<boolean> {
     const header = await this.eta.login(credential, organizationId);
     const url = `${this.configs.apiVersionUrl}/documents/state/${uuid}/state`;
@@ -135,7 +138,8 @@ export class EtaEInvoicingService {
     return firstValueFrom(response);
   }
 
-  async queryDocuments(query: GetInvoices, credential: EtaCredentials, organizationId: string): Promise<InvoiceQueryResult> {
+  // Search Documents
+  async queryDocuments(query: GetInvoices, credential: EtaCredentials, organizationId: string): Promise<QueryDocumentsResponse> {
     const header = await this.eta.login(credential, organizationId);
 
     const remainingQuery = Utils.Eta.buildEtaQuery(query);
@@ -143,7 +147,7 @@ export class EtaEInvoicingService {
     const url = `${this.configs.apiVersionUrl}/documents/search?${urlQuery}`;
 
     const response = this.http
-      .get<InvoiceQueryResult>(url, {
+      .get<QueryDocumentsResponse>(url, {
         headers: header,
         httpsAgent: new https.Agent({
           secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
@@ -161,6 +165,7 @@ export class EtaEInvoicingService {
     return firstValueFrom(response);
   }
 
+  // Get Document Printout
   async getInvoicePdf(uuid: string, credential: EtaCredentials, organizationId: string): Promise<any> {
     const header = await this.eta.login(credential, organizationId);
 

@@ -26,9 +26,9 @@ export class QueryCodes {
 export class GetInvoices {
   pageSize: number;
 
-  submissionDateFrom: string;
+  submissionDateFrom?: string;
 
-  submissionDateTo: string;
+  submissionDateTo?: string;
 
   continuationToken: string;
 
@@ -38,17 +38,24 @@ export class GetInvoices {
 
   direction: 'Sent' | 'Received';
 
-  status: DocumentFullStatus;
+  status?: DocumentFullStatus;
 
-  documentType: EtaInvoiceType;
+  documentType?: EtaInvoiceType;
 
-  receiverType: IssuerType;
+  receiverType?: IssuerType;
 
-  receiverId: string;
+  receiverId?: string;
 
-  issuerType: 'B' | 'F';
+  issuerType?: 'B' | 'F';
 
-  issuerId: string;
+  issuerId?: string;
+}
+
+export interface QueryDocumentsResponse {
+  result: InvoiceQueryResult[];
+  metadata: {
+    continuationToken: string | 'EndofResultSet';
+  };
 }
 
 export interface InvoiceQueryResult {
@@ -73,6 +80,7 @@ export interface InvoiceQueryResult {
   totalDiscount?: number;
   netAmount?: number;
   total?: number;
+  totalAmount?: number;
   status?: DocumentFullStatus;
   cancelRequestDate?: string;
   rejectRequestDate?: string;

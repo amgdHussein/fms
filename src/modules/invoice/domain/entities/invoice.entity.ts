@@ -35,7 +35,7 @@ export interface Invoice {
 
   discount: number; // ? discountsTotal // The total discount applied
   additionalDiscount?: number; // ? extraDiscountAmount // Any additional discount applied
-  tax: number; // The total tax applied
+  tax: number; // The total tax applied //! NOTE, NOT USED YET
 
   grossAmount: number; // ? amount // The total cost of all products or services before taxes and discounts
   netAmount: number; // ? netTotal // The total cost after discounts but before taxes
@@ -66,4 +66,13 @@ export interface TaxInvoice extends Invoice {
   deliveryAt?: number; // ? serviceDeliveryDate // Tax invoice delivery date with only export invoices
   uuidReferences: string[]; // List of uuid references for the invoice
   reason?: string;
+
+  cancelRequestDate?: string | null;
+  rejectRequestDate?: string | null;
+  cancelRequestDelayedDate?: string | null;
+  rejectRequestDelayedDate?: string | null;
+  declineCancelRequestDate?: string | null;
+  declineRejectRequestDate?: string | null;
+  canbeCancelledUntil?: string | null;
+  canbeRejectedUntil?: string | null;
 }

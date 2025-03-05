@@ -2,7 +2,7 @@ import { Body, Controller, Get, Inject, Param, Patch, Post, UseGuards } from '@n
 import { ApiTags } from '@nestjs/swagger';
 
 import { AuthenticationGuard } from '../../../../core/guards';
-import { AcceptEtaInvoice, CancelEtaInvoice, ProcessEtaInvoices, SubmitEtaInvoices } from '../../application';
+import { AcceptEtaInvoice, CancelEtaInvoice, ProcessEtaInvoices, SubmitEtaInvoices, SyncReceivedInvoices } from '../../application';
 import { ETA_INVOICE_USECASE_PROVIDERS } from '../../domain';
 import { CancelEtaInvoiceDto, InvoiceDto, ProcessEtaInvoicesDto, SubmitEtaInvoicesDto } from '../dtos';
 
@@ -21,6 +21,9 @@ export class EtaInvoiceController {
 
     @Inject(ETA_INVOICE_USECASE_PROVIDERS.ACCEPT_INVOICE)
     private readonly acceptInvoiceUsecase: AcceptEtaInvoice,
+
+    @Inject(ETA_INVOICE_USECASE_PROVIDERS.SYNC_RECEIVED_INVOICES)
+    private readonly syncReceivedInvoicesUsecase: SyncReceivedInvoices,
   ) {}
 
   @Get('invoices/eta/sync')
@@ -68,5 +71,11 @@ export class EtaInvoiceController {
   async cancelInvoice(@Param('id') id: string, @Body() dto: CancelEtaInvoiceDto): Promise<InvoiceDto> {
     const { uuid, status, reason } = dto;
     return this.cancelInvoiceUsecase.execute(id, uuid, status, reason);
+  }
+
+  @Get('invoices/eta/sync-received-invoices/:organizationId')
+  @UseGuards(AuthenticationGuard)
+  async syncReceivedInvoices(@Param('organizationId') organizationId: string): Promise<any> {
+    return this.syncReceivedInvoicesUsecase.execute(organizationId);
   }
 }

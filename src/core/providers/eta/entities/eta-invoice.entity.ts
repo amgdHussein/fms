@@ -76,7 +76,7 @@ export type EtaInvoiceType = 'I' | 'C' | 'D' | 'EC' | 'ED' | 'EI';
 
 export interface CurrencySegments {
   currency?: string;
-  currencyExchangeRate?: number;
+  currencyExchangeRate?: number | null;
   totalItemsDiscountAmount?: number;
   totalAmount?: number;
   taxTotals?: TaxTotal[];
@@ -142,7 +142,7 @@ export interface EtaInvoiceLine {
   totalTaxableFees?: number; // decimal
   netTotal?: number; // decimal
   itemsDiscount?: number; // decimal
-  discount?: number | Discount;
+  discount?: Discount;
   taxableItems?: TaxableItems[];
   internalCode?: string;
 }

@@ -7,4 +7,7 @@ export interface IEtaInvoiceService {
   submitInvoices(invoices: (AddEtaInvoice & { invoiceId: string })[], organizationId: string): Promise<void>;
   cancelInvoice(id: string, uuid: string, status: 'cancelled' | 'rejected', reason: string): Promise<TaxInvoice>;
   acceptInvoice(id: string): Promise<TaxInvoice>;
+
+  // ? Sync Related
+  syncReceivedInvoices(organizationId: string): Promise<any>;
 }

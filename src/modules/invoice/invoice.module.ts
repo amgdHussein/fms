@@ -14,6 +14,7 @@ import {
   IsInvoiceExistConstraint,
   ProcessEtaInvoices,
   SubmitEtaInvoices,
+  SyncReceivedInvoices,
   UpdateInvoice,
 } from './application';
 import {
@@ -91,6 +92,10 @@ const etaInvoiceUsecases = [
   {
     provide: ETA_INVOICE_USECASE_PROVIDERS.ACCEPT_INVOICE,
     useClass: AcceptEtaInvoice,
+  },
+  {
+    provide: ETA_INVOICE_USECASE_PROVIDERS.SYNC_RECEIVED_INVOICES,
+    useClass: SyncReceivedInvoices,
   },
 ];
 

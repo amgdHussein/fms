@@ -72,6 +72,8 @@ export class InvoiceService implements IInvoiceService {
     return updatedInvoice;
   }
 
+  //TODO: ADD UPDATE INVOICES
+
   async deleteInvoice(id: string): Promise<Invoice> {
     const items = await this.deleteItems(id);
     const oldInvoice = await this.invoiceRepo.delete(id);
@@ -85,6 +87,24 @@ export class InvoiceService implements IInvoiceService {
   // eslint-disable-next-line @typescript-eslint/require-await, @typescript-eslint/no-unused-vars
   async sendClientInvoice(id: string): Promise<boolean> {
     return true;
+    // if (!invoice.clientData.email) {
+    //   console.error('no client email found');
+    //   return;
+    // }
+    // const organization = await this.getCurrentOrg(this.systemId);
+
+    // // const invoiceBody = this.createInvoiceTable(invoice, organization);
+    // const mail: Mail = {
+    //   // recipient: 'mahmoudmohyeldin.iqranetwork@gmail.com',
+    //   recipient: invoice.clientData.email,
+    //   replyTo: process.env.GMAIL_AUTH_USER,
+    //   senderName: organization.businessName,
+    //   subject: `${organization.businessName} sent you an invoice: ${invoice.invoiceNumber}`,
+    //   body: '',
+    //   senderType: SenderType.SUPPORT,
+    // };
+
+    // this.gmailService.addJob(mail);
   }
 
   private async updateClientAggregation(invoice: Invoice, oldInvoice?: Invoice, isDelete = false): Promise<void> {
