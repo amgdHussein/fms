@@ -348,7 +348,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
 
           // branchId: //TODO: HOW TO GET BRANCH ID
 
-          sender: {
+          issuer: {
             name: etaInvoiceDetails.issuer.name,
             taxId: etaInvoiceDetails.issuer.id,
             address: {
@@ -583,7 +583,7 @@ export class EtaInvoiceService implements IEtaInvoiceService {
 
           // branchId: //TODO: HOW TO GET BRANCH ID
 
-          sender: {
+          issuer: {
             name: etaInvoiceDetails.issuer.name,
             taxId: etaInvoiceDetails.issuer.id,
             address: {
