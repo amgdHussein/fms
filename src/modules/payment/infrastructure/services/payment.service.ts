@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { EASY_KASH_PROVIDER, PAY_TABS_PROVIDER, PAYPAL_PROVIDER, STRIPE_PROVIDER } from '../../../../core/constants';
+import { EASY_KASH_PROVIDER, HTTP_PROVIDER, PAY_TABS_PROVIDER, PAYPAL_PROVIDER, STRIPE_PROVIDER } from '../../../../core/constants';
 import { PaymentGateway } from '../../../../core/enums';
 import { BadRequestException } from '../../../../core/exceptions';
 import { Currency, Receiver } from '../../../../core/models';
@@ -17,11 +17,15 @@ import {
 } from '../../../organization/domain';
 import { IReceiptService, RECEIPT_SERVICE_PROVIDER } from '../../../receipt/domain';
 
+import { HttpService } from '@nestjs/axios';
 import { IPaymentRepository, IPaymentService, Payment, PAYMENT_REPOSITORY_PROVIDER, PaymentEntity, PaymentEntityType, PaymentMethod } from '../../domain';
 
 @Injectable()
 export class PaymentService implements IPaymentService {
   constructor(
+    @Inject(HTTP_PROVIDER)
+    private readonly http: HttpService,
+
     @Inject(STRIPE_PROVIDER)
     private readonly stripeService: StripeService,
 
@@ -62,6 +66,7 @@ export class PaymentService implements IPaymentService {
     switch (payment.method) {
       case PaymentMethod.CREDIT_CARD: {
         return this.processGatewayPayment(payment);
+        break;
       }
 
       case PaymentMethod.CASH: {
@@ -127,7 +132,7 @@ export class PaymentService implements IPaymentService {
     const credentials = BillingAccount.toCredentials(billingAccount.credentials);
 
     // Fetch the payment entity (invoice, receipt, etc.) and validate it
-    const entities: PaymentEntity[] = await Promise.all(payment.entityIds.map(id => this.getPaymentEntity(payment.entityType, id)));
+    const entities: PaymentEntity[] = await Promise.all(payment.entityIds.map(async id => this.getPaymentEntity(payment.entityType, id)));
     const receiver: Receiver = entities[0].receiver;
 
     // Accumulate the total amount of the payment
@@ -139,7 +144,7 @@ export class PaymentService implements IPaymentService {
     }
 
     // Check if all payment receivers are the same
-    if (entities.every(({ clientId }) => clientId == entities[0].clientId)) {
+    if (!entities.every(({ clientId }) => clientId == entities[0].clientId)) {
       throw new BadRequestException('All payment receivers must be the same!');
     }
 
@@ -148,9 +153,16 @@ export class PaymentService implements IPaymentService {
 
     switch (payment.gateway) {
       case PaymentGateway.STRIPE: {
+        console.log('stripe case');
+
         try {
           // Payment gateway for the client (invoice receiver)
-          const billing = new StripeService({ apiKey: credentials.apiKey });
+          // const billing = new StripeService({ apiKey: credentials.apiKey });
+          const billing = new StripeService({
+            apiKey: 'sk_test_51QYrNYKNln1hF56rD6elusvFk152uoMjIiHE5iY0Dw9U49tF3ECzuck4n2q7rTep0ufyj7OadfVFBKidtrtNGA9100o852DIKn',
+          });
+
+          //TODO: THINK OF CHECKOUT INSTEAD OF INVOICE
 
           // Payment Customer for the client (invoice receiver)
           let [customer] = await billing.queryCustomers(`email:"${receiver.email}"`, 1);
@@ -190,9 +202,12 @@ export class PaymentService implements IPaymentService {
             { payment_method_types: ['card'] },
             true,
             30, //TODO Can be changed
-            payment.entityType == PaymentEntityType.INVOICE
-              ? { mofawtarInvoices: entities.map(({ id }) => id).join(', '), type: PaymentEntityType.INVOICE, paymentId: newPayment.id }
-              : { mofawtarReceipts: entities.map(({ id }) => id).join(', '), type: PaymentEntityType.RECEIPT, paymentId: newPayment.id },
+
+            {
+              mofawtarEntityIds: entities.map(({ id }) => id).join(', '),
+              type: payment.entityType == PaymentEntityType.INVOICE ? PaymentEntityType.INVOICE : PaymentEntityType.RECEIPT,
+              paymentId: newPayment.id,
+            },
           );
 
           const invoiceItem = await billing.addInvoiceItem(
@@ -200,35 +215,70 @@ export class PaymentService implements IPaymentService {
             invoice.id,
             price.id,
             1,
-            `Created By Mofawtar: Invoice item for ${customer.name}`,
+            `Created By Mofawtar: Invoices numbers #${payment.entityNumbers.join(', ')} for ${customer.name}`,
             currency.code,
           );
 
-          await billing.finalizeInvoice(invoice.id);
+          const test = await billing.finalizeInvoice(invoice.id);
+          console.log('finalizeInvoice', test);
         } catch {
           throw new BadRequestException('Failed to process the payment!');
         }
+
+        return newPayment;
+
+        break;
       }
 
       case PaymentGateway.PAYPAL: {
+        console.log('paypal case');
       }
 
       case PaymentGateway.EASYKASH: {
+        console.log('easyKAash case');
       }
 
       case PaymentGateway.PAYTABS: {
+        console.log('PAYTABS case');
+        // return newPayment;
+
         // Payment gateway for the client (invoice receiver)
-        const billing = new PayTabsService({
-          serverKey: credentials.serverKey,
-          profileId: credentials.profileId,
-        });
+        const billing = new PayTabsService(
+          {
+            serverKey: 'SGJ9NKWK6N-JJZ2TKWGWJ-6NKRLNRKHZ', // credentials.serverKey,
+            profileId: '140150', // credentials.profileId,
+          },
+          this.http,
+        );
+
+        //TODO: CHECK THIS WITH WHAT'S INSIDE  ADD INVOICE FUNCTION IN PAYTABS
+        const customMetaData = JSON.stringify([
+          `mofawtarEntityIds:${entities.map(({ id }) => id).join(', ')}`,
+          `type:${payment.entityType == PaymentEntityType.INVOICE ? PaymentEntityType.INVOICE : PaymentEntityType.RECEIPT}`,
+          `paymentId:${newPayment.id}`,
+        ]);
 
         const invoice = await billing.addInvoice({
           id: entities.map(({ id }) => id).join(', '), // TODO: CHANGE IF THE PAYMENT CAN NOT BE REACHABLE
           amount: totalAmount,
           currency: currency.code,
           clientName: receiver.name,
+          metadata: customMetaData,
+          // {
+          //   mofawtarEntityIds: entities.map(({ id }) => id).join(', '),
+          //   type: payment.entityType == PaymentEntityType.INVOICE ? PaymentEntityType.INVOICE : PaymentEntityType.RECEIPT,
+          //   paymentId: newPayment.id,
+          // },
         });
+
+        console.log('invoice from paytabs', invoice);
+
+        // TEST GET TRANSACTION
+
+        // const res = await billing.queryTransactionByTranRef();
+        // console.log('res', JSON.stringify(res));
+
+        break;
       }
 
       default: {
@@ -241,7 +291,33 @@ export class PaymentService implements IPaymentService {
     return this.repo.update(payments);
   }
 
-  async deletePayment(id: string): Promise<Payment> {
-    return this.repo.delete(id);
+  async deletePayment(id: string): Promise<any> {
+    const billing = new StripeService({
+      apiKey: 'sk_test_51QYrNYKNln1hF56rD6elusvFk152uoMjIiHE5iY0Dw9U49tF3ECzuck4n2q7rTep0ufyj7OadfVFBKidtrtNGA9100o852DIKn',
+    });
+
+    //TODO: HOW AND WHEN TO ADD WEBHOOK AND KNOW IFU ADD ALREADY OR NOT
+    const test = await billing.addWebhookEndpoint('payments/handler/stripe', ['invoice.payment_succeeded', 'invoice.payment_failed']);
+
+    // {
+    //   "id": "we_1QzMt6KNln1hF56ruSQIqivd",
+    //   "object": "webhook_endpoint",
+    //   "api_version": null,
+    //   "application": null,
+    //   "created": 1741200108,
+    //   "description": null,
+    //   "enabled_events": [
+    //     "invoice.payment_succeeded",
+    //     "invoice.payment_failed"
+    //   ],
+    //   "livemode": false,
+    //   "metadata": {},
+    //   "secret": "whsec_napE22q6fW3Yc24fiHTVBKbQ7WHElgRj",
+    //   "status": "enabled",
+    //   "url": "https://frank-chicken-quietly.ngrok-free.app/payments/handler/stripe"
+    // }
+
+    return test;
+    // return this.repo.delete(id);
   }
 }

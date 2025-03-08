@@ -51,6 +51,18 @@ export interface PaytabsInvoiceParams {
       },
     ];
   };
+
+  user_defined: {
+    udf1: string;
+    udf2?: string;
+    udf3?: string;
+    udf4?: string;
+    udf5?: string;
+    udf6?: string;
+    udf7?: string;
+    udf8?: string;
+    udf9?: string;
+  };
   callback?: string;
   return?: string;
 }

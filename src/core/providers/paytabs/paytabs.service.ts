@@ -1,9 +1,8 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as moment from 'moment-timezone';
 import { catchError, firstValueFrom, map } from 'rxjs';
 
-import { HTTP_PROVIDER } from '../../constants';
 import { CurrencyCode } from '../../enums';
 
 import { PayTabsInvoice, PaytabsInvoiceParams, TransactionClass, TransactionType } from './entities';
@@ -13,31 +12,34 @@ import { PayTabsConfigs } from './paytabs.config';
 export class PayTabsService {
   private readonly BASE_URL = 'https://secure-egypt.paytabs.com';
 
-  @Inject(HTTP_PROVIDER)
-  private readonly http: HttpService;
+  // @Inject(HTTP_PROVIDER)
+  // private readonly http: HttpService;
 
-  constructor(private readonly configs: PayTabsConfigs) {}
+  constructor(
+    private readonly configs: PayTabsConfigs,
+    private readonly http: HttpService,
+  ) {}
 
-  async createHostedPaymentPage(data: PaytabsInvoiceParams): Promise<PayTabsInvoice> {
-    const endpoint = `${this.BASE_URL}/payment/request`;
+  // async createHostedPaymentPage(data: PaytabsInvoiceParams): Promise<PayTabsInvoice> {
+  //   const endpoint = `${this.BASE_URL}/payment/request`;
 
-    try {
-      const request = this.http.post(endpoint, data, {
-        headers: {
-          Authorization: `${this.configs.serverKey}`,
-        },
-      });
+  //   try {
+  //     const request = this.http.post(endpoint, data, {
+  //       headers: {
+  //         Authorization: `${this.configs.serverKey}`,
+  //       },
+  //     });
 
-      const response = await firstValueFrom(request);
-      return response.data;
-    } catch (error) {
-      this.handlePayTabsError(error);
-    }
-  }
+  //     const response = await firstValueFrom(request);
+  //     return response.data;
+  //   } catch (error) {
+  //     this.handlePayTabsError(error);
+  //   }
+  // }
 
   // ? Invoices
 
-  async addInvoice(invoice: { id: string; currency: CurrencyCode; amount: number; clientName: string }): Promise<PayTabsInvoice> {
+  async addInvoice(invoice: { id: string; currency: CurrencyCode; amount: number; clientName: string; metadata: string }): Promise<PayTabsInvoice> {
     const endpoint = `${this.BASE_URL}/payment/invoice/new`;
 
     const payTabsInvoice: PaytabsInvoiceParams = {
@@ -48,6 +50,10 @@ export class PayTabsService {
       cart_amount: invoice.amount,
       cart_id: invoice.id,
       cart_description: 'Created By Mofawtar invoice for client ' + invoice.clientName,
+      user_defined: {
+        udf1: `${JSON.stringify(invoice.metadata)}`,
+      },
+
       hide_shipping: true,
       customer_details: {
         name: invoice.clientName,
@@ -70,14 +76,40 @@ export class PayTabsService {
           },
         ],
       },
-      callback: `${process.env.PROD_URL}/payments/paytabs/callback`,
-      return: 'https://www.dashboard.mofawtar.com/',
+
+      callback: `${process.env.PROD_URL}/payments/handler/paytabs`,
+      // return: 'https://www.dashboard.mofawtar.com/', //TODO: THIS OF URL IN FRONTEND
     };
 
     const request = this.http
       .post<PayTabsInvoice>(endpoint, payTabsInvoice, {
         headers: { Authorization: `${this.configs.serverKey}` },
       })
+      .pipe(
+        map(response => response.data),
+        catchError(this.handlePayTabsError),
+      );
+
+    return firstValueFrom(request);
+  }
+
+  async queryTransactionByTranRef(): Promise<any> {
+    const endpoint = `${this.BASE_URL}/payment/query`; // THIS IS THE SAME AS WEBHOOK RETURNS
+    // const endpoint = `${this.BASE_URL}/payment/invoice/${3167496}/view`;
+    // const endpoint = `${this.BASE_URL}/payment/invoice/search`;
+
+    const request = this.http
+      .post<any>(
+        endpoint,
+        {
+          profile_id: 140150,
+          tran_ref: 'TST2506702028140',
+          // cart_id: 'FUbMYmXGXHBtmZtVTI2N',
+        },
+        {
+          headers: { Authorization: `${this.configs.serverKey}` },
+        },
+      )
       .pipe(
         map(response => response.data),
         catchError(this.handlePayTabsError),

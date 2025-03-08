@@ -11,8 +11,11 @@ export class StripeService {
 
   constructor(readonly configs: StripeConfigs) {
     this.stripe = new Stripe(configs.apiKey, {
-      apiVersion: '2025-01-27.acacia',
+      apiVersion: '2025-01-27.acacia', //TODO: UPDATE STRIPE VERSION
     });
+
+    // TODO:CHECK IF FIRST TIME THEN SET WEEBHOOKS ELSE DO NOTHING
+    // create webhook
 
     this.logger.log('StripeService initialized with API version 2024-11-20');
   }
@@ -509,8 +512,10 @@ export class StripeService {
   async addWebhookEndpoint(url: string, events: Stripe.WebhookEndpointCreateParams.EnabledEvent[]): Promise<Stripe.WebhookEndpoint> {
     return this.stripe.webhookEndpoints
       .create({
+        // url: `${process.env.PROD_URL}/${url}`,
         url: `${process.env.PROD_URL}/${url}`,
         enabled_events: events,
+        // metadata: {} //TODO: THINK OF ADD TOKEN TO THIS
       })
       .catch(error => {
         throw new InternalServerErrorException(error);

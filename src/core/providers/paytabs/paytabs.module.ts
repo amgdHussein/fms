@@ -1,5 +1,6 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 
+import { HttpService } from '@nestjs/axios';
 import { PAY_TABS_PROVIDER } from '../../constants';
 import { PayTabsConfigs } from './paytabs.config';
 import { PayTabsService } from './paytabs.service';
@@ -15,7 +16,11 @@ export class PayTabsModule {
   static forRoot(configs: PayTabsConfigs): DynamicModule {
     const payTabsProvider: Provider = {
       provide: PAY_TABS_PROVIDER,
-      useFactory: () => new PayTabsService(configs),
+      // inject: [HTTP_PROVIDER],
+      useFactory: (httpService: HttpService) => {
+        // Added arrow function =>
+        return new PayTabsService(configs, httpService); //TODO: FIX HTTP INJECTION
+      },
     };
 
     return {
