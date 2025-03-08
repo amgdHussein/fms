@@ -48,7 +48,7 @@ export class PayTabsService {
       tran_class: TransactionClass.ECOM,
       cart_currency: invoice.currency,
       cart_amount: invoice.amount,
-      cart_id: invoice.id,
+      cart_id: invoice.id, //TODO: THINK OF ADD ENTITIES NUMBER INSTEAD OF ID
       cart_description: 'Created By Mofawtar invoice for client ' + invoice.clientName,
       user_defined: {
         udf1: `${JSON.stringify(invoice.metadata)}`,
