@@ -1,6 +1,4 @@
-import { Address, Currency, Issuer, Receiver } from '../../../../../core/models';
-
-import { PaymentStatus } from '../../../../payment/domain';
+import { Address, Currency, Issuer, Photo, Receiver } from '../../../../../core/models';
 
 import { Invoice, InvoiceDirection, InvoiceForm, InvoiceStatus, InvoiceType, Item } from '../../../domain';
 
@@ -25,7 +23,7 @@ export class InvoiceDto implements Invoice {
   direction: InvoiceDirection;
   currency: Currency;
   status: InvoiceStatus;
-  paymentStatus: PaymentStatus;
+  paymentId: string;
   discount: number;
   additionalDiscount?: number;
   tax: number;
@@ -38,6 +36,8 @@ export class InvoiceDto implements Invoice {
   reference?: string[];
   issuedAt: number;
   dueAt?: number;
+
+  logo?: Photo;
 
   createdBy: string;
   createdAt: number;

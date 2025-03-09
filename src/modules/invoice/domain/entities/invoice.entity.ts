@@ -1,8 +1,6 @@
 import { Authority } from '../../../../core/enums';
 import { Currency, Issuer, Photo, Receiver } from '../../../../core/models';
 
-import { PaymentStatus } from '../../../payment/domain';
-
 import { InvoiceDirection } from './invoice-direction.enum';
 import { InvoiceForm } from './invoice-form.enum';
 import { InvoiceStatus, TaxInvoiceStatus } from './invoice-status.enum';
@@ -31,7 +29,8 @@ export interface Invoice {
 
   currency: Currency; // Currency of the invoice
   status: InvoiceStatus; // Status of the invoice
-  paymentStatus: PaymentStatus; // Payment status of the invoice
+  // paymentStatus: PaymentStatus; // Payment status of the invoice
+  paymentId: string; // ID of the payment associated with the invoice
 
   discount: number; // ? discountsTotal // The total discount applied
   additionalDiscount?: number; // ? extraDiscountAmount // Any additional discount applied

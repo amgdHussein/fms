@@ -21,6 +21,7 @@ export interface Receipt {
   currency: Currency; // Currency of the receipt
   status: ReceiptStatus; // Status of the receipt
   // paymentStatus: PaymentStatus; // Payment status of the receipt
+  paymentId: string; // Payment ID associated with the receipt
 
   discount: number; // ? discountsTotal // The total discount applied
   additionalDiscount?: number; // ? extraDiscountAmount // Any additional discount applied

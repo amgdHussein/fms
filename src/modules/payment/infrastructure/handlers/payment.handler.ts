@@ -107,11 +107,13 @@ export class PaymentHandler {
           if (entityType == PaymentEntityType.INVOICE) {
             await this.invoiceService.updateInvoice({
               id: id,
+              paymentId,
               status: InvoiceStatus.PAID,
             });
           } else {
             await this.receiptService.updateReceipt({
               id: id,
+              paymentId,
               status: ReceiptStatus.PAID,
             });
           }
@@ -122,6 +124,7 @@ export class PaymentHandler {
           status: PaymentStatus.COMPLETED,
           referenceId: referenceId, // Reference ID from the payment gateway
           processedAt: processedAt,
+          paidAt: processedAt,
         });
 
         break;

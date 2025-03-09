@@ -135,6 +135,17 @@ export class ReceiptDto implements Receipt {
   status: ReceiptStatus;
 
   @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    name: 'paymentId',
+    type: String,
+    required: true,
+    example: '1681214766653',
+    description: 'Payment Id of the receipt',
+  })
+  paymentId: string;
+
+  @IsNotEmpty()
   @IsNumber()
   @ApiProperty({
     name: 'discount',
