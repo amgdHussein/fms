@@ -1,37 +1,19 @@
-import { Currency } from '../../../../core/models';
+import { Invoice } from '../../../invoice/domain';
 
-import { InvoiceStatus } from '../../../invoice/domain';
-import { PaymentStatus } from '../../../payment/domain';
-
-export interface SubscriptionInvoice {
-  id: string;
-  organizationId: string; // Unique ID for the organization
-  subscriptionId: string; // ID of the subscription associated with the invoice
-
-  name: string; // Name of the invoice
-  description?: string; // Description of the invoice
-
-  currency: Currency; // Currency of the invoice
-  mission: Mission; // Type or purpose of the invoice
-  status: InvoiceStatus; // Status of the invoice
-  paymentStatus: PaymentStatus; // Payment status of the invoice
-
-  discount?: number; // Discount applied to the invoice
-  tax?: number; // The total tax applied
-
-  grossAmount: number; // The total cost of all products or services before taxes and discounts
-  netAmount: number; // The total cost after discounts but before taxes
-  totalAmount: number; // The total cost after discounts and taxes
-
-  notes?: string; // Notes or comments related to the invoice
-
-  issuedAt: number; // Timestamp when the invoice was issued
-  dueAt: number; // Timestamp when the invoice is due
-
-  createdBy: string; // User who created the invoice
-  createdAt: number; // Timestamp when the invoice was created
-  updatedBy: string; // User who last updated the invoice
-  updatedAt: number; // Timestamp when the invoice was last updated
+/**
+ * @param issuer Mofawtar
+ * @param receiver - organization
+ * @param organizationId - mofawtar
+ * @param clientId - organizationId
+ * @param type - Type of the invoice = standard
+ * @param form - Form/type of the invoice = invoice
+ * @param items - This will be a static list of items for each subscription plan
+ * @param logo - Logo of mofawtar organization
+ * @param direction - Sent
+ */
+export interface SubscriptionInvoice extends Omit<Invoice, 'profileId' | 'branchId' | 'tax' | 'items' | 'reference'> {
+  subscriptionId: string;
+  // mission: Mission; // Type or purpose of the invoice
 }
 
 export enum Mission {

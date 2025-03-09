@@ -11,6 +11,7 @@ import {
   GetInvoiceItems,
   GetInvoices,
   GetOrganizationInvoices,
+  GetSubscriptionInvoices,
   IsInvoiceExistConstraint,
   ProcessEtaInvoices,
   SubmitEtaInvoices,
@@ -72,6 +73,10 @@ const invoiceUsecases = [
   {
     provide: INVOICE_USECASE_PROVIDERS.GET_ORGANIZATION_INVOICES,
     useClass: GetOrganizationInvoices,
+  },
+  {
+    provide: INVOICE_USECASE_PROVIDERS.GET_SUBSCRIPTION_INVOICES,
+    useClass: GetSubscriptionInvoices,
   },
 ];
 

@@ -38,6 +38,10 @@ export enum FIRESTORE_COLLECTION_PROVIDERS {
   RECEIPTS = 'receipts',
 
   PAYMENTS = 'payments',
+
+  // ? Subscription Related
+  SUBSCRIPTIONS = 'subscriptions',
+  SUBSCRIPTION_PLANS = 'subscription-plans',
 }
 
 export const FIRESTORE_QUERY_MAX_LIMIT = 1e2;

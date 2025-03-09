@@ -4,5 +4,6 @@ export { GetClientInvoices } from './get-client-invoice.usecase';
 export { GetInvoiceItems } from './get-invoice-items.usecase';
 export { GetInvoice } from './get-invoice.usecase';
 export { GetOrganizationInvoices } from './get-organization-invoice.usecase';
+export { GetSubscriptionInvoices } from './get-subscription-invoice.usecase';
 export { GetInvoices } from './query-invoice.usecase';
 export { UpdateInvoice } from './update-invoice.usecase';

@@ -10,6 +10,7 @@ import {
   GetInvoiceItems,
   GetInvoices,
   GetOrganizationInvoices,
+  GetSubscriptionInvoices,
   UpdateInvoice,
 } from '../../application';
 import { INVOICE_USECASE_PROVIDERS } from '../../domain';
@@ -39,6 +40,9 @@ export class InvoiceController {
 
     @Inject(INVOICE_USECASE_PROVIDERS.GET_ORGANIZATION_INVOICES)
     private readonly getOrganizationInvoicesUsecase: GetOrganizationInvoices,
+
+    @Inject(INVOICE_USECASE_PROVIDERS.GET_SUBSCRIPTION_INVOICES)
+    private readonly getSubscriptionInvoicesUsecase: GetSubscriptionInvoices,
 
     @Inject(INVOICE_USECASE_PROVIDERS.GET_INVOICE_ITEMS)
     private readonly getInvoiceItemsUsecase: GetInvoiceItems,
@@ -196,5 +200,22 @@ export class InvoiceController {
   })
   async getOrganizationInvoices(@Param('organizationId') organizationId: string): Promise<InvoiceDto[]> {
     return this.getOrganizationInvoicesUsecase.execute(organizationId);
+  }
+
+  @Get('subscriptions/:subscriptionId/invoices')
+  @ApiOperation({ summary: 'Get all invoices for a subscription.' })
+  @ApiParam({
+    name: 'subscriptionId',
+    type: String,
+    example: 'K05ThPKxfugr9yYhA82Z',
+    required: true,
+    description: 'The id of the subscription.',
+  })
+  @ApiResponse({
+    type: Array<InvoiceDto>,
+    description: 'List of invoices for the subscription.',
+  })
+  async getSubscriptionInvoices(@Param('subscriptionId') subscriptionId: string): Promise<InvoiceDto[]> {
+    return this.getSubscriptionInvoicesUsecase.execute(subscriptionId);
   }
 }
