@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { QueryFilter, QueryOrder } from '../../../../core/queries';
-import { BillingAccount, BRANCH_REPOSITORY_PROVIDER, IBillingAccountRepository, IBillingAccountService } from '../../domain';
+import { BILLING_ACCOUNT_REPOSITORY_PROVIDER, BillingAccount, IBillingAccountRepository, IBillingAccountService } from '../../domain';
 
 @Injectable()
 export class BillingAccountService implements IBillingAccountService {
   constructor(
-    @Inject(BRANCH_REPOSITORY_PROVIDER)
+    @Inject(BILLING_ACCOUNT_REPOSITORY_PROVIDER)
     private readonly repo: IBillingAccountRepository,
   ) {}
 
