@@ -12,6 +12,15 @@ import { PayTabsConfigs } from './paytabs.config';
 export class PayTabsService {
   private readonly BASE_URL = 'https://secure-egypt.paytabs.com';
 
+  // THINK OF ?  MAP BASE URL TO ORGANIZATION COUNTRY or client country
+  // KSA = 'https://secure.paytabs.sa';
+  // UAE = 'https://secure.paytabs.com';
+  // EGYPT = 'https://secure-egypt.paytabs.com';
+  // OMAN = 'https://secure-oman.paytabs.com';
+  // KUWAIT = 'https://secure-kuwait.paytabs.com';
+  // JORDAN = 'https://secure-jordan.paytabs.com';
+  // GLOBAL = 'https://secure-global.paytabs.com';
+
   // @Inject(HTTP_PROVIDER)
   // private readonly http: HttpService;
 
@@ -103,6 +112,7 @@ export class PayTabsService {
         endpoint,
         {
           profile_id: 140150,
+          // tran_ref: 'TST2506602028033',
           tran_ref: 'TST2506702028140',
           // cart_id: 'FUbMYmXGXHBtmZtVTI2N',
         },
