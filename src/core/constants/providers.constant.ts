@@ -1,6 +1,7 @@
 export const HTTP_PROVIDER = 'HTTP_PROVIDER';
 export const REDIS_PROVIDER = 'REDIS';
 export const EVENT_EMITTER_PROVIDER = 'EVENT_EMITTER';
+export const ENCRYPTION_PROVIDER = 'ENCRYPTION_PROVIDER';
 
 // ** Passport Auth **
 export const AUTH_STRATEGY = 'AUTH_STRATEGY';

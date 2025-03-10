@@ -11,6 +11,7 @@ import { LoggingInterceptor } from './core/interceptors';
 import {
   CloudTasksModule,
   EasyKashModule,
+  EncryptionModule,
   EtaModule,
   EventEmitterModule,
   FireAuthModule,
@@ -25,7 +26,6 @@ import {
 
 import { ClsModule } from 'nestjs-cls';
 import { Environment } from './core/constants';
-import { EncryptionModule } from './core/providers/encryption/encryption.module';
 import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, OrganizationModule, PaymentModule, ReceiptModule, UserModule } from './modules';
 
 @Module({
@@ -84,6 +84,15 @@ import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, 
       },
     }),
 
+    EncryptionModule.forRoot({
+      secretKey: process.env.ENCRYPTION_SECRET,
+      salt: process.env.ENCRYPTION_SALT,
+      algorithm: process.env.ENCRYPTION_ALGORITHM,
+      digest: process.env.ENCRYPTION_DIGEST,
+      iterations: +process.env.ENCRYPTION_ITERATIONS,
+      keyLength: +process.env.ENCRYPTION_KEY_LENGTH,
+    }),
+
     // ? Core Modules
 
     AuthModule,
@@ -133,8 +142,8 @@ import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, 
     }),
 
     PayTabsModule.forRoot({
-      profileId: '',
-      serverKey: '',
+      profileId: process.env.PAY_TABS_PROFILE_ID,
+      serverKey: process.env.PAY_TABS_SERVER_KEY,
     }),
 
     PaypalModule.forRoot({
@@ -158,7 +167,6 @@ import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, 
     InvoiceModule,
     PaymentModule,
     ReceiptModule,
-    EncryptionModule.forRoot(),
   ],
 
   providers: [

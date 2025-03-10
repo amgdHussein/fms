@@ -1,18 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { EASY_KASH_PROVIDER, HTTP_PROVIDER, PAY_TABS_PROVIDER, PAYPAL_PROVIDER, STRIPE_PROVIDER } from '../../../../core/constants';
+import { HttpService } from '@nestjs/axios';
+
+import { EASY_KASH_PROVIDER, ENCRYPTION_PROVIDER, HTTP_PROVIDER, PAY_TABS_PROVIDER, PAYPAL_PROVIDER, STRIPE_PROVIDER } from '../../../../core/constants';
 import { PaymentGateway } from '../../../../core/enums';
 import { BadRequestException } from '../../../../core/exceptions';
 import { Currency, Receiver } from '../../../../core/models';
-import { EasyKashService, PaypalService, PayTabsService, StripeService } from '../../../../core/providers';
+import { EasyKashService, EncryptionService, PaypalService, PayTabsConfigs, PayTabsService, StripeConfigs, StripeService } from '../../../../core/providers';
 import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
 import { IInvoiceService, INVOICE_SERVICE_PROVIDER } from '../../../invoice/domain';
 import { BILLING_ACCOUNT_SERVICE_PROVIDER, IBillingAccountService, IOrganizationService, ORGANIZATION_SERVICE_PROVIDER } from '../../../organization/domain';
 import { IReceiptService, RECEIPT_SERVICE_PROVIDER } from '../../../receipt/domain';
 
-import { HttpService } from '@nestjs/axios';
-import { EncryptionService } from '../../../../core/providers/encryption/encryption.service';
 import { IPaymentRepository, IPaymentService, Payment, PAYMENT_REPOSITORY_PROVIDER, PaymentEntity, PaymentEntityType, PaymentMethod } from '../../domain';
 
 @Injectable()
@@ -20,6 +20,9 @@ export class PaymentService implements IPaymentService {
   constructor(
     @Inject(HTTP_PROVIDER)
     private readonly http: HttpService,
+
+    @Inject(ENCRYPTION_PROVIDER)
+    private encryptionService: EncryptionService,
 
     @Inject(STRIPE_PROVIDER)
     private readonly stripeService: StripeService,
@@ -47,8 +50,6 @@ export class PaymentService implements IPaymentService {
 
     @Inject(RECEIPT_SERVICE_PROVIDER)
     private readonly receiptService: IReceiptService,
-
-    private encryptionService: EncryptionService,
   ) {}
 
   async getPayment(id: string): Promise<Payment> {
@@ -125,13 +126,6 @@ export class PaymentService implements IPaymentService {
       throw new BadRequestException(`No billing account found in the organization for the provided gateway "${payment.gateway}"!`);
     }
 
-    // Parse the credentials
-    // const credentials = BillingAccount.toCredentials(billingAccount.credentials);
-    const credentials = await this.encryptionService.decrypt(billingAccount.credentials);
-    console.log('decrypt', credentials);
-    // { secretKey: 'SGJ9NKWK6N-JJZ2TKWGWJ-6NKRLNRKHZ', profileId: '140150' }
-    // return;
-
     // Fetch the payment entity (invoice, receipt, etc.) and validate it
     const entities: PaymentEntity[] = await Promise.all(payment.entityIds.map(async id => this.getPaymentEntity(payment.entityType, id)));
     const receiver: Receiver = entities[0].receiver;
@@ -166,7 +160,8 @@ export class PaymentService implements IPaymentService {
 
         try {
           // Payment gateway for the client (invoice receiver)
-          const billing = new StripeService({ apiKey: credentials.secretKey });
+          const credentials = await this.encryptionService.decrypt<StripeConfigs>(billingAccount.credentials);
+          const billing = new StripeService(credentials);
 
           //TODO: THINK OF CHECKOUT INSTEAD OF INVOICE
 
@@ -249,13 +244,8 @@ export class PaymentService implements IPaymentService {
         // return newPayment;
 
         // Payment gateway for the client (invoice receiver)
-        const billing = new PayTabsService(
-          {
-            serverKey: credentials.secretKey, // credentials.serverKey,
-            profileId: credentials.profileId, // credentials.profileId,
-          },
-          this.http,
-        );
+        const credentials = await this.encryptionService.decrypt<PayTabsConfigs>(billingAccount.credentials);
+        const billing = new PayTabsService(credentials, this.http);
 
         //TODO: CHECK THIS WITH WHAT'S INSIDE  ADD INVOICE FUNCTION IN PAYTABS
         const customMetaData = JSON.stringify([

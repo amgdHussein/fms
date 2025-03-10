@@ -1,4 +1,5 @@
 export * from './easykash';
+export * from './encryption';
 export * from './eta';
 export * from './event-emitter/event-emitter.module';
 export * from './google';
