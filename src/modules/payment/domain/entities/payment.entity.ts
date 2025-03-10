@@ -9,6 +9,7 @@ import { PaymentMethod } from './payment-method.enum';
 export interface Payment {
   id: string;
   organizationId: string; // Unique ID for the organization
+  // paymentNumber: string; // Unique ID for the payment //TODO: ADD AS INCREMENTAL NUMBER TO BE USED IN UI
 
   clientId: string;
   clientName: string;

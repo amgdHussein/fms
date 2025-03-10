@@ -8,16 +8,11 @@ import { EasyKashService, PaypalService, PayTabsService, StripeService } from '.
 import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
 import { IInvoiceService, INVOICE_SERVICE_PROVIDER } from '../../../invoice/domain';
-import {
-  BILLING_ACCOUNT_SERVICE_PROVIDER,
-  BillingAccount,
-  IBillingAccountService,
-  IOrganizationService,
-  ORGANIZATION_SERVICE_PROVIDER,
-} from '../../../organization/domain';
+import { BILLING_ACCOUNT_SERVICE_PROVIDER, IBillingAccountService, IOrganizationService, ORGANIZATION_SERVICE_PROVIDER } from '../../../organization/domain';
 import { IReceiptService, RECEIPT_SERVICE_PROVIDER } from '../../../receipt/domain';
 
 import { HttpService } from '@nestjs/axios';
+import { EncryptionService } from '../../../../core/providers/encryption/encryption.service';
 import { IPaymentRepository, IPaymentService, Payment, PAYMENT_REPOSITORY_PROVIDER, PaymentEntity, PaymentEntityType, PaymentMethod } from '../../domain';
 
 @Injectable()
@@ -52,6 +47,8 @@ export class PaymentService implements IPaymentService {
 
     @Inject(RECEIPT_SERVICE_PROVIDER)
     private readonly receiptService: IReceiptService,
+
+    private encryptionService: EncryptionService,
   ) {}
 
   async getPayment(id: string): Promise<Payment> {
@@ -129,7 +126,11 @@ export class PaymentService implements IPaymentService {
     }
 
     // Parse the credentials
-    const credentials = BillingAccount.toCredentials(billingAccount.credentials);
+    // const credentials = BillingAccount.toCredentials(billingAccount.credentials);
+    const credentials = await this.encryptionService.decrypt(billingAccount.credentials);
+    console.log('decrypt', credentials);
+    // { secretKey: 'SGJ9NKWK6N-JJZ2TKWGWJ-6NKRLNRKHZ', profileId: '140150' }
+    // return;
 
     // Fetch the payment entity (invoice, receipt, etc.) and validate it
     const entities: PaymentEntity[] = await Promise.all(payment.entityIds.map(async id => this.getPaymentEntity(payment.entityType, id)));
@@ -144,9 +145,17 @@ export class PaymentService implements IPaymentService {
     }
 
     // Check if all payment receivers are the same
-    if (!entities.every(({ clientId }) => clientId == entities[0].clientId)) {
+    if (!entities.every(({ clientId }) => clientId == payment.clientId)) {
       throw new BadRequestException('All payment receivers must be the same!');
     }
+
+    //TODO: ADD THIS
+    // if (this.selectionSelected.some(invoice => invoice.status === InvoiceStatus.PAID)) {
+    //   this.notification.showError(
+    //     'One or more of the selected invoices have already been paid. Please select unpaid invoices',
+    //   );
+    //   return;
+    // }
 
     // Create new payment with processing status
     const newPayment = await this.repo.add(payment);
@@ -157,10 +166,7 @@ export class PaymentService implements IPaymentService {
 
         try {
           // Payment gateway for the client (invoice receiver)
-          // const billing = new StripeService({ apiKey: credentials.apiKey });
-          const billing = new StripeService({
-            apiKey: 'sk_test_51QYrNYKNln1hF56rD6elusvFk152uoMjIiHE5iY0Dw9U49tF3ECzuck4n2q7rTep0ufyj7OadfVFBKidtrtNGA9100o852DIKn',
-          });
+          const billing = new StripeService({ apiKey: credentials.secretKey });
 
           //TODO: THINK OF CHECKOUT INSTEAD OF INVOICE
 
@@ -225,7 +231,7 @@ export class PaymentService implements IPaymentService {
           throw new BadRequestException('Failed to process the payment!');
         }
 
-        return newPayment;
+        return newPayment; //TODO: I MUST RETURN URL TO REDIRECT TO IF CREDIT CARD
 
         break;
       }
@@ -245,8 +251,8 @@ export class PaymentService implements IPaymentService {
         // Payment gateway for the client (invoice receiver)
         const billing = new PayTabsService(
           {
-            serverKey: 'SGJ9NKWK6N-JJZ2TKWGWJ-6NKRLNRKHZ', // credentials.serverKey,
-            profileId: '140150', // credentials.profileId,
+            serverKey: credentials.secretKey, // credentials.serverKey,
+            profileId: credentials.profileId, // credentials.profileId,
           },
           this.http,
         );
@@ -277,6 +283,8 @@ export class PaymentService implements IPaymentService {
 
         // const res = await billing.queryTransactionByTranRef();
         // console.log('res', JSON.stringify(res));
+
+        //TODO: I MUST RETURN URL TO REDIRECT TO IF CREDIT CARD
 
         break;
       }

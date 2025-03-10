@@ -25,6 +25,7 @@ import {
 
 import { ClsModule } from 'nestjs-cls';
 import { Environment } from './core/constants';
+import { EncryptionModule } from './core/providers/encryption/encryption.module';
 import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, OrganizationModule, PaymentModule, ReceiptModule, UserModule } from './modules';
 
 @Module({
@@ -157,6 +158,7 @@ import { AccountModule, ClientModule, CodeModule, InvoiceModule, LoggingModule, 
     InvoiceModule,
     PaymentModule,
     ReceiptModule,
+    EncryptionModule.forRoot(),
   ],
 
   providers: [

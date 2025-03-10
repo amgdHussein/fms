@@ -13,6 +13,7 @@ export interface BillingAccount {
 }
 
 export namespace BillingAccount {
+  //TODO: REMOVE THIS OR FIX
   export function fromCredentials(credentials: object): string {
     // TODO: Encrypt the credentials
     return '';

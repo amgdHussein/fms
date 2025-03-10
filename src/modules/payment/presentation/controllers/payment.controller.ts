@@ -27,6 +27,7 @@ export class PaymentController {
     private readonly deletePaymentUsecase: DeletePayment,
   ) {}
 
+  //TODO: ADD ORG ID ??
   @Post('search')
   @ApiOperation({ summary: 'Get all/N payments with/without filter the results.' })
   @ApiBody({
@@ -39,6 +40,8 @@ export class PaymentController {
     description: 'List of payments that meet all the query filters, and with length less than or equal to limit number.',
   })
   async queryPayments(@Body() query: QueryDto): Promise<PaymentDto[]> {
+    //TODO: RETURN QueryResult<Payment>
+
     const { page, limit, filters, order } = query;
     return this.getPaymentsUsecase.execute(page, limit, filters, order);
   }
