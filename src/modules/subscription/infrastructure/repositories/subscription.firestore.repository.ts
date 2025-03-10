@@ -5,7 +5,7 @@ import { AUTH_PROVIDER, FIRESTORE_COLLECTION_PROVIDERS } from '../../../../core/
 import { FirestoreService } from '../../../../core/providers';
 import { QueryFilter, QueryOrder } from '../../../../core/queries';
 
-import { ISubscriptionRepository, Subscription, SubscriptionStatus } from '../../domain';
+import { ISubscriptionRepository, Subscription } from '../../domain';
 
 @Injectable()
 export class SubscriptionFirestoreRepository implements ISubscriptionRepository {
@@ -31,8 +31,6 @@ export class SubscriptionFirestoreRepository implements ISubscriptionRepository 
     subscription.createdAt = Date.now();
     subscription.updatedBy = this.authService.currentUser.uid;
     subscription.updatedAt = Date.now();
-
-    subscription.status = SubscriptionStatus.PENDING;
 
     return this.db.addDoc(subscription);
   }

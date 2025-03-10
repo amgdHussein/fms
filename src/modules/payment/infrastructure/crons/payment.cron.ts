@@ -8,11 +8,12 @@ import { DateTime } from 'luxon';
 
 import { IInvoiceService, INVOICE_SERVICE_PROVIDER, InvoiceStatus } from '../../../invoice/domain';
 import { IReceiptService, RECEIPT_SERVICE_PROVIDER, ReceiptStatus } from '../../../receipt/domain';
+import { ISubscriptionService, SUBSCRIPTION_SERVICE_PROVIDER, SubscriptionStatus } from '../../../subscription/domain';
 import { IPaymentService, PAYMENT_SERVICE_PROVIDER, PaymentEntityType, PaymentStatus } from '../../domain';
 
 @Injectable()
-export class PaymentHandler {
-  private readonly logger: Logger = new Logger(PaymentHandler.name);
+export class PaymentCronManager {
+  private readonly logger: Logger = new Logger(PaymentCronManager.name);
 
   constructor(
     @Inject(PAYMENT_SERVICE_PROVIDER)
@@ -23,6 +24,9 @@ export class PaymentHandler {
 
     @Inject(RECEIPT_SERVICE_PROVIDER)
     private readonly receiptService: IReceiptService,
+
+    @Inject(SUBSCRIPTION_SERVICE_PROVIDER)
+    private readonly subscriptionService: ISubscriptionService,
   ) {}
 
   async handlePaytabsWebhook(event: PayTabsPaymentResponse): Promise<void> {
@@ -104,19 +108,7 @@ export class PaymentHandler {
       case PaymentStatus.COMPLETED: {
         // Update the invoices/receipts status
         for (const id of entityIds) {
-          if (entityType == PaymentEntityType.INVOICE) {
-            await this.invoiceService.updateInvoice({
-              id: id,
-              paymentId,
-              status: InvoiceStatus.PAID,
-            });
-          } else {
-            await this.receiptService.updateReceipt({
-              id: id,
-              paymentId,
-              status: ReceiptStatus.PAID,
-            });
-          }
+          await this.updateSuccessfulPaymentEntity(entityType, id, paymentId, processedAt);
         }
 
         await this.paymentService.updatePayment({
@@ -146,5 +138,51 @@ export class PaymentHandler {
     }
 
     return;
+  }
+
+  private async updateSuccessfulPaymentEntity(entityType: PaymentEntityType, entityId: string, paymentId: string, processedAt: number): Promise<void> {
+    switch (entityType) {
+      case PaymentEntityType.INVOICE: {
+        const invoice = await this.invoiceService.updateInvoice({
+          id: entityId,
+          paymentId,
+          status: InvoiceStatus.PAID,
+        });
+
+        break;
+      }
+
+      case PaymentEntityType.RECEIPT: {
+        await this.receiptService.updateReceipt({
+          id: entityId,
+          paymentId,
+          status: ReceiptStatus.PAID,
+        });
+
+        break;
+      }
+
+      case PaymentEntityType.SUBSCRIPTION: {
+        const invoice = await this.invoiceService.updateInvoice({
+          id: entityId,
+          paymentId,
+          status: InvoiceStatus.PAID,
+        });
+
+        await this.subscriptionService.updateSubscription({
+          id: (invoice as any).subscriptionId, // TODO: Fix this
+          status: SubscriptionStatus.ACTIVE,
+          startAt: Date.now(),
+          billingAt: processedAt,
+        });
+
+        break;
+      }
+
+      default: {
+        this.logger.warn(`Unhandled payment entity type: ${entityType}`);
+        break;
+      }
+    }
   }
 }

@@ -1,9 +1,97 @@
 import { Module } from '@nestjs/common';
 
+import { AddPlan, AddSubscription, CancelSubscription, GetOrganizationSubscription, GetPlans, GetSubscription, UpdatePlan } from './application';
+import {
+  SUBSCRIPTION_PLAN_REPOSITORY_PROVIDER,
+  SUBSCRIPTION_PLAN_SERVICE_PROVIDER,
+  SUBSCRIPTION_PLAN_USECASE_PROVIDERS,
+  SUBSCRIPTION_REPOSITORY_PROVIDER,
+  SUBSCRIPTION_SERVICE_PROVIDER,
+  SUBSCRIPTION_USAGE_REPOSITORY_PROVIDER,
+  SUBSCRIPTION_USAGE_SERVICE_PROVIDER,
+  SUBSCRIPTION_USECASE_PROVIDERS,
+} from './domain';
+import {
+  SubscriptionCronManager,
+  SubscriptionFirestoreRepository,
+  SubscriptionPlanFirestoreRepository,
+  SubscriptionPlanService,
+  SubscriptionService,
+  SubscriptionUsageFirestoreRepository,
+  SubscriptionUsageService,
+} from './infrastructure';
+import { SubscriptionController, SubscriptionHandler, SubscriptionPlanController } from './presentation';
+
+const subscriptionUsecases = [
+  {
+    provide: SUBSCRIPTION_USECASE_PROVIDERS.ADD_SUBSCRIPTION,
+    useClass: AddSubscription,
+  },
+  {
+    provide: SUBSCRIPTION_USECASE_PROVIDERS.GET_SUBSCRIPTION,
+    useClass: GetSubscription,
+  },
+  {
+    provide: SUBSCRIPTION_USECASE_PROVIDERS.GET_ORGANIZATION_SUBSCRIPTION,
+    useClass: GetOrganizationSubscription,
+  },
+  {
+    provide: SUBSCRIPTION_USECASE_PROVIDERS.CANCELED_SUBSCRIPTION,
+    useClass: CancelSubscription,
+  },
+];
+const subscriptionPlanUsecases = [
+  {
+    provide: SUBSCRIPTION_PLAN_USECASE_PROVIDERS.ADD_SUBSCRIPTION_PLAN,
+    useClass: AddPlan,
+  },
+  {
+    provide: SUBSCRIPTION_PLAN_USECASE_PROVIDERS.UPDATE_SUBSCRIPTION_PLAN,
+    useClass: UpdatePlan,
+  },
+  {
+    provide: SUBSCRIPTION_PLAN_USECASE_PROVIDERS.GET_SUBSCRIPTION_PLANS,
+    useClass: GetPlans,
+  },
+];
+
 @Module({
-  imports: [],
-  controllers: [],
-  providers: [],
-  exports: [],
+  controllers: [SubscriptionController, SubscriptionPlanController, SubscriptionHandler],
+  providers: [
+    SubscriptionCronManager,
+
+    ...subscriptionUsecases,
+    ...subscriptionPlanUsecases,
+    {
+      provide: SUBSCRIPTION_REPOSITORY_PROVIDER,
+      useClass: SubscriptionFirestoreRepository,
+    },
+    {
+      provide: SUBSCRIPTION_SERVICE_PROVIDER,
+      useClass: SubscriptionService,
+    },
+    {
+      provide: SUBSCRIPTION_USAGE_REPOSITORY_PROVIDER,
+      useClass: SubscriptionUsageFirestoreRepository,
+    },
+    {
+      provide: SUBSCRIPTION_USAGE_SERVICE_PROVIDER,
+      useClass: SubscriptionUsageService,
+    },
+    {
+      provide: SUBSCRIPTION_PLAN_REPOSITORY_PROVIDER,
+      useClass: SubscriptionPlanFirestoreRepository,
+    },
+    {
+      provide: SUBSCRIPTION_PLAN_SERVICE_PROVIDER,
+      useClass: SubscriptionPlanService,
+    },
+  ],
+  exports: [
+    {
+      provide: SUBSCRIPTION_SERVICE_PROVIDER,
+      useClass: SubscriptionService,
+    },
+  ],
 })
 export class SubscriptionModule {}

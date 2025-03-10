@@ -8,3 +8,4 @@ export { UserModule } from './user/user.module';
 
 export { PaymentModule } from './payment/payment.module';
 export { ReceiptModule } from './receipt/receipt.module';
+export { SubscriptionModule } from './subscription/subscription.module';

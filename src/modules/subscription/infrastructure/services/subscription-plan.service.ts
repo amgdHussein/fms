@@ -17,11 +17,11 @@ export class SubscriptionPlanService implements ISubscriptionPlanService {
     return this.planRepo.getMany();
   }
 
-  async addPlan(Plan: Partial<Plan> & { id: string }): Promise<Plan> {
-    return this.planRepo.add(Plan);
+  async addPlan(plan: Partial<Plan>): Promise<Plan> {
+    return this.planRepo.add(plan);
   }
 
-  async updatePlan(Plan: Partial<Plan> & { id: string }): Promise<Plan> {
-    return this.planRepo.update(Plan);
+  async updatePlan(plan: Partial<Plan> & { id: string }): Promise<Plan> {
+    return this.planRepo.update(plan);
   }
 }

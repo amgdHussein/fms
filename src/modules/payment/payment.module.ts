@@ -7,9 +7,8 @@ import { InvoiceFirestoreRepository, InvoiceItemFirestoreRepository, InvoiceServ
 
 import { AddPayment, DeletePayment, GetPayment, GetPayments, UpdatePayment } from './application';
 import { PAYMENT_REPOSITORY_PROVIDER, PAYMENT_SERVICE_PROVIDER, PAYMENT_USECASE_PROVIDERS } from './domain';
-import { PaymentFirestoreRepository, PaymentHandler, PaymentService } from './infrastructure';
-
-import { PaymentController, PaymentHandlerController } from './presentation';
+import { PaymentCronManager, PaymentFirestoreRepository, PaymentService } from './infrastructure';
+import { PaymentController, PaymentHandler } from './presentation';
 
 const paymentUsecases = [
   {
@@ -35,14 +34,13 @@ const paymentUsecases = [
   },
 ];
 
-const handlers = [PaymentHandler];
-
 @Module({
   imports: [AuthModule],
-  controllers: [PaymentController, PaymentHandlerController],
+  controllers: [PaymentController, PaymentHandler],
   providers: [
+    PaymentCronManager,
+
     ...paymentUsecases,
-    ...handlers,
     {
       provide: PAYMENT_REPOSITORY_PROVIDER,
       useClass: PaymentFirestoreRepository,

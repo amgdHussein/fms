@@ -18,7 +18,13 @@ export class SubscriptionService implements ISubscriptionService {
     return this.subscriptionRepo.getMany(filters, page, limit, order);
   }
 
-  async addSubscription(subscription: Partial<Subscription> & { id: string }): Promise<Subscription> {
+  async addSubscription(subscription: Partial<Subscription> & { organizationId: string; planId: string }): Promise<Subscription> {
+    subscription.status = SubscriptionStatus.PENDING;
+
+    if (!subscription.autoRenew) {
+      subscription.autoRenew = false;
+    }
+
     return this.subscriptionRepo.add(subscription);
   }
 
@@ -37,6 +43,7 @@ export class SubscriptionService implements ISubscriptionService {
     return this.subscriptionRepo.update({
       id,
       status: SubscriptionStatus.CANCELED,
+      endAt: Date.now(),
     });
   }
 }

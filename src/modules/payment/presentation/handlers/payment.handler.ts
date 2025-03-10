@@ -1,21 +1,24 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
 import Stripe from 'stripe';
-import { PaymentHandler } from '../../infrastructure';
+
+import { PaymentCronManager } from '../../infrastructure';
 
 // TODO: FINALIZE THIS CONTROLLER
-@ApiTags('Payments')
-@Controller('payments/handler')
-export class PaymentHandlerController {
-  constructor(private paymentHandler: PaymentHandler) {}
+// TODO: HIDE THE CONTROLLER FORM THE API DOCUMENTATION
+@ApiTags('Crons')
+@Controller('crons')
+export class PaymentHandler {
+  constructor(private paymentManager: PaymentCronManager) {}
 
-  @Post('stripe')
+  @Post('payments/stripe')
   async stripeWebhook(@Body() body: Stripe.EventBase): Promise<void> {
     // console.log('stripe body', body);
-    await this.paymentHandler.handleStripeWebhook(body);
+    await this.paymentManager.handleStripeWebhook(body);
   }
 
-  @Post('paytabs')
+  @Post('payments/paytabs')
   async payTabsWebhook(@Body() body: any): Promise<void> {
     console.log('paytabs webhook body', body);
 
@@ -71,6 +74,6 @@ export class PaymentHandlerController {
     //   "ipn_trace": "IPNS0002.67C9959A.00000627",
     //   "paymentChannel": "Invoice"
     // }
-    await this.paymentHandler.handlePaytabsWebhook(body);
+    await this.paymentManager.handlePaytabsWebhook(body);
   }
 }

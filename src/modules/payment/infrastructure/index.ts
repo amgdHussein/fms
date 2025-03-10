@@ -1,3 +1,3 @@
-export * from './handlers';
+export * from './crons';
 export * from './repositories';
 export * from './services';

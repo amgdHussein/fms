@@ -250,7 +250,7 @@ export class PaymentService implements IPaymentService {
         //TODO: CHECK THIS WITH WHAT'S INSIDE  ADD INVOICE FUNCTION IN PAYTABS
         const customMetaData = JSON.stringify([
           `mofawtarEntityIds:${entities.map(({ id }) => id).join(', ')}`,
-          `type:${payment.entityType == PaymentEntityType.INVOICE ? PaymentEntityType.INVOICE : PaymentEntityType.RECEIPT}`,
+          `type:${payment.entityType}`,
           `paymentId:${newPayment.id}`,
         ]);
 
@@ -262,7 +262,7 @@ export class PaymentService implements IPaymentService {
           metadata: customMetaData,
           // {
           //   mofawtarEntityIds: entities.map(({ id }) => id).join(', '),
-          //   type: payment.entityType == PaymentEntityType.INVOICE ? PaymentEntityType.INVOICE : PaymentEntityType.RECEIPT,
+          //   type: payment.entityType,
           //   paymentId: newPayment.id,
           // },
         });
