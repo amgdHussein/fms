@@ -5,6 +5,8 @@ import { AuthModule } from '../../core/auth';
 import { INVOICE_ITEM_REPOSITORY_PROVIDER, INVOICE_REPOSITORY_PROVIDER, INVOICE_SERVICE_PROVIDER } from '../invoice/domain';
 import { InvoiceFirestoreRepository, InvoiceItemFirestoreRepository, InvoiceService } from '../invoice/infrastructure';
 
+import { SUBSCRIPTION_REPOSITORY_PROVIDER, SUBSCRIPTION_SERVICE_PROVIDER } from '../subscription/domain';
+import { SubscriptionFirestoreRepository, SubscriptionService } from '../subscription/infrastructure';
 import { AddPayment, DeletePayment, GetPayment, GetPayments, UpdatePayment } from './application';
 import { PAYMENT_REPOSITORY_PROVIDER, PAYMENT_SERVICE_PROVIDER, PAYMENT_USECASE_PROVIDERS } from './domain';
 import { PaymentCronManager, PaymentFirestoreRepository, PaymentService } from './infrastructure';
@@ -60,6 +62,16 @@ const paymentUsecases = [
     {
       provide: INVOICE_SERVICE_PROVIDER,
       useClass: InvoiceService,
+    },
+
+    {
+      provide: SUBSCRIPTION_REPOSITORY_PROVIDER,
+      useClass: SubscriptionFirestoreRepository,
+    },
+
+    {
+      provide: SUBSCRIPTION_SERVICE_PROVIDER,
+      useClass: SubscriptionService,
     },
   ],
   exports: [

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 
+import { INVOICE_ITEM_REPOSITORY_PROVIDER, INVOICE_REPOSITORY_PROVIDER, INVOICE_SERVICE_PROVIDER } from '../invoice/domain';
+import { InvoiceFirestoreRepository, InvoiceItemFirestoreRepository, InvoiceService } from '../invoice/infrastructure';
 import { AddPlan, AddSubscription, CancelSubscription, GetOrganizationSubscription, GetPlans, GetSubscription, UpdatePlan } from './application';
 import {
   SUBSCRIPTION_PLAN_REPOSITORY_PROVIDER,
@@ -85,6 +87,19 @@ const subscriptionPlanUsecases = [
     {
       provide: SUBSCRIPTION_PLAN_SERVICE_PROVIDER,
       useClass: SubscriptionPlanService,
+    },
+
+    {
+      provide: INVOICE_ITEM_REPOSITORY_PROVIDER,
+      useClass: InvoiceItemFirestoreRepository,
+    },
+    {
+      provide: INVOICE_REPOSITORY_PROVIDER,
+      useClass: InvoiceFirestoreRepository,
+    },
+    {
+      provide: INVOICE_SERVICE_PROVIDER,
+      useClass: InvoiceService,
     },
   ],
   exports: [
