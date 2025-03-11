@@ -7,6 +7,9 @@ export class BillingAccountDto implements BillingAccount {
   organizationId: string;
   gateway: PaymentGateway;
   credentials: string;
+
+  isEnabled: boolean; // If the billing account is enabled
+
   createdBy: string;
   createdAt: number;
   updatedBy: string;

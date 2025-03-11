@@ -6,6 +6,8 @@ export interface BillingAccount {
   gateway: PaymentGateway;
   credentials: string; // Encrypted credentials
 
+  isEnabled: boolean; // If the billing account is enabled
+
   createdBy: string;
   createdAt: number;
   updatedBy: string;

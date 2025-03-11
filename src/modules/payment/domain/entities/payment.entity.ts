@@ -24,10 +24,13 @@ export interface Payment {
   currency: Currency;
 
   transactionId: string; // Internal id for the transactions table
+  // transactionReferenceId: string;
 
   method: PaymentMethod;
   gateway?: PaymentGateway;
+
   referenceId?: string; // Reference ID from the payment gateway
+  // add referenceIdRefId
 
   processedAt: number; // Timestamp when the payment was processed
   paidAt: number; // Timestamp when the payment was paid.

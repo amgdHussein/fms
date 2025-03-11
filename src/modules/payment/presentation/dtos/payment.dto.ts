@@ -16,6 +16,10 @@ export class PaymentDto implements Payment {
   amount: number;
   currency: Currency;
   transactionId: string;
+
+  // transactionReferenceId: string;
+  // add referenceIdRefId
+
   method: PaymentMethod;
   gateway?: PaymentGateway;
   referenceId?: string;

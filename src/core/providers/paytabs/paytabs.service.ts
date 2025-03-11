@@ -5,7 +5,7 @@ import { catchError, firstValueFrom, map } from 'rxjs';
 
 import { CurrencyCode } from '../../enums';
 
-import { PayTabsInvoice, PaytabsInvoiceParams, TransactionClass, TransactionType } from './entities';
+import { PayTabsInvoice, PaytabsInvoiceParams, PayTabsTransactionRefundBody, TransactionClass, TransactionType } from './entities';
 import { PayTabsConfigs } from './paytabs.config';
 
 @Injectable()
@@ -120,6 +120,81 @@ export class PayTabsService {
           headers: { Authorization: `${this.configs.serverKey}` },
         },
       )
+      .pipe(
+        map(response => response.data),
+        catchError(this.handlePayTabsError),
+      );
+
+    return firstValueFrom(request);
+  }
+
+  refundTransaction(): any {
+    const endpoint = `${this.BASE_URL}/payment/request`;
+
+    // refund response {
+    //   tran_ref: 'TST2506902031415',
+    //   previous_tran_ref: 'TST2506702028140',
+    //   tran_type: 'Refund',
+    //   cart_id: 'pAgEwXQvAHL8I2MiTxZk',
+    //   cart_description: 'Refund reason',
+    //   cart_currency: 'EGP',
+    //   cart_amount: '1000.00',
+    //   tran_currency: 'EGP',
+    //   tran_total: '1000.00',
+    //   customer_details: {
+    //     name: 'One Eg INC',
+    //     email: 'mahmod.mohy@yahoo.com',
+    //     street1: 'cairo',
+    //     city: 'cairo',
+    //     state: 'C',
+    //     country: 'EG'
+    //   },
+    //   payment_result: {
+    //     response_status: 'A',
+    //     response_code: 'G44735',
+    //     response_message: 'Authorised',
+    //     transaction_time: '2025-03-10T22:12:15Z'
+    //   },
+    //   payment_info: {
+    //     payment_method: 'Visa',
+    //     card_type: 'Credit',
+    //     card_scheme: 'Visa',
+    //     payment_description: '4000 00## #### 0002',
+    //     expiryMonth: 5,
+    //     expiryYear: 2027
+    //   },
+    //   serviceId: 1,
+    //   paymentChannel: 'Transaction API',
+    //   profileId: 140150,
+    //   merchantId: 79780,
+    //   trace: 'PMNT0402.67CF63BF.00062F83'
+    // }
+
+    // ON REFUND WITH THE SAME AMOUNT
+    // payment_result: {
+    //   response_status: 'E',
+    //   response_code: '118',
+    //   response_message: 'Amount greater than available balance',
+    //   cvv_result: ' ',
+    //   avs_result: ' ',
+    //   transaction_time: '2025-03-10T23:35:52Z'
+    // },
+
+    const refundBody: PayTabsTransactionRefundBody = {
+      profile_id: +this.configs.profileId, //TODO: MAKE PROFILE ID NUMBER
+      tran_type: TransactionType.REFUND,
+      tran_class: TransactionClass.ECOM,
+      cart_id: '5F0srVVkhuMpr927Fe9k',
+      cart_description: 'Refund reason',
+      cart_currency: CurrencyCode.EGP,
+      cart_amount: 50,
+      tran_ref: 'TST2506702028092',
+    };
+
+    const request = this.http
+      .post<any>(endpoint, refundBody, {
+        headers: { Authorization: `${this.configs.serverKey}` },
+      })
       .pipe(
         map(response => response.data),
         catchError(this.handlePayTabsError),
