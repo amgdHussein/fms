@@ -5,8 +5,22 @@ import { AuthModule } from '../../core/auth';
 import { INVOICE_ITEM_REPOSITORY_PROVIDER, INVOICE_REPOSITORY_PROVIDER, INVOICE_SERVICE_PROVIDER } from '../invoice/domain';
 import { InvoiceFirestoreRepository, InvoiceItemFirestoreRepository, InvoiceService } from '../invoice/infrastructure';
 
-import { SUBSCRIPTION_REPOSITORY_PROVIDER, SUBSCRIPTION_SERVICE_PROVIDER } from '../subscription/domain';
-import { SubscriptionFirestoreRepository, SubscriptionService } from '../subscription/infrastructure';
+import {
+  SUBSCRIPTION_PLAN_REPOSITORY_PROVIDER,
+  SUBSCRIPTION_PLAN_SERVICE_PROVIDER,
+  SUBSCRIPTION_REPOSITORY_PROVIDER,
+  SUBSCRIPTION_SERVICE_PROVIDER,
+  SUBSCRIPTION_USAGE_REPOSITORY_PROVIDER,
+  SUBSCRIPTION_USAGE_SERVICE_PROVIDER,
+} from '../subscription/domain';
+import {
+  SubscriptionFirestoreRepository,
+  SubscriptionPlanFirestoreRepository,
+  SubscriptionPlanService,
+  SubscriptionService,
+  SubscriptionUsageFirestoreRepository,
+  SubscriptionUsageService,
+} from '../subscription/infrastructure';
 import { AddPayment, DeletePayment, GetPayment, GetPayments, UpdatePayment } from './application';
 import { PAYMENT_REPOSITORY_PROVIDER, PAYMENT_SERVICE_PROVIDER, PAYMENT_USECASE_PROVIDERS } from './domain';
 import { PaymentCronManager, PaymentFirestoreRepository, PaymentService } from './infrastructure';
@@ -72,6 +86,25 @@ const paymentUsecases = [
     {
       provide: SUBSCRIPTION_SERVICE_PROVIDER,
       useClass: SubscriptionService,
+    },
+
+    {
+      provide: SUBSCRIPTION_PLAN_REPOSITORY_PROVIDER,
+      useClass: SubscriptionPlanFirestoreRepository,
+    },
+
+    {
+      provide: SUBSCRIPTION_PLAN_SERVICE_PROVIDER,
+      useClass: SubscriptionPlanService,
+    },
+
+    {
+      provide: SUBSCRIPTION_USAGE_REPOSITORY_PROVIDER,
+      useClass: SubscriptionUsageFirestoreRepository,
+    },
+    {
+      provide: SUBSCRIPTION_USAGE_SERVICE_PROVIDER,
+      useClass: SubscriptionUsageService,
     },
   ],
   exports: [

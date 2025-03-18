@@ -1,9 +1,11 @@
 import { Body, Controller, Get, Inject, Param, Post, Put } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AddPlan, GetPlans, UpdatePlan } from '../../application';
+import { AddPlan, GetPlan, GetPlans, UpdatePlan } from '../../application';
 import { SUBSCRIPTION_PLAN_USECASE_PROVIDERS } from '../../domain';
 import { AddPlanDto, PlanDto, UpdatePlanDto } from '../dtos';
+
+//TODO: ADD GUARD TO PROTECT ROUTES FROM UNAUTHORIZED ACCESS
 
 @ApiTags('Subscription Plans')
 @Controller('subscription/plans')
@@ -17,7 +19,27 @@ export class SubscriptionPlanController {
 
     @Inject(SUBSCRIPTION_PLAN_USECASE_PROVIDERS.GET_SUBSCRIPTION_PLANS)
     private readonly getPlansUsecase: GetPlans,
+
+    @Inject(SUBSCRIPTION_PLAN_USECASE_PROVIDERS.GET_SUBSCRIPTION_PLAN)
+    private readonly getPlanUsecase: GetPlan,
   ) {}
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Retrieve a subscription plan by its unique ID.' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    example: 'a158sd4a8ad4a8',
+    required: true,
+    description: 'The unique identifier of the subscription plan.',
+  })
+  @ApiResponse({
+    type: PlanDto,
+    description: 'The subscription plan details for the provided ID.',
+  })
+  async getPlan(@Param('id') id: string): Promise<PlanDto> {
+    return this.getPlanUsecase.execute(id);
+  }
 
   @Get()
   @ApiOperation({ summary: 'Retrieve all available subscription plans.' })
@@ -40,7 +62,7 @@ export class SubscriptionPlanController {
     type: PlanDto,
     description: 'The newly created subscription plan.',
   })
-  async addSubscription(@Body() dto: AddPlanDto): Promise<PlanDto> {
+  async addPlan(@Body() dto: AddPlanDto): Promise<PlanDto> {
     return this.addPlanUsecase.execute(dto);
   }
 

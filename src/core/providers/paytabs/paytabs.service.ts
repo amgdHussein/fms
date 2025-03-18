@@ -29,22 +29,50 @@ export class PayTabsService {
     private readonly http: HttpService,
   ) {}
 
-  // async createHostedPaymentPage(data: PaytabsInvoiceParams): Promise<PayTabsInvoice> {
-  //   const endpoint = `${this.BASE_URL}/payment/request`;
+  //TODD: ENHANCE PARAMETER TO BE MORE DYNAMIC
+  // async createHostedPaymentPage(data: PaytabsInvoiceParams): Promise<any> {
+  async createHostedPaymentPage(subscriptionId: string, planPrice: number, metadata: string): Promise<any> {
+    const endpoint = `${this.BASE_URL}/payment/request`;
 
-  //   try {
-  //     const request = this.http.post(endpoint, data, {
-  //       headers: {
-  //         Authorization: `${this.configs.serverKey}`,
-  //       },
-  //     });
+    const hostPaymentBody: PaytabsInvoiceParams = {
+      profile_id: this.configs.profileId,
+      tran_type: TransactionType.SALE,
+      tran_class: TransactionClass.ECOM,
+      cart_id: subscriptionId,
+      cart_currency: CurrencyCode.EGP, // TODO: THINK OF how handle ADDING CURRENCY TO THE SUBSCRIPTION
+      cart_amount: planPrice,
+      cart_description: 'Subscription for Mofawtar',
+      hide_shipping: true,
+      callback: `${process.env.PROD_URL}/webhooks/payments/paytabs`, //TODO: THINK OF ADD DIFFERENT CALLBACK FOR SUBSCRIPTION
+      return: 'http://localhost:4200/success', //TODO: THIS OF URL IN FRONTEND
+      user_defined: {
+        udf1: '',
+        udf2: `${JSON.stringify(metadata)}`,
+      },
+      agreement: {
+        agreement_description: 'Test agreement',
+        agreement_currency: CurrencyCode.EGP,
+        initial_amount: planPrice,
+        repeat_amount: planPrice,
+        final_amount: 0,
+        repeat_terms: 0,
+        repeat_period: 1,
+        repeat_every: 2,
+        first_installment_due_date: '19/Mar/2024',
+      },
+    };
 
-  //     const response = await firstValueFrom(request);
-  //     return response.data;
-  //   } catch (error) {
-  //     this.handlePayTabsError(error);
-  //   }
-  // }
+    const request = this.http
+      .post<PayTabsInvoice>(endpoint, hostPaymentBody, {
+        headers: { Authorization: `${this.configs.serverKey}` },
+      })
+      .pipe(
+        map(response => response.data),
+        catchError(this.handlePayTabsError),
+      );
+
+    return firstValueFrom(request);
+  }
 
   // ? Invoices
 
@@ -61,6 +89,7 @@ export class PayTabsService {
       cart_description: 'Created By Mofawtar invoice for client ' + invoice.clientName,
       user_defined: {
         udf1: `${JSON.stringify(invoice.metadata)}`,
+        udf2: '',
       },
 
       hide_shipping: true,
@@ -86,8 +115,8 @@ export class PayTabsService {
         ],
       },
 
-      callback: `${process.env.PROD_URL}/payments/handler/paytabs`,
-      // return: 'https://www.dashboard.mofawtar.com/', //TODO: THIS OF URL IN FRONTEND
+      callback: `${process.env.PROD_URL}/webhooks/payments/paytabs`,
+      return: 'http://localhost:4200/success', //TODO: THIS OF URL IN FRONTEND
     };
 
     const request = this.http

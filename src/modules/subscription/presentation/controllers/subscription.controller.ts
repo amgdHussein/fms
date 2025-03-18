@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { AddSubscription, CancelSubscription, GetOrganizationSubscription, GetSubscription } from '../../application';
+import { BadRequestException } from '../../../../core/exceptions';
+import { AddSubscription, CancelSubscription, GetOrganizationSubscription, GetSubscription, StartFreeTrialSubscription } from '../../application';
 import { SUBSCRIPTION_USECASE_PROVIDERS } from '../../domain';
 import { AddSubscriptionDto, SubscriptionDto } from '../dtos';
 
@@ -20,7 +21,12 @@ export class SubscriptionController {
 
     @Inject(SUBSCRIPTION_USECASE_PROVIDERS.CANCELED_SUBSCRIPTION)
     private readonly cancelSubscriptionUsecase: CancelSubscription,
+
+    @Inject(SUBSCRIPTION_USECASE_PROVIDERS.START_FREE_TRIAL_SUBSCRIPTION)
+    private readonly startFreeTrialSubscription: StartFreeTrialSubscription,
   ) {}
+
+  // TODO: ADD GET ALL SUBSCRIPTIONS FRO ADMIN
 
   @Get('subscriptions/:id')
   @ApiOperation({ summary: 'Retrieve a subscription by its unique ID.' })
@@ -39,7 +45,8 @@ export class SubscriptionController {
     return this.getSubscriptionUsecase.execute(id);
   }
 
-  @Post('subscriptions')
+  //TODO: THINK OF change this to change subscription
+  @Post('subscriptions/change-plan')
   @ApiOperation({ summary: 'Create a new subscription.' })
   @ApiBody({
     type: AddSubscriptionDto,
@@ -50,8 +57,19 @@ export class SubscriptionController {
     type: SubscriptionDto,
     description: 'The newly created subscription.',
   })
-  async addSubscription(@Body() dto: AddSubscriptionDto): Promise<SubscriptionDto> {
+  async addSubscription(@Body() dto: any): Promise<SubscriptionDto> {
+    //TODO: ADD DTO
     return this.addSubscriptionUsecase.execute(dto);
+  }
+
+  //TODO: REMOVE THIS AS ITS USED FROM ORGANIZATION MODULE, WE USE IT NOW FRO TESTING ONLY
+  @Post('organizations/:organizationId/subscriptions/start/freeTrial')
+  async startFreeTrial(@Param('organizationId') organizationId: string): Promise<SubscriptionDto> {
+    try {
+      return await this.startFreeTrialSubscription.execute(organizationId);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Delete('subscriptions/:id')
@@ -71,6 +89,7 @@ export class SubscriptionController {
     return this.cancelSubscriptionUsecase.execute(id);
   }
 
+  //TODO: FIX THIS MAKE IF RETURN THE SUBSCRIBTION OF THE INVOICE
   @Get('organizations/:organizationId/subscriptions')
   @ApiOperation({ summary: 'Retrieve the latest subscription for a specific organization.' })
   @ApiParam({

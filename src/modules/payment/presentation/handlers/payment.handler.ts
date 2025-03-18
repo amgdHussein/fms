@@ -7,8 +7,8 @@ import { PaymentCronManager } from '../../infrastructure';
 
 // TODO: FINALIZE THIS CONTROLLER
 // TODO: HIDE THE CONTROLLER FORM THE API DOCUMENTATION
-@ApiTags('Crons')
-@Controller('crons')
+@ApiTags('Webhooks')
+@Controller('webhooks')
 export class PaymentHandler {
   constructor(private paymentManager: PaymentCronManager) {}
 
@@ -20,8 +20,63 @@ export class PaymentHandler {
 
   @Post('payments/paytabs')
   async payTabsWebhook(@Body() body: any): Promise<void> {
-    console.log('paytabs webhook body', body);
+    // console.log('paytabs webhook body', body);
 
+    // hosted page payment
+    // paytabs webhook body {
+    //   tran_ref: 'TST2507102033213',
+    //   merchant_id: 79780,
+    //   profile_id: 140150,
+    //   cart_id: 'hOabKAKvlYutzcdeWa1F',
+    //   cart_description: 'Subscription for Mofawtar',
+    //   cart_currency: 'EGP',
+    //   cart_amount: '300.00',
+    //   tran_currency: 'EGP',
+    //   tran_total: '300.00',
+    //   tran_type: 'Sale',
+    //   tran_class: 'ECom',
+    //   customer_details: {
+    //     name: 'One Eg INC',
+    //     email: 'mahmod.mohy@yahoo.com',
+    //     street1: 'cairo',
+    //     city: 'cairo',
+    //     state: 'PTS',
+    //     country: 'EG',
+    //     ip: '197.54.60.13'
+    //   },
+    //   payment_result: {
+    //     response_status: 'A',
+    //     response_code: 'G10339',
+    //     response_message: 'Authorised',
+    //     acquirer_ref: 'TRAN0002.67D1EAA2.0000F649',
+    //     cvv_result: ' ',
+    //     avs_result: ' ',
+    //     transaction_time: '2025-03-12T20:12:19Z'
+    //   },
+    //   payment_info: {
+    //     payment_method: 'Visa',
+    //     card_type: 'Credit',
+    //     card_scheme: 'Visa',
+    //     payment_description: '4111 11## #### 1111',
+    //     expiryMonth: 2,
+    //     expiryYear: 2026
+    //   },
+    //   user_defined: { udf1: '["type:2","subscriptionId:hOabKAKvlYutzcdeWa1F"]' },
+    //   threeDSDetails: {
+    //     responseLevel: 1,
+    //     responseStatus: 1,
+    //     enrolled: 'N',
+    //     paResStatus: '',
+    //     eci: '',
+    //     cavv: '',
+    //     ucaf: '',
+    //     threeDSVersion: 'Test/Simulation'
+    //   },
+    //   ipn_trace: 'IPNS0002.67D1EAA3.00001A32',
+    //   paymentChannel: 'Payment Page'
+    // }
+
+    // invoice payment
     // {
     //   "tran_ref": "TST2506502027873",
     //   "merchant_id": 79780,

@@ -14,7 +14,7 @@ export class SubscriptionPlanService implements ISubscriptionPlanService {
   }
 
   async getPlans(): Promise<Plan[]> {
-    return this.planRepo.getMany();
+    return this.planRepo.getMany(); // TODO: ADD FILTER TO NOT RETURN TRIAL PLAN
   }
 
   async addPlan(plan: Partial<Plan>): Promise<Plan> {

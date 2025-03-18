@@ -2,7 +2,7 @@ import { CurrencyCode } from '../../../enums';
 import { TransactionClass, TransactionType } from './paytabs-invoice-request.entity';
 
 export interface PayTabsPaymentRequest {
-  profile_id: string;
+  profile_id: number;
   tran_type: TransactionType;
   tran_class: TransactionClass;
   payment_methods: string[];

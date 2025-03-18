@@ -17,8 +17,7 @@ import { Utils } from '../../../utils';
 
 @Injectable()
 export class FirestoreService<T extends { id: string }> {
-  // Convert collection name into capitalized singular name (ex. users => user)
-  private readonly collectionName: string = this.collection.id.slice(0, -1);
+  private readonly collectionName: string = this.collection.id;
   private readonly logger: Logger = new Logger(`${FirestoreService.name}.${this.collectionName}`);
 
   private readonly firestoreConverter: FirestoreDataConverter<T> = {

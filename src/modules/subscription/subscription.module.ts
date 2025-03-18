@@ -2,7 +2,17 @@ import { Module } from '@nestjs/common';
 
 import { INVOICE_ITEM_REPOSITORY_PROVIDER, INVOICE_REPOSITORY_PROVIDER, INVOICE_SERVICE_PROVIDER } from '../invoice/domain';
 import { InvoiceFirestoreRepository, InvoiceItemFirestoreRepository, InvoiceService } from '../invoice/infrastructure';
-import { AddPlan, AddSubscription, CancelSubscription, GetOrganizationSubscription, GetPlans, GetSubscription, UpdatePlan } from './application';
+import {
+  AddPlan,
+  AddSubscription,
+  CancelSubscription,
+  GetOrganizationSubscription,
+  GetPlan,
+  GetPlans,
+  GetSubscription,
+  StartFreeTrialSubscription,
+  UpdatePlan,
+} from './application';
 import {
   SUBSCRIPTION_PLAN_REPOSITORY_PROVIDER,
   SUBSCRIPTION_PLAN_SERVICE_PROVIDER,
@@ -41,6 +51,10 @@ const subscriptionUsecases = [
     provide: SUBSCRIPTION_USECASE_PROVIDERS.CANCELED_SUBSCRIPTION,
     useClass: CancelSubscription,
   },
+  {
+    provide: SUBSCRIPTION_USECASE_PROVIDERS.START_FREE_TRIAL_SUBSCRIPTION,
+    useClass: StartFreeTrialSubscription,
+  },
 ];
 const subscriptionPlanUsecases = [
   {
@@ -54,6 +68,10 @@ const subscriptionPlanUsecases = [
   {
     provide: SUBSCRIPTION_PLAN_USECASE_PROVIDERS.GET_SUBSCRIPTION_PLANS,
     useClass: GetPlans,
+  },
+  {
+    provide: SUBSCRIPTION_PLAN_USECASE_PROVIDERS.GET_SUBSCRIPTION_PLAN,
+    useClass: GetPlan,
   },
 ];
 
@@ -106,6 +124,10 @@ const subscriptionPlanUsecases = [
     {
       provide: SUBSCRIPTION_SERVICE_PROVIDER,
       useClass: SubscriptionService,
+    },
+    {
+      provide: SUBSCRIPTION_PLAN_SERVICE_PROVIDER,
+      useClass: SubscriptionPlanService,
     },
   ],
 })

@@ -243,38 +243,44 @@ export class PaymentService implements IPaymentService {
         console.log('PAYTABS case');
         // return newPayment;
 
-        // Payment gateway for the client (invoice receiver)
-        const credentials = await this.encryptionService.decrypt<PayTabsConfigs>(billingAccount.credentials);
-        const billing = new PayTabsService(credentials, this.http);
+        try {
+          return newPayment; //TODO: I MUST RETURN URL TO REDIRECT TO IF CREDIT CARD
 
-        //TODO: CHECK THIS WITH WHAT'S INSIDE  ADD INVOICE FUNCTION IN PAYTABS
-        const customMetaData = JSON.stringify([
-          `mofawtarEntityIds:${entities.map(({ id }) => id).join(', ')}`,
-          `type:${payment.entityType}`,
-          `paymentId:${newPayment.id}`,
-        ]);
+          // Payment gateway for the client (invoice receiver)
+          const credentials = await this.encryptionService.decrypt<PayTabsConfigs>(billingAccount.credentials);
+          const billing = new PayTabsService(credentials, this.http);
 
-        const invoice = await billing.addInvoice({
-          id: entities.map(({ id }) => id).join(', '), // TODO: CHANGE IF THE PAYMENT CAN NOT BE REACHABLE
-          amount: totalAmount,
-          currency: currency.code,
-          clientName: receiver.name,
-          metadata: customMetaData,
-          // {
-          //   mofawtarEntityIds: entities.map(({ id }) => id).join(', '),
-          //   type: payment.entityType,
-          //   paymentId: newPayment.id,
-          // },
-        });
+          //TODO: CHECK THIS WITH WHAT'S INSIDE  ADD INVOICE FUNCTION IN PAYTABS
+          const customMetaData = JSON.stringify([
+            `mofawtarEntityIds:${entities.map(({ id }) => id).join(', ')}`,
+            `type:${payment.entityType}`,
+            `paymentId:${newPayment.id}`,
+          ]);
 
-        console.log('invoice from paytabs', invoice);
+          const invoice = await billing.addInvoice({
+            id: entities.map(({ id }) => id).join(', '), // TODO: CHANGE IF THE PAYMENT CAN NOT BE REACHABLE
+            amount: totalAmount,
+            currency: currency.code,
+            clientName: receiver.name,
+            metadata: customMetaData,
+            // {
+            //   mofawtarEntityIds: entities.map(({ id }) => id).join(', '),
+            //   type: payment.entityType,
+            //   paymentId: newPayment.id,
+            // },
+          });
 
-        // TEST GET TRANSACTION
+          console.log('invoice from paytabs', invoice);
 
-        // const res = await billing.queryTransactionByTranRef();
-        // console.log('res', JSON.stringify(res));
+          // TEST GET TRANSACTION
 
-        //TODO: I MUST RETURN URL TO REDIRECT TO IF CREDIT CARD
+          // const res = await billing.queryTransactionByTranRef();
+          // console.log('res', JSON.stringify(res));
+
+          //TODO: I MUST RETURN URL TO REDIRECT TO IF CREDIT CARD
+        } catch {
+          throw new BadRequestException('Failed to process the payment!');
+        }
 
         break;
       }
@@ -291,7 +297,7 @@ export class PaymentService implements IPaymentService {
 
   async deletePayment(id: string): Promise<any> {
     const billing = new StripeService({
-      apiKey: 'sk_test_51QYrNYKNln1hF56rD6elusvFk152uoMjIiHE5iY0Dw9U49tF3ECzuck4n2q7rTep0ufyj7OadfVFBKidtrtNGA9100o852DIKn',
+      secretKey: 'sk_test_51QYrNYKNln1hF56rD6elusvFk152uoMjIiHE5iY0Dw9U49tF3ECzuck4n2q7rTep0ufyj7OadfVFBKidtrtNGA9100o852DIKn',
     });
 
     //TODO: HOW AND WHEN TO ADD WEBHOOK AND KNOW IFU ADD ALREADY OR NOT

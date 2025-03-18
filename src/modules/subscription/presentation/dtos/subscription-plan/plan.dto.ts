@@ -7,10 +7,11 @@ export class PlanDto implements Plan {
   name: string;
   description: string;
   price: number;
-  cycle: Cycle;
+  cycle: Cycle.MONTHLY | Cycle.YEARLY; //TODO: Change this to Cycle enum fro plan only
   currency: CurrencyCode;
   maxMembers: number;
   maxClients: number;
+  maxBranches: number;
   maxSubmissions: number;
   createdBy: string;
   createdAt: number;

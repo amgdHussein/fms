@@ -4,7 +4,7 @@ import { TransactionClass, TransactionType } from './paytabs-invoice-request.ent
 export interface PayTabsPaymentResponse {
   tran_ref?: string;
   merchant_id?: number;
-  profile_id?: number;
+  profile_id: number;
   cart_id?: string;
   cart_description?: string;
   cart_currency?: CurrencyCode;
@@ -15,7 +15,7 @@ export interface PayTabsPaymentResponse {
   tran_class?: TransactionClass;
   user_defined: {
     udf1: string;
-    udf2?: string;
+    udf2: string;
     udf3?: string;
     udf4?: string;
     udf5?: string;

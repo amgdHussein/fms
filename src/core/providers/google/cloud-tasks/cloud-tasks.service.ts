@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { CloudTasksClient } from '@google-cloud/tasks';
+import { CloudTasksClient, protos } from '@google-cloud/tasks';
 import { google as GoogleProtos } from '@google-cloud/tasks/build/protos/protos';
 
 import { CloudTasksConfigs } from './cloud-tasks.config';
@@ -26,7 +26,10 @@ export class CloudTasksService {
     return this.client
       .createTask({ parent: queuePath, task: task })
       .then(() => true)
-      .catch(() => false);
+      .catch(error => {
+        console.log('Error adding task:', error);
+        return false;
+      });
   }
 
   async createQueue(queueName: string): Promise<void> {
@@ -34,14 +37,16 @@ export class CloudTasksService {
     const parent = this.client.locationPath(projectId, projectRegion);
     const queue = {
       name: this.client.queuePath(projectId, projectRegion, queueName),
-      // retryConfig: {
-      //   maxAttempts: 1,
-      //   maxBackoff: '10s',
-      //   minBackoff: '1s',
-      // },
+      retryConfig: {
+        maxAttempts: 5, // Retries failed tasks up to 5 times
+        minBackoff: { seconds: 10 }, // Minimum retry delay
+        maxBackoff: { seconds: 300 }, // Maximum retry delay
+        maxRetryDuration: { seconds: 3600 }, // Maximum retry duration
+      },
       rateLimits: {
-        maxDispatchesPerSecond: 500,
+        maxDispatchesPerSecond: 5,
         maxBurstSize: 100,
+        maxConcurrentDispatches: 3, // Limit concurrent executions
       },
     };
 
@@ -56,6 +61,18 @@ export class CloudTasksService {
         this.logger.error('Error creating queue:', err);
       }
     }
+  }
+
+  async getQueue(queueName: string): Promise<[protos.google.cloud.tasks.v2.IQueue, protos.google.cloud.tasks.v2.IGetQueueRequest | undefined, {} | undefined]> {
+    const queuePath = this.client.queuePath(this.configs.projectId, this.configs.projectRegion, queueName);
+
+    return this.client
+      .getQueue({ name: queuePath })
+      .then(res => res)
+      .catch(error => {
+        // console.log('Error getting queue:', error.message);
+        return undefined;
+      });
   }
 
   getTaskName(queueName: string, taskName: string): string {

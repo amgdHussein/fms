@@ -18,4 +18,5 @@ export enum UsageType {
   MEMBERS = 'members',
   CLIENTS = 'clients',
   SUBMISSIONS = 'submissions',
+  BRANCHES = 'branches',
 }

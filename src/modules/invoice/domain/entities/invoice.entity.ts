@@ -23,6 +23,7 @@ export interface Invoice {
   // name: string; // Name of the invoice
   // description?: string; // Description of the invoice
 
+  //TODO: ADD CATEGORY ?? (e.g., subscription invoice, tax invoice, etc.)
   type: InvoiceType; // Nature of the invoice (e.g., standard, tax)
   form: InvoiceForm; // Form/type of the invoice (e.g., credit, debit)
   direction: InvoiceDirection;

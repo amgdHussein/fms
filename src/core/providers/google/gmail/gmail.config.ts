@@ -1,5 +1,5 @@
 export interface GmailConfigs {
-  email: string;
-  clientId: string;
-  privateKey: string;
+  hostEmail: string;
+  user: string;
+  password: string;
 }

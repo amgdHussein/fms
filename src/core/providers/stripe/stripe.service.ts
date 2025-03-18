@@ -10,7 +10,7 @@ export class StripeService {
   private stripe: Stripe;
 
   constructor(readonly configs: StripeConfigs) {
-    this.stripe = new Stripe(configs.apiKey, {
+    this.stripe = new Stripe(configs.secretKey, {
       apiVersion: '2025-01-27.acacia', //TODO: UPDATE STRIPE VERSION
     });
 

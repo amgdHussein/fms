@@ -11,7 +11,7 @@ import { Invoice } from '../../../invoice/domain';
  * @param logo - Logo of mofawtar organization
  * @param direction - Sent
  */
-export interface SubscriptionInvoice extends Omit<Invoice, 'profileId' | 'branchId' | 'tax' | 'items' | 'reference'> {
+export interface SubscriptionInvoice extends Omit<Invoice, 'profileId' | 'branchId' | 'tax' | 'reference'> {
   subscriptionId: string;
   // mission: Mission; // Type or purpose of the invoice
 }

@@ -5,13 +5,13 @@ export interface PayTabsInvoice {
 }
 
 export interface PaytabsInvoiceParams {
-  profile_id?: string;
-  tran_type?: TransactionType;
-  tran_class?: TransactionClass;
-  cart_currency?: CurrencyCode;
-  cart_amount?: number;
-  cart_id?: string;
-  cart_description?: string;
+  profile_id: number;
+  tran_type: TransactionType;
+  tran_class: TransactionClass;
+  cart_currency: CurrencyCode;
+  cart_amount: number;
+  cart_id: string;
+  cart_description: string;
   hide_shipping?: boolean;
   customer_ref?: string;
   payment_methods?: PaymentMethod[];
@@ -23,7 +23,7 @@ export interface PaytabsInvoiceParams {
     state?: string;
     city?: string;
     street1?: string;
-    zip?: number;
+    zip?: string;
   };
   invoice?: {
     lang?: 'en' | 'ar';
@@ -35,26 +35,36 @@ export interface PaytabsInvoiceParams {
     expiry_date?: string;
     due_date?: string;
     disable_edit?: boolean;
-    line_items?: [
-      {
-        sku?: string;
-        description?: string;
-        url?: string;
-        unit_cost?: number;
-        quantity?: number;
-        net_total?: number;
-        discount_rate?: number;
-        discount_amount?: number;
-        tax_rate?: number;
-        tax_total?: number;
-        total?: number;
-      },
-    ];
+    line_items?: {
+      sku?: string;
+      description?: string;
+      url?: string;
+      unit_cost?: number;
+      quantity?: number;
+      net_total?: number;
+      discount_rate?: number;
+      discount_amount?: number;
+      tax_rate?: number;
+      tax_total?: number;
+      total?: number;
+    }[];
+  };
+
+  agreement?: {
+    agreement_description?: string; // This parameter indicates the agreement description which you can use to distinguish your agreements and you can also use it as a title for your agreement.
+    agreement_currency?: CurrencyCode; // This parameter indicates the currency that this agreement will be initiated in and you need to make sure that this is the same currency that you have passed inside the cart_currency parameter and that this currency is configured in your PayTabs profile.
+    initial_amount?: number; // This parameter indicates the initial amount that you will be requesting your customer to pay in this agreement, and you need to make sure that it is the same amount as the one you passed inside the cart_amount parameter.
+    repeat_amount?: number; // This parameter indicates the repeated amount the you want to charge your customer with at the specified time intervals that you will be passing in the below parameters.
+    final_amount?: number; // This parameter indicates if you want to charge your customer with a final amount after completing the whole agreement payments. Note that this will not be applicable to unlimited term agreements (when setting the "repeat_terms" to 0).
+    repeat_terms?: number; // This parameter indicates the number of times you want to repeat the payment or charge your customers and here you will be repeating the charge of the amount specified in the "repeat_amount" parameter. Note that if you passed 0 to this parameter, it means that you will be initiating an open agreement that will keep charging the customer forever or until you cancel the agreement through your dashboard.
+    repeat_period?: number; // 1 = day, 2 = week, 3 = month
+    repeat_every?: number /* e.g. 4 .   every 1 week, or every 4 days etc */;
+    first_installment_due_date?: string; // i.e. "05/May/2024"  /* Cannot be on or before today */;
   };
 
   user_defined: {
     udf1: string;
-    udf2?: string;
+    udf2: string;
     udf3?: string;
     udf4?: string;
     udf5?: string;

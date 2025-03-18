@@ -57,7 +57,7 @@ export class GmailModule {
    */
   private static createTransporter(configs: GmailConfigs): nodemailer.Transporter {
     return nodemailer.createTransport({
-      host: configs.email,
+      host: configs.hostEmail,
       secure: true,
       secureConnection: false, // TLS requires secureConnection to be false
       tls: {
@@ -67,8 +67,8 @@ export class GmailModule {
       port: 465,
       debug: true,
       auth: {
-        user: configs.clientId,
-        pass: configs.privateKey,
+        user: configs.user,
+        pass: configs.password,
       },
     } as SMTPTransport.Options);
   }

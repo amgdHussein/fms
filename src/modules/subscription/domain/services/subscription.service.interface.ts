@@ -8,4 +8,5 @@ export interface ISubscriptionService {
   addSubscription(subscription: Partial<Subscription> & { organizationId: string; planId: string }): Promise<Subscription>;
   updateSubscription(subscription: Partial<Subscription> & { id: string }): Promise<Subscription>;
   cancelSubscription(id: string): Promise<Subscription>;
+  startFreeTrial(organizationId: string): Promise<Subscription>;
 }

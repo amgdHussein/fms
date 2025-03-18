@@ -6,14 +6,16 @@ export interface Plan {
   name: string;
   description: string;
   price: number;
-  cycle: Cycle;
+  cycle: Cycle.MONTHLY | Cycle.YEARLY;
   currency: CurrencyCode;
 
-  // TODO: ADD FEATURES
   // * When adding new features, must add them into the usage entity
   maxMembers: number; // Number of members supported by the plan
   maxClients: number; // Number of clients supported by the plan
+  maxBranches: number;
   maxSubmissions: number; // Number of tax invoice submissions per month
+
+  // isActive: boolean;
 
   createdBy: string; // User who created the user-preferences
   createdAt: number; // Timestamp when the user-preferences was created

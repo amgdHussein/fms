@@ -21,10 +21,7 @@ export class GetOrganizationSubscription implements Usecase<Subscription> {
   ) {}
 
   async execute(organizationId: string): Promise<Subscription> {
-    const [subscription] = await this.subscriptionService.getSubscriptions([{ key: 'organizationId', operator: 'eq', value: organizationId }], 1, 1, {
-      key: 'startAt',
-      dir: 'desc',
-    });
+    const [subscription] = await this.subscriptionService.getSubscriptions([{ key: 'organizationId', operator: 'eq', value: organizationId }], 1, 1);
 
     const usage = await this.usageService.getUsage(subscription.id);
     subscription.usage = usage;

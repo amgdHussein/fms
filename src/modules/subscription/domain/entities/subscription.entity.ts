@@ -1,3 +1,6 @@
+import { PaymentGateway } from '../../../../core/enums';
+import { Discount } from '../../../../core/models';
+import { PaymentMethod } from '../../../payment/domain';
 import { Usage } from './usage.entity';
 
 export interface Subscription {
@@ -14,6 +17,24 @@ export interface Subscription {
 
   usage?: Usage[]; // Usage of the subscription
 
+  // billingCycle: BillingCycle; //   default: BillingCycle.MONTHLY
+  // trialEndDate: Date;
+  // paymentStatus: PaymentStatus; //   default: PaymentStatus.UNPAID
+  // lastPaymentDate: Date;
+  // nextBillingDate: Date;
+  // paymentGateway: PaymentGateway;
+  // gatewaySubscriptionId: string;
+  // gatewayCustomerId: string;
+  // paymentMethodDetails: Record<string, any>;
+
+  // stripePriceId: string;
+  // stripeId: string;
+
+  // coupon: SubscriptionCoupon; //TODO: ADD TO PAYMENT OR INVOICE
+
+  paymentMethod: PaymentMethod;
+  paymentGateway: PaymentGateway;
+
   createdBy: string; // User who created the user
   createdAt: number; // Timestamp when the user was created
   updatedBy: string; // User who last updated the user
@@ -25,4 +46,17 @@ export enum SubscriptionStatus {
   ACTIVE = 1,
   CANCELED = 2,
   EXPIRED = 3,
+  TRIAL = 4,
+}
+
+export enum SubscriptionCouponDuration {
+  ONCE = 'once',
+  REPEATING = 'repeating',
+  FOREVER = 'forever',
+}
+
+export interface SubscriptionCoupon {
+  code: string;
+  duration: SubscriptionCouponDuration;
+  discount: Discount;
 }

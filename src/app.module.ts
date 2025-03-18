@@ -137,9 +137,9 @@ import {
     }),
 
     GmailModule.forRoot({
-      email: process.env.GMAIL_EMAIL,
-      clientId: process.env.GMAIL_CLIENT_ID,
-      privateKey: process.env.GMAIL_PRIVATE_KEY,
+      hostEmail: process.env.GMAIL_HOST_EMAIL,
+      user: process.env.GMAIL_AUTH_USER,
+      password: process.env.GMAIL_AUTH_PASS,
     }),
 
     EtaModule.forRoot({
@@ -149,12 +149,12 @@ import {
     }),
 
     StripeModule.forRoot({
-      apiKey: process.env.STRIPE_API_KEY,
+      secretKey: process.env.STRIPE_API_KEY,
     }),
 
     PayTabsModule.forRoot({
-      profileId: process.env.PAY_TABS_PROFILE_ID,
-      serverKey: process.env.PAY_TABS_SERVER_KEY,
+      profileId: +process.env.PAYTABS_PROFILE_ID,
+      serverKey: process.env.PAYTABS_SERVER_KEY,
     }),
 
     PaypalModule.forRoot({
