@@ -4,6 +4,7 @@ import { TransactionClass, TransactionType } from './paytabs-invoice-request.ent
 export interface PayTabsPaymentResponse {
   tran_ref?: string;
   merchant_id?: number;
+  agreement_id?: number;
   profile_id: number;
   cart_id?: string;
   cart_description?: string;
@@ -75,4 +76,28 @@ export enum PaymentResponseStatus {
   ERROR = 'E', // Error
   DECLINED = 'D', // Declined
   EXPIRED = 'X', // Expired
+}
+
+export interface CancelAgreementResponse {
+  message: string; // 'Subscription canceled successfully.',
+  status: string; // 'success',
+  trace: string; // 'PMNT0402.67DAAE3D.00001ECC'
+}
+
+export interface HostedPageResponse {
+  tran_ref: string;
+  tran_type: TransactionType;
+  cart_id: string;
+  cart_description: string;
+  cart_currency: CurrencyCode;
+  cart_amount: string;
+  tran_total: string;
+  callback: string;
+  return: string;
+  redirect_url: string;
+  serviceId: number;
+  paymentChannel: string;
+  profileId: number;
+  merchantId: number;
+  trace: string;
 }

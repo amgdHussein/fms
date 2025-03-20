@@ -4,8 +4,8 @@ import { INVOICE_ITEM_REPOSITORY_PROVIDER, INVOICE_REPOSITORY_PROVIDER, INVOICE_
 import { InvoiceFirestoreRepository, InvoiceItemFirestoreRepository, InvoiceService } from '../invoice/infrastructure';
 import {
   AddPlan,
-  AddSubscription,
   CancelSubscription,
+  ChangeSubscriptionPlan,
   GetOrganizationSubscription,
   GetPlan,
   GetPlans,
@@ -36,8 +36,8 @@ import { SubscriptionController, SubscriptionHandler, SubscriptionPlanController
 
 const subscriptionUsecases = [
   {
-    provide: SUBSCRIPTION_USECASE_PROVIDERS.ADD_SUBSCRIPTION,
-    useClass: AddSubscription,
+    provide: SUBSCRIPTION_USECASE_PROVIDERS.CHANGE_SUBSCRIPTION_PLAN,
+    useClass: ChangeSubscriptionPlan,
   },
   {
     provide: SUBSCRIPTION_USECASE_PROVIDERS.GET_SUBSCRIPTION,

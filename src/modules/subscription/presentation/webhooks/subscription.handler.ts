@@ -18,7 +18,7 @@ export class SubscriptionHandler {
   }
 
   @Post('subscriptions/handle-expire') // TODO: FIX THIS IN SERVICE
-  async handlerSubscriptionExpiry(@Body() data: Subscription): Promise<void> {
-    return this.subscriptionManger.handlerSubscriptionExpiry(data);
+  async handlerSubscriptionExpiry(@Body() subscription: Subscription): Promise<void> {
+    return this.subscriptionManger.handlerSubscriptionExpiry(subscription);
   }
 }

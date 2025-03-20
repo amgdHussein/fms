@@ -19,9 +19,6 @@ import {
 
 @Injectable()
 export class SubscriptionCronManager {
-  // private backendUrl = 'https://mofawtar-backend.ue.r.appspot.com/';
-  // private backendUrl = 'https://mofawtar-backend.ue.r.appspot.com/';
-
   constructor(
     @Inject(SUBSCRIPTION_SERVICE_PROVIDER)
     private readonly subscriptionService: ISubscriptionService,
@@ -43,6 +40,7 @@ export class SubscriptionCronManager {
   async handlerSubscriptionExpiry(subscription: Subscription): Promise<void> {
     // console.log('data', data);
 
+    // TODO: SHOULD I DELETE USAGE DATA AND ADD THEM TO LOGS?
     await this.subscriptionService.updateSubscription({
       id: subscription.id,
       status: SubscriptionStatus.EXPIRED,
@@ -73,8 +71,8 @@ export class SubscriptionCronManager {
     const subscriptions = await this.subscriptionService.getSubscriptions([
       {
         key: 'status',
-        operator: 'eq',
-        value: SubscriptionStatus.ACTIVE,
+        operator: 'in',
+        value: [SubscriptionStatus.ACTIVE, SubscriptionStatus.CANCELED],
       },
       {
         key: 'endAt',
@@ -92,7 +90,7 @@ export class SubscriptionCronManager {
           body: Buffer.from(payload).toString('base64'),
           headers: { 'Content-Type': 'application/json' },
           httpMethod: 'POST',
-          // url: 'https://us-east1-mofawtar-backend.cloudfunctions.net/publishEinvoiceToSign', //PROD  //TODO: MAKE THIS DYNAMIC BASED ON ENV
+          // url: 'https://us-east1-mofawtar-backend.cloudfunctions.net/publishEinvoiceToSign', //PROD
           url: `${process.env.PROD_URL}/webhooks/subscriptions/handle-expire`, // DEV
         },
       };

@@ -20,7 +20,64 @@ export class PaymentHandler {
 
   @Post('payments/paytabs')
   async payTabsWebhook(@Body() body: any): Promise<void> {
-    // console.log('paytabs webhook body', body);
+    console.log('paytabs webhook body', body);
+
+    // HOSTED PAYMENT WITH AGREEMENTS
+    // paytabs webhook body {
+    //   tran_ref: 'TST2507802036079',
+    //   merchant_id: 79780,
+    //   profile_id: 140150,
+    //   cart_id: 'hOabKAKvlYutzcdeWa1F',
+    //   cart_description: 'Subscription for Mofawtar',
+    //   cart_currency: 'EGP',
+    //   cart_amount: '700.00',
+    //   tran_currency: 'EGP',
+    //   tran_total: '700.00',
+    //   tran_type: 'Sale',
+    //   tran_class: 'ECom',
+    //   agreement_id: 1366,
+    //   customer_details: {
+    //     name: 'Test Mohy',
+    //     email: 'mahmod.mohy@yahoo.com',
+    //     street1: 'cairo',
+    //     city: 'cairo',
+    //     state: 'PTS',
+    //     country: 'EG',
+    //     ip: '197.54.117.27'
+    //   },
+    //   payment_result: {
+    //     response_status: 'A',
+    //     response_code: 'G87214',
+    //     response_message: 'Authorised',
+    //     acquirer_ref: 'TRAN0002.67DAB80E.000053B0',
+    //     cvv_result: ' ',
+    //     avs_result: ' ',
+    //     transaction_time: '2025-03-19T12:26:54Z'
+    //   },
+    //   payment_info: {
+    //     payment_method: 'Visa',
+    //     card_type: 'Credit',
+    //     card_scheme: 'Visa',
+    //     payment_description: '4000 00## #### 0002',
+    //     expiryMonth: 2,
+    //     expiryYear: 2026
+    //   },
+    //   user_defined: {
+    //     udf2: '["type:2","subscriptionId:hOabKAKvlYutzcdeWa1F","planId:SOmoX0n7hryZrq5h2M30"]'
+    //   },
+    //   threeDSDetails: {
+    //     responseLevel: 2,
+    //     responseStatus: 4,
+    //     enrolled: 'Y',
+    //     paResStatus: 'Y',
+    //     eci: '05',
+    //     cavv: '',
+    //     ucaf: 'VFNUMjUwNzgwMjAzNjA3OTExNzA=',
+    //     threeDSVersion: 'Test/Simulation'
+    //   },
+    //   ipn_trace: 'IPNS0002.67DAB80E.0000089B',
+    //   paymentChannel: 'Payment Page'
+    // }
 
     // hosted page payment
     // paytabs webhook body {

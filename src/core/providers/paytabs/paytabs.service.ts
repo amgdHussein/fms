@@ -1,11 +1,22 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import * as moment from 'moment-timezone';
 import { catchError, firstValueFrom, map } from 'rxjs';
 
-import { CurrencyCode } from '../../enums';
+import { CurrencyCode, Cycle } from '../../enums';
 
-import { PayTabsInvoice, PaytabsInvoiceParams, PayTabsTransactionRefundBody, TransactionClass, TransactionType } from './entities';
+import { DateTime } from 'luxon';
+import { Organization } from '../../../modules/organization/domain';
+import { Plan } from '../../../modules/subscription/domain';
+import {
+  CancelAgreementResponse,
+  HostedPageResponse,
+  PaytabsHostedPaymentPageParams,
+  PayTabsInvoice,
+  PaytabsInvoiceParams,
+  PayTabsTransactionRefundBody,
+  TransactionClass,
+  TransactionType,
+} from './entities';
 import { PayTabsConfigs } from './paytabs.config';
 
 @Injectable()
@@ -29,47 +40,126 @@ export class PayTabsService {
     private readonly http: HttpService,
   ) {}
 
-  //TODD: ENHANCE PARAMETER TO BE MORE DYNAMIC
-  // async createHostedPaymentPage(data: PaytabsInvoiceParams): Promise<any> {
-  async createHostedPaymentPage(subscriptionId: string, planPrice: number, metadata: string): Promise<any> {
+  async createHostedPaymentPage(
+    subscriptionId: string,
+    customer: Organization,
+    plan: Plan,
+    totalAmount: number,
+    metadata: string,
+  ): Promise<HostedPageResponse> {
     const endpoint = `${this.BASE_URL}/payment/request`;
 
-    const hostPaymentBody: PaytabsInvoiceParams = {
+    const hostPaymentBody: PaytabsHostedPaymentPageParams = {
       profile_id: this.configs.profileId,
       tran_type: TransactionType.SALE,
       tran_class: TransactionClass.ECOM,
       cart_id: subscriptionId,
-      cart_currency: CurrencyCode.EGP, // TODO: THINK OF how handle ADDING CURRENCY TO THE SUBSCRIPTION
-      cart_amount: planPrice,
+      cart_currency: CurrencyCode.EGP,
+      cart_amount: totalAmount,
       cart_description: 'Subscription for Mofawtar',
       hide_shipping: true,
+      show_save_card: false, //TODO: TEST THIS
       callback: `${process.env.PROD_URL}/webhooks/payments/paytabs`, //TODO: THINK OF ADD DIFFERENT CALLBACK FOR SUBSCRIPTION
-      return: 'http://localhost:4200/success', //TODO: THIS OF URL IN FRONTEND
+      return: process.env.PAYTABS_RETURN_URL, //'http://localhost:4200/success', //TODO: THIS OF URL IN FRONTEND
       user_defined: {
         udf1: '',
         udf2: `${JSON.stringify(metadata)}`,
       },
       agreement: {
-        agreement_description: 'Test agreement',
+        agreement_description: 'Subscription for Mofawtar website',
         agreement_currency: CurrencyCode.EGP,
-        initial_amount: planPrice,
-        repeat_amount: planPrice,
+        initial_amount: totalAmount,
+        repeat_amount: totalAmount,
         final_amount: 0,
-        repeat_terms: 0,
-        repeat_period: 1,
-        repeat_every: 2,
-        first_installment_due_date: '19/Mar/2024',
+        repeat_terms: 0, // 0 means unlimited
+        repeat_period: 2, // means monthly only because paytabs does not support yearly
+        repeat_every: plan.cycle === Cycle.MONTHLY ? 1 : 12, // 1 means every month, 12 means every year
+        first_installment_due_date:
+          plan.cycle === Cycle.MONTHLY ? DateTime.now().plus({ month: 1 }).toFormat('dd-MM-yyyy') : DateTime.now().plus({ year: 1 }).toFormat('dd-MM-yyyy'), // '20/03/2025'  TODO: MAKE DYNAMIC
+      },
+
+      customer_details: {
+        name: customer.name,
+        email: customer.email,
+        street1: customer.address.street,
+        city: customer.address.city,
+        state: customer.address.governorate,
+        country: customer.address.country,
       },
     };
 
     const request = this.http
-      .post<PayTabsInvoice>(endpoint, hostPaymentBody, {
+      .post<HostedPageResponse>(endpoint, hostPaymentBody, {
         headers: { Authorization: `${this.configs.serverKey}` },
       })
       .pipe(
         map(response => response.data),
         catchError(this.handlePayTabsError),
       );
+
+    // hostedPage {
+    //   tran_ref: 'TST2507102033213',
+    //   tran_type: 'Sale',
+    //   cart_id: 'hOabKAKvlYutzcdeWa1F',
+    //   cart_description: 'Subscription for Mofawtar',
+    //   cart_currency: 'EGP',
+    //   cart_amount: '300.00',
+    //   tran_total: '0',
+    //   callback: 'https://frank-chicken-quietly.ngrok-free.app/webhooks/payments/paytabs',
+    //   return: 'http://localhost:4200/success',
+    //   redirect_url: 'https://secure-egypt.paytabs.com/payment/wr/5D222F5582E41ABE3E74C715A4EEE69933AEF4F151486544741ABC2A',
+    //   serviceId: 2,
+    //   paymentChannel: 'Payment Page',
+    //   profileId: 140150,
+    //   merchantId: 79780,
+    //   trace: 'PMNT0401.67D1EA4C.00008A2A'
+    // }
+
+    return firstValueFrom(request);
+  }
+
+  // private getRepaeatPeriod(cycle: Cycle): number {
+  //   let repeatPeriod = 1;
+  //   switch (cycle) {
+  //     case Cycle.WEEKLY:
+  //       repeatPeriod = 2;
+  //       break;
+  //     case Cycle.MONTHLY:
+  //       repeatPeriod = 3;
+  //       break;
+  //     case Cycle.QUARTERLY:
+  //       repeatPeriod = 4;
+  //       break;
+  //     case Cycle.YEARLY:
+  //       repeatPeriod = 5;
+  //       break;
+  //     default:
+  //       repeatPeriod = 1;
+  //       break;
+  // }
+
+  async cancelAgreement(agreementId: number): Promise<CancelAgreementResponse> {
+    const endpoint = `${this.BASE_URL}/payment/agreement/cancel`;
+
+    const hostPaymentBody = {
+      profile_id: this.configs.profileId,
+      agreement_id: agreementId,
+    };
+
+    const request = this.http
+      .post<CancelAgreementResponse>(endpoint, hostPaymentBody, {
+        headers: { Authorization: `${this.configs.serverKey}` },
+      })
+      .pipe(
+        map(response => response.data),
+        catchError(this.handlePayTabsError),
+      );
+
+    // {
+    //   message: 'Agreement has been cancelled',
+    //   status: 'success',
+    //   trace: 'PMNT0402.67DAAE3D.00001ECC'
+    // }
 
     return firstValueFrom(request);
   }
@@ -92,7 +182,6 @@ export class PayTabsService {
         udf2: '',
       },
 
-      hide_shipping: true,
       customer_details: {
         name: invoice.clientName,
         // country: 'EGY',
@@ -100,7 +189,7 @@ export class PayTabsService {
       invoice: {
         lang: 'en',
         total: invoice.amount,
-        expiry_date: moment().add(30, 'days').toISOString(),
+        // expiry_date: moment().add(30, 'days').toISOString(),
         // due_date: new Date(+new Date()).toISOString(), // now
         disable_edit: true,
         line_items: [

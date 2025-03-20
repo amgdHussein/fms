@@ -1,6 +1,4 @@
-import { PaymentGateway } from '../../../../core/enums';
 import { Discount } from '../../../../core/models';
-import { PaymentMethod } from '../../../payment/domain';
 import { Usage } from './usage.entity';
 
 export interface Subscription {
@@ -9,7 +7,6 @@ export interface Subscription {
   organizationId: string; // ID of the organization associated with the subscription
 
   status: SubscriptionStatus; // Status of the subscription
-  autoRenew?: boolean; // Whether the subscription should be automatically renewed
 
   startAt: number; // Timestamp when the subscription started
   endAt: number; // Timestamp when the subscription ends
@@ -23,17 +20,17 @@ export interface Subscription {
   // lastPaymentDate: Date;
   // nextBillingDate: Date;
   // paymentGateway: PaymentGateway;
-  // gatewaySubscriptionId: string;
   // gatewayCustomerId: string;
   // paymentMethodDetails: Record<string, any>;
 
   // stripePriceId: string;
   // stripeId: string;
 
-  // coupon: SubscriptionCoupon; //TODO: ADD TO PAYMENT OR INVOICE
+  // coupon: SubscriptionCoupon;
 
-  paymentMethod: PaymentMethod;
-  paymentGateway: PaymentGateway;
+  gatewaySubscriptionId: number;
+  // paymentMethod: PaymentMethod;
+  // paymentGateway: PaymentGateway;
 
   createdBy: string; // User who created the user
   createdAt: number; // Timestamp when the user was created

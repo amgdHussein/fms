@@ -18,9 +18,13 @@ import {
   Subscription,
   SUBSCRIPTION_PLAN_SERVICE_PROVIDER,
   SUBSCRIPTION_SERVICE_PROVIDER,
+  SUBSCRIPTION_USAGE_SERVICE_PROVIDER,
   SubscriptionInvoice,
   SubscriptionStatus,
+  Usage,
+  UsageType,
 } from '../../../subscription/domain';
+import { SubscriptionUsageService } from '../../../subscription/infrastructure';
 import {
   IPaymentRepository,
   IPaymentService,
@@ -57,6 +61,9 @@ export class PaymentCronManager {
 
     @Inject(ORGANIZATION_SERVICE_PROVIDER)
     private readonly organizationService: OrganizationService,
+
+    @Inject(SUBSCRIPTION_USAGE_SERVICE_PROVIDER)
+    private readonly usageService: SubscriptionUsageService,
   ) {}
 
   async handlePaytabsWebhook(event: PayTabsPaymentResponse): Promise<void> {
@@ -105,6 +112,7 @@ export class PaymentCronManager {
       const planId: string = subscriptionMetaData.at(2).split(':').at(1).trim();
       const paymentTotal = +event?.tran_total;
       const paymentCurrency = event?.tran_currency; // TODO: CHECK WITH cart_currency
+      const gatewaySubscriptionId = event.agreement_id;
 
       console.log('collected', entityType, subscriptionId, paymentTotal, paymentCurrency);
 
@@ -123,6 +131,7 @@ export class PaymentCronManager {
         paymentCurrency,
         referenceId,
         processedAt,
+        gatewaySubscriptionId,
       );
     }
   }
@@ -259,6 +268,7 @@ export class PaymentCronManager {
     currency: CurrencyCode,
     referenceId: string,
     processedAt: number,
+    gatewaySubscriptionId: number,
   ): Promise<void> {
     console.log('handleSubscriptionWebhook', status, subscriptionId, entityType);
     //TODO:ADD LOGS IF ANY ERROR HAPPENS
@@ -297,7 +307,7 @@ export class PaymentCronManager {
         });
 
         // Update the invoices/receipts status
-        await this.createSuccessfulPaymentEntity(subscription, planId, payment.id, processedAt, currency, paymentTotal, organization);
+        await this.createSuccessfulPaymentEntity(subscription, planId, payment.id, processedAt, currency, paymentTotal, organization, gatewaySubscriptionId);
 
         break;
       }
@@ -329,17 +339,61 @@ export class PaymentCronManager {
     currency: CurrencyCode,
     totalAmount: number,
     organization: Organization,
+    gatewaySubscriptionId: number,
   ): Promise<void> {
-    // const subscription = await this.subscriptionService.getSubscription(subscriptionId.id);
     const plan = await this.planService.getPlan(planId);
 
+    const usages: Partial<Usage>[] = [
+      {
+        organizationId: organization.id,
+        subscriptionId: subscription.id,
+
+        type: UsageType.MEMBERS,
+        used: 0,
+        remaining: plan.maxMembers,
+        limit: plan.maxMembers,
+      },
+      {
+        organizationId: organization.id,
+        subscriptionId: subscription.id,
+
+        type: UsageType.CLIENTS,
+        used: 0,
+        remaining: plan.maxClients,
+        limit: plan.maxClients,
+      },
+      {
+        organizationId: organization.id,
+        subscriptionId: subscription.id,
+
+        type: UsageType.SUBMISSIONS,
+        used: 0,
+        remaining: plan.maxSubmissions,
+        limit: plan.maxSubmissions,
+      },
+      {
+        organizationId: organization.id,
+        subscriptionId: subscription.id,
+
+        type: UsageType.BRANCHES,
+        used: 0,
+        remaining: plan.maxBranches,
+        limit: plan.maxBranches,
+      },
+    ];
+
+    const newUsage = await this.usageService.addUsage(usages, subscription.id);
+
+    // update subscription with usage
     await this.subscriptionService.updateSubscription({
       id: subscription.id,
       status: SubscriptionStatus.ACTIVE,
       planId: plan.id,
       startAt: Date.now(),
       endAt: this.getEndAtForPlan(plan), // TODO: HOW TO HANDLE THE END DATE
+      gatewaySubscriptionId: gatewaySubscriptionId,
       billingAt: processedAt,
+      usage: newUsage,
     });
 
     const invoice = await this.invoiceService.addInvoice(this.createSubscriptionInvoice(subscription.id, currency, paymentId, totalAmount, organization, plan));

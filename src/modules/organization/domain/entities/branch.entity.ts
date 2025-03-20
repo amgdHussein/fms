@@ -14,7 +14,7 @@ export interface Branch extends Address {
   floor?: string;
   room?: string;
   landmark?: string;
-  additionalInformation?: string; //TODO: ADD TO ALL FORMS
+  additionalInformation?: string;
 
   createdBy: string; // User ID who created the branch
   createdAt: number; // Date when the branch was created
